@@ -1,0 +1,7 @@
+{
+    "numberOfParticipants": 80,
+    "initialFunds": 100000,
+    "numberOfRounds": 6,
+    "roundDuration": 600000  
+  }
+  
