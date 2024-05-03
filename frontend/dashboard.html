@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - Mock Stock Server</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Additional CSS for news popup */
+        .popup-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            display: none;
+        }
+
+        .popup-content {
+            text-align: center;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+
+        .stock-status {
+            margin-top: 20px;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .stock-details {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .transaction-history {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>User Dashboard</h1>
+        </header>
+        <main>
+            <p>Welcome, User! Here are your dashboard functionalities:</p>
+            <div class="sector-list">
+                <h2>Select Sector</h2>
+                <ul>
+                    <li><a href="automobile.html">Automobile Sector</a></li>
+                    <li><a href="pharma.html">Pharma Sector</a></li>
+                    <!-- Add more sectors as needed -->
+                </ul>
+            </div>
+
+            <!-- News Flashes Section -->
+            <div class="news-flashes">
+                <h2>News Flashes</h2>
+                <ul id="newsList">
+                    <!-- News flashes will be dynamically inserted here -->
+                </ul>
+            </div>
+
+            <!-- Stock Status Section -->
+            <div class="stock-status">
+                <h2>Stock Status</h2>
+                <canvas id="stockChart"></canvas>
+                <!-- Stock details -->
+                <div class="stock-details">
+                    <h3>Current Stock Details</h3>
+                    <p>Current Price: $120</p>
+                    <p>Number of Shares Owned: 100</p>
+                </div>
+            </div>
+
+            <!-- Transaction History Section -->
+            <div class="transaction-history">
+                <h2>Transaction History</h2>
+                <ul>
+                    <li>Purchased 50 shares of XYZ Corp at $110</li>
+                    <li>Sold 20 shares of ABC Inc at $130</li>
+                    <!-- Add more transaction entries as needed -->
+                </ul>
+            </div>
+        </main>
+        <footer>
+            <p>&copy; 2024 Mock Stock Server</p>
+        </footer>
+    </div>
+
+    <!-- JavaScript for news popups and poll -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Dummy data for demonstration
+        var newsData = [
+            { content: "News flash 1" },
+            { content: "News flash 2" },
+            { content: "News flash 3" }
+        ];
+
+        // Function to display news popups
+        function displayNewsPopup(news) {
+            var popupContainer = document.createElement("div");
+            popupContainer.classList.add("popup-container");
+
+            var popupContent = document.createElement("div");
+            popupContent.classList.add("popup-content");
+            popupContent.innerHTML = `
+                <span class="close-btn" onclick="closePopup()">×</span>
+                <p>${news.content}</p>
+                <button onclick="performTransaction('buy')">Buy Stock</button>
+                <button onclick="performTransaction('sell')">Sell Stock</button>
+            `;
+
+            popupContainer.appendChild(popupContent);
+            document.body.appendChild(popupContainer);
+            popupContainer.style.display = "block";
+        }
+
+        // Function to close the news popup
+        function closePopup() {
+            var popupContainer = document.querySelector(".popup-container");
+            if (popupContainer) {
+                popupContainer.style.display = "none";
+            }
+        }
+
+        // Function to handle buying or selling stocks
+        function performTransaction(transactionType) {
+            // Dummy functionality for demonstration
+            if (transactionType === 'buy') {
+                alert("You bought the stock!");
+            } else if (transactionType === 'sell') {
+                alert("You sold the stock!");
+            }
+            closePopup();
+        }
+
+        // Function to fetch and display news flashes
+        function fetchNewsFlashes() {
+            var newsList = document.getElementById("newsList");
+            newsList.innerHTML = "";
+            newsData.forEach(function(news) {
+                var listItem = document.createElement("li");
+                listItem.textContent = news.content;
+                listItem.addEventListener("click", function() {
+                    displayNewsPopup(news);
+                });
+                newsList.appendChild(listItem);
+            });
+        }
+
+        // Fetch news flashes when the page loads
+        window.onload = fetchNewsFlashes;
+
+        // Function to generate stock chart
+        function generateStockChart() {
+            var ctx = document.getElementById('stockChart').getContext('2d');
+            var stockChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Stock Price',
+                        data: [100, 120, 130, 110, 150, 140],
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true, // Keep aspect ratio fixed
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: '#777'
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                color: '#777'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Generate stock chart when the page loads
+        window.onload = function() {
+            fetchNewsFlashes();
+            generateStockChart();
+        };
+    </script>
+</body>
+</html>
