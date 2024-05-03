@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - Mock Stock Server</title>
+    <style>
+        /* Reset CSS */
+        body, h1, h2, p, ul, li {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Container */
+        .container {
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #1a1a1a;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        /* Main Content */
+        main {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            color: #fff;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            flex: 1;
+            max-width: 250px;
+            margin-right: 20px;
+        }
+
+        .sidebar h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar a {
+            color: #999;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .sidebar a:hover {
+            color: #fff;
+        }
+
+        /* Content */
+        .content {
+            flex: 2;
+            margin-right: 20px;
+        }
+
+        .content h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .content p {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .section {
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #999;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        /* Rolling News */
+        .rolling-news-container {
+            overflow: hidden;
+        }
+
+        .rolling-news {
+            white-space: nowrap;
+            animation: roll 10s linear infinite;
+        }
+
+        .rolling-news span {
+            display: inline-block;
+            margin-right: 20px; /* Adjust spacing between news items */
+        }
+
+        @keyframes roll {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>User Dashboard</h1>
+        </header>
+        <main>
+            <div class="sidebar">
+                <h2>Select Sector</h2>
+                <ul>
+                    <li><a href="automobile.html">Automobile Sector</a></li>
+                    <li><a href="pharma.html">Pharma Sector</a></li>
+                    <!-- Add more sectors as needed -->
+                </ul>
+            </div>
+            <div class="content">
+                <div class="section">
+                    <h2>News Flashes</h2>
+                    <div class="rolling-news-container">
+                        <div class="rolling-news" id="rollingNews">
+                            <!-- News flashes will be dynamically inserted here -->
+                            <span>News flash 1</span>
+                            <span>News flash 2</span>
+                            <span>News flash 3</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="section">
+                    <h2>Stock Status</h2>
+                    <canvas id="stockChart"></canvas>
+                    <!-- Stock details -->
+                    <div class="stock-details">
+                        <h3>Current Stock Details</h3>
+                        <p>Current Price: $120</p>
+                        <p>Number of Shares Owned: 100</p>
+                    </div>
+                </div>
+                <div class="section">
+                    <h2>Transaction History</h2>
+                    <ul id="transactionList">
+                        <!-- Transaction entries will be dynamically inserted here -->
+                    </ul>
+                </div>
+                <div class="section">
+                    <h2>Bought Stocks</h2>
+                    <ul id="boughtStockList">
+                        <!-- Bought stock entries will be dynamically inserted here -->
+                    </ul>
+                </div>
+                <div class="section">
+                    <h2>Timer</h2>
+                    <div id="timer">
+                        Time Left: <span id="timerDisplay">00:00</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <p>&copy; 2024 Mock Stock Server</p>
+        </footer>
+    </div>
+
+    <!-- JavaScript for news popups, poll, and timer -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // JavaScript code for the dashboard goes here
+        // Dummy data for demonstration
+        var newsData = [
+            { content: "News flash 1" },
+            { content: "News flash 2" },
+            { content: "News flash 3" }
+        ];
+
+        // Dummy transaction history data
+        var transactionHistory = [
+            "Purchased 50 shares of XYZ Corp at $110",
+            "Sold 20 shares of ABC Inc at $130"
+        ];
+
+        // Dummy bought stocks data
+        var boughtStocks = [
+            "XYZ Corp",
+            "ABC Inc"
+        ];
+
+        // Function to fetch and display news flashes
+        function fetchNewsFlashes() {
+            var rollingNews = document.getElementById("rollingNews");
+            rollingNews.innerHTML = "";
+            newsData.forEach(function(news) {
+                var newsItem = document.createElement("span");
+                newsItem.textContent = news.content + "  "; // Add some space between news items
+                rollingNews.appendChild(newsItem);
+            });
+        }
+
+        // Function to populate transaction history
+        function populateTransactionHistory() {
+            var transactionList = document.getElementById("transactionList");
+            transactionHistory.forEach(function(transaction) {
+                var listItem = document.createElement("li");
+                listItem.textContent = transaction;
+                transactionList.appendChild(listItem);
+            });
+        }
+
+        // Function to populate bought stocks list
+        function populateBoughtStocks() {
+            var boughtStockList = document.getElementById("boughtStockList");
+            boughtStocks.forEach(function(stock) {
+                var listItem = document.createElement("li");
+                listItem.textContent = stock;
+                boughtStockList.appendChild(listItem);
+            });
+        }
+
+        // Fetch news flashes when the page loads
+        window.onload = function() {
+            fetchNewsFlashes();
+            populateTransactionHistory();
+            populateBoughtStocks();
+            startTimer();
+        };
+
+        // Timer functionality
+        function startTimer() {
+            var timerDisplay = document.getElementById('timerDisplay');
+            var timeLeftInSeconds = 600; // Example: 10 minutes
+            var timerInterval = setInterval(function() {
+                var minutes = Math.floor(timeLeftInSeconds / 60);
+                var seconds = timeLeftInSeconds % 60;
+                timerDisplay.textContent = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+                timeLeftInSeconds--;
+                if (timeLeftInSeconds < 0) {
+                    clearInterval(timerInterval);
+                    timerDisplay.textContent = "Time's up!";
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
