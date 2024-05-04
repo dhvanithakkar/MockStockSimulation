@@ -4,40 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Mock Stock Server</title>
-    <link rel="stylesheet" href="styles.css">
     <style>
-        /* Additional CSS for admin dashboard */
+        /* Reset CSS */
+        body, h1, h2, p, ul, li, a {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #000;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Header */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
+
+        h1 {
+            font-size: 36px;
+            color: #fff;
+        }
+
         nav ul {
             list-style-type: none;
             padding: 0;
             margin: 0;
         }
+
         nav ul li {
             display: inline-block;
             margin-right: 20px;
         }
+
         nav ul li a {
             text-decoration: none;
-            color: #333;
+            color: #999;
+            transition: color 0.3s ease;
         }
+
         nav ul li a:hover {
-            color: #007bff;
+            color: #fff;
         }
+
+        /* Main Content */
         main {
             margin-top: 20px;
         }
+
         .intro-section {
             margin-bottom: 30px;
         }
+
+        /* Activities Section */
         .activities-section {
-            background-color: #f4f4f4;
+            background-color: #222;
             padding: 20px;
             border-radius: 5px;
+        }
+
+        .activities-section h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .activities-section p {
+            color: #ccc;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #999;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 14px;
         }
     </style>
 </head>

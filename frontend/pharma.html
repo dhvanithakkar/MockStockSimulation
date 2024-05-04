@@ -4,7 +4,128 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pharma Sector - Mock Stock Server</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Reset CSS */
+        body, h1, h2, p, ul, li, input, button {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #1a1a1a;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        /* Main Content */
+        main {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            color: #fff;
+        }
+
+        /* Stock Section */
+        .stock {
+            flex-basis: 45%;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #333;
+        }
+
+        .stock h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        /* Stock Details */
+        .stock-details {
+            margin-bottom: 20px;
+        }
+
+        .stock-details p {
+            margin-bottom: 10px;
+        }
+
+        .stock-details label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stock-details input[type="number"] {
+            width: 100px;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #fff;
+            background-color: #1a1a1a;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .stock-details input[type="number"]:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .stock-details button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .stock-details button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Graph */
+        #stockGraph1 {
+            height: 300px;
+            background-color: #222;
+            border-radius: 5px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #999;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 14px;
+        }
+    </style>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
     <div class="container">

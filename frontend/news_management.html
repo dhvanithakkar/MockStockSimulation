@@ -4,36 +4,103 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>News Management - Admin Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
     <style>
-        /* Additional CSS for news management */
+        /* Reset CSS */
+        body, h1, h2, p, ul, li, a {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #222;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 36px;
+            color: #fff;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav ul li {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #999;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #fff;
+        }
+
+        /* Main Content */
         main {
             margin-top: 20px;
         }
+
         .news-list {
             list-style-type: none;
             padding: 0;
         }
+
         .news-list li {
             margin-bottom: 10px;
-            border: 1px solid #ccc;
+            border: 1px solid #444;
             padding: 10px;
             border-radius: 5px;
+            background-color: #333;
         }
+
         .news-list li:hover {
-            background-color: #f4f4f4;
+            background-color: #444;
         }
+
         .news-details {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .news-actions {
-            display: flex;
-            align-items: center;
+
+        .news-details div {
+            color: #fff;
         }
+
         .news-actions button {
             margin-left: 10px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .news-actions button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
