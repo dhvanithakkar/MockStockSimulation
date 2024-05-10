@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 participantSchema = new mongoose.Schema({
-  _id:username,
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   name: { type: String },
