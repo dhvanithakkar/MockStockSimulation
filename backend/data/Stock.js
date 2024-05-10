@@ -3,7 +3,6 @@ const config = require('./gameConfig.json');
 const mongoose = require('mongoose');
 
 const stockSchema = new mongoose.Schema({
-  _id: symbol,
   symbol: { type: String, required: true, unique: true },
   name: { type: String, required: true },
   Price: { type: Number, required: true },

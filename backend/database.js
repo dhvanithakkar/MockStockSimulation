@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const uri = "mongodb+srv://vruddhishah173:vruddhi@mockstock.9lxwa9c.mongodb.net/mockstock"; 
 
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(uri, { useNewUrlParser: true })
   .then(() => console.log('MongoDB database connection established successfully'))
   .catch(err => console.error('Error connecting to MongoDB database:', err));
 
