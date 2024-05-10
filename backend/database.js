@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const uri = "mongodb://localhost:27017/mockstock"; 
+const uri = "mongodb+srv://vruddhishah173:vruddhi@mockstock.9lxwa9c.mongodb.net/mockstock"; 
 
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB database connection established successfully'))
@@ -7,7 +7,5 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
 
   const Participant = require('./data/Participant');
   const Stock = require('./data/Stock');
-  
-  
-  console.log('Participant schema:', Participant.schema);
-  console.log('Stock schema:', Stock.schema);
+  const Newsdrop = require('./data/Newsdrop');
+  const Transaction = require('./data/Transaction');
