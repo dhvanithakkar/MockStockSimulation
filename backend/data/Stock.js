@@ -5,7 +5,8 @@ const mongoose = require('mongoose');
 const stockSchema = new mongoose.Schema({
   symbol: { type: String, required: true, unique: true },
   name: { type: String, required: true },
-  Price: { type: Number, required: true },
+  price: { type: Number, required: true },
+  initialPrice: {type:Number, required:true},
   maxLimit: { type: Number }, 
   totalInvestment: { type: Number },
   supply: {  
