@@ -3,371 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard - Mock Stock Server</title>
+    <title>Mock Stock Server</title>
     <style>
-        /* Reset CSS */
-        body, h1, h2, p, ul, li {
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #f0f0f0;
         }
 
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #000;
-            color: #fff;
-        }
-
-        /* Container */
-        .container {
-            margin: 20px auto;
-            padding: 20px;
-            border-radius: 10px;
-            background-color: #1a1a1a;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-            width: 80%;
-            position: relative;
-        }
-
-        /* Header */
         header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        h1 {
-            font-size: 36px;
-            margin-bottom: 10px;
+            background-color: #333;
             color: #fff;
-        }
-
-        /* Main Content */
-        main {
+            padding: 10px;
             display: flex;
-            flex-wrap: wrap;
             justify-content: space-between;
-            color: #fff;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            width: calc(100% - 20px); /* Reduce the width by 20px */
+            margin: 0 auto; /* Center the header */
         }
 
-        /* Sidebar */
-        .sidebar {
-            flex: 1;
-            max-width: 250px;
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        nav ul li {
             margin-right: 20px;
         }
 
-        .sidebar h2 {
-            font-size: 24px;
-            margin-bottom: 10px;
-            color: #fff;
-        }
-
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .sidebar li {
-            margin-bottom: 10px;
-        }
-
-        .sidebar a {
-            color: #999;
+        nav ul li a {
+            color: #888;
             text-decoration: none;
+            font-weight: normal;
             transition: color 0.3s ease;
         }
 
-        .sidebar a:hover {
+        nav ul li a:hover {
             color: #fff;
         }
 
-        /* Content */
-        .content {
-            flex: 2;
-            margin-right: 20px;
-        }
-
-        .content h2 {
-            font-size: 24px;
-            margin-bottom: 10px;
-            color: #fff;
-        }
-
-        .content p {
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        .section {
-            padding: 20px;
-            border-radius: 10px;
-            background-color: #333;
-            margin-bottom: 20px;
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            margin-top: 20px;
+        nav ul li a:active {
             color: #999;
         }
 
-        footer p {
-            margin: 0;
-            font-size: 14px;
-        }
-
-        /* Rolling News */
-        .rolling-news-container {
-            overflow: hidden;
-        }
-
-        .rolling-news {
-            display: inline-block;
-            white-space: nowrap;
-            animation: roll 20s linear infinite;
-            color: #66ff33;
-        }
-
-        .rolling-news span {
-            display: inline-block;
-            margin-right: 20px;
-            animation: fade 20s linear infinite;
-        }
-
-        @keyframes roll {
-            0% {
-                transform: translateX(100%);
-            }
-            100% {
-                transform: translateX(-100%);
-            }
-        }
-
-        @keyframes fade {
-            0% {
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                opacity: 0;
-            }
-        }
-
-        /* Stock Status Bar */
-        .stock-status-bar {
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            background-color: #000;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        .stock-name {
-            flex: 1;
-            color: #fff;
+        .logo {
+            font-size: 24px;
             font-weight: bold;
         }
 
-        .rise-decline {
+        .user-profile {
+            width: 40px;
+            height: 40px;
+            background-color: #fff;
+            border-radius: 50%;
             display: flex;
+            justify-content: center;
             align-items: center;
-            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
-        .rise-decline span {
-            margin-right: 5px;
-            font-weight: bold;
+        .user-profile:hover {
+            background-color: #ccc;
         }
 
-        .green-arrow {
-            color: #66ff33;
-        }
-
-        .red-arrow {
-            color: #ff3333;
-        }
-
-        /* Timer */
-        #timer {
+        .user-details-panel {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            color: #fff;
-            font-size: 16px;
-        }
-
-        /* Bought Stocks */
-        .bought-stocks {
-            background-color: #333;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .bought-stocks h2 {
-            color: #fff;
-            margin-bottom: 10px;
-        }
-
-        .stock-item {
-            background-color: #222;
-            color: #fff;
+            top: 50px;
+            right: 10px;
+            background-color: #fff;
             padding: 10px;
-            margin-bottom: 10px;
             border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: none;
         }
 
-        .stock-item p {
-            margin: 5px 0;
+        .user-details-panel.show {
+            display: block;
         }
-        .money-left {
-            background-color: #ffcc00; /* Bright yellow */
-            color: #000; /* Black text */
-            border-radius: 10px;
+
+        .black-block {
+            background-color: #333;
+            color: #fff;
             padding: 20px;
-            margin-bottom: 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
+        .invisible-box {
+            border-radius: 10px; /* Rounded corners */
+            padding: 20px;
+            cursor: pointer;
+            width: 30%;
+            transition: box-shadow 0.3s ease; /* Smooth transition for box shadow */
+        }
 
-        
+        .invisible-box:hover {
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.7); /* Shadow effect on hover */
+        }
+
+        .box-content {
+            margin-bottom: 10px;
+        }
+
+        .box-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .box-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ffc107; /* Yellow color for value */
+        }
+
+        .box-info {
+            font-size: 14px;
+            color: #bbb;
+        }
+
+        .rectangle-box {
+            width: 200px; /* Width of the box */
+            height: 500px; /* Height of the box */
+            background-color: #f5f5f5; /* Background color */
+            border: 2px solid #333; /* Border style */
+            border-radius: 10px; /* Border radius to make it rounded */
+            margin: 20px; /* Margin around the box */
+            padding: 20px; /* Padding inside the box */
+            box-sizing: border-box; /* Include border and padding in the width and height */
+        }
+
+        .two-boxes {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px;
+        }
+
+        .two-boxes .rectangle-box {
+            width: 70%; /* 70% for the first box */
+        }
+
+        .two-boxes .rectangle-box:nth-child(2) {
+            width: 30%; /* 30% for the second box */
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Mock Stock Server</h1>
-        </header>
-        <main>
-            <div class="sidebar">
-                <h2>Select Sector</h2>
-                <ul>
-                    <li><a href="automobile.html">Automobile Sector</a></li>
-                    <li><a href="pharma.html">Pharma Sector</a></li>
-                    <!-- Add more sectors as needed -->
-                </ul>
+    <header>
+        <div class="logo">Mock Stock Server</div>
+        <nav>
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="#sector">Sector</a></li>
+                <li><a href="#transaction">Transaction</a></li>
+                <li><a href="#news">News</a></li>
+            </ul>
+        </nav>
+        <div class="user-profile" onclick="toggleUserDetailsPanel()">U</div>
+        <div class="user-details-panel" id="userDetailsPanel">
+            <p>User Name</p>
+            <p>Email: user@example.com</p>
+            <!-- Additional user details can be added here -->
+        </div>
+    </header>
+    <div class="black-block">
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">My Wallet</div>
+                <div class="box-value">$17,879</div>
+                <div class="box-info">+ $1,587 Last Update Today</div>
             </div>
-            <div class="content">
-                <div class="section">
-                    <h2>News Flashes</h2>
-                    <div class="rolling-news-container">
-                        <div class="rolling-news" id="rollingNews">
-                            <!-- News flashes will be dynamically inserted here -->
-                            <span>News flash 1</span>
-                            <span>News flash 2</span>
-                            <span>News flash 3</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="section">
-                    <h2>Stock Status</h2>
-                    <h2>Bought Stocks</h2>
-                        <div class="stock-item">
-                            <p>Stock: XYZ Corp</p>
-                            <div class="section money-left">
-                                <h2>Money Left</h2>
-                                <!-- Add your content related to money left here -->
-                                <p>Total Balance: $10000</p>
-                                <p>Invested Amount: $5000</p>
-                            </div>
-                            
-                            <p>Shares: 100</p>
-                        </div>
-                    
-                </div>
-                <div class="section">
-                    <div class="bought-stocks">
-                        <h2>Bought Stocks</h2>
-                        <div class="stock-status-bar">
-                            <div class="stock-name">XYZ Corp</div>
-                            <div class="rise-decline">
-                                <span>Rise</span>
-                                <span class="green-arrow">&#9650;</span>
-                            </div>
-                        </div>
-                        <!-- Add more stock items as needed -->
-                    </div>
-                </div>
-                <div class="section">
-                    <h2>Transaction History</h2>
-                    <ul id="transactionList">
-                        <!-- Transaction entries will be dynamically inserted here -->
-                    </ul>
-                </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Total Investment</div>
+                <div class="box-value">$58,497</div>
+                <div class="box-info">+ $18,759 Billed Last Month</div>
             </div>
-        </main>
-        <footer>
-            <p>&copy; 2024 Mock Stock Server</p>
-        </footer>
-        <div id="timer">
-            Time Left: <span id="timerDisplay">00:00</span>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Return of Investment</div>
+                <div class="box-value">44.9%</div>
+                <div class="box-info">- 15.9% Last Update an hour ago</div>
+            </div>
         </div>
     </div>
 
-    <!-- JavaScript for news popups, poll, and timer -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <div class="two-boxes">
+        <div class="rectangle-box">
+            <!-- Content inside the rectangle box -->
+            Box 1
+        </div>
+        <div class="rectangle-box">
+            <!-- Content inside the rectangle box -->
+            Box 2
+        </div>
+    </div>
+    <div class="two-boxes">
+        <div class="rectangle-box">
+            <!-- Content inside the rectangle box -->
+            Box 3
+        </div>
+        <div class="rectangle-box">
+            <!-- Content inside the rectangle box -->
+            Box 4
+        </div>
+    </div>
     <script>
-        // JavaScript code for the dashboard goes here
-        // Dummy data for demonstration
-        var newsData = [
-            { content: "News flash 1" },
-            { content: "News flash 2" },
-            { content: "News flash 3" }
-        ];
-
-        // Dummy transaction history data
-        var transactionHistory = [
-            "Purchased 50 shares of XYZ Corp at $110",
-            "Sold 20 shares of ABC Inc at $130"
-        ];
-
-        // Function to fetch and display news flashes
-        function fetchNewsFlashes() {
-            var rollingNews = document.getElementById("rollingNews");
-            rollingNews.innerHTML = "";
-            newsData.forEach(function(news) {
-                var newsItem = document.createElement("span");
-                newsItem.textContent = news.content + "  "; // Add some space between news items
-                rollingNews.appendChild(newsItem);
-            });
-        }
-
-        // Function to populate transaction history
-        function populateTransactionHistory() {
-            var transactionList = document.getElementById("transactionList");
-            transactionHistory.forEach(function(transaction) {
-                var listItem = document.createElement("li");
-                listItem.textContent = transaction;
-                transactionList.appendChild(listItem);
-            });
-        }
-
-        // Fetch news flashes when the page loads
-        window.onload = function() {
-            fetchNewsFlashes();
-            populateTransactionHistory();
-            startTimer();
-        };
-
-        // Timer functionality
-        function startTimer() {
-            var timerDisplay = document.getElementById('timerDisplay');
-            var timeLeftInSeconds = 600; // Example: 10 minutes
-            var timerInterval = setInterval(function() {
-                var minutes = Math.floor(timeLeftInSeconds / 60);
-                var seconds = timeLeftInSeconds % 60;
-                timerDisplay.textContent = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
-                timeLeftInSeconds--;
-                if (timeLeftInSeconds < 0) {
-                    clearInterval(timerInterval);
-                    timerDisplay.textContent = "Time's up!";
-                }
-            }, 1000);
+        function toggleUserDetailsPanel() {
+            var panel = document.getElementById("userDetailsPanel");
+            panel.classList.toggle("show");
         }
     </script>
 </body>
