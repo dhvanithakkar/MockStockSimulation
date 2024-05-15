@@ -6,6 +6,8 @@ const stockSchema = new mongoose.Schema({
   symbol: { type: String, required: true, unique: true },
   name: { type: String, required: true },
   price: { type: Number, required: true },
+  //buyOrders: { type: Number, required: true};
+  //sellOrders: { type: Number, required: true};
   initialPrice: {type:Number, required:true},
   maxLimit: { type: Number }, 
   totalInvestment: { type: Number },
