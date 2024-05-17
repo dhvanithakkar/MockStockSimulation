@@ -10,6 +10,7 @@
             margin: 0;
             padding: 0;
             background-color: #f0f0f0;
+            color: #333;
         }
 
         header {
@@ -20,8 +21,8 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            width: calc(100% - 20px); /* Reduce the width by 20px */
-            margin: 0 auto; /* Center the header */
+            width: calc(100% - 20px);
+            margin: 0 auto;
         }
 
         nav ul {
@@ -46,13 +47,9 @@
             color: #fff;
         }
 
-        nav ul li a:active {
-            color: #999;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
+        .logo img {
+            height: 40px;
+            width: auto;
         }
 
         .user-profile {
@@ -97,15 +94,16 @@
         }
 
         .invisible-box {
-            border-radius: 10px; /* Rounded corners */
+            background-color: #222;
+            border-radius: 10px;
             padding: 20px;
             cursor: pointer;
             width: 30%;
-            transition: box-shadow 0.3s ease; /* Smooth transition for box shadow */
+            transition: box-shadow 0.3s ease;
         }
 
         .invisible-box:hover {
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.7); /* Shadow effect on hover */
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
         }
 
         .box-content {
@@ -121,24 +119,21 @@
         .box-value {
             font-size: 36px;
             font-weight: bold;
-            color: #ffc107; /* Yellow color for value */
-        }
-
-        .box-info {
-            font-size: 14px;
-            color: #bbb;
+            color: #ffc107;
         }
 
         .rectangle-box {
-            width: 200px; /* Width of the box */
-            height: 500px; /* Height of the box */
-            background-color: #f5f5f5; /* Background color */
-            border: 2px solid #333; /* Border style */
-            border-radius: 10px; /* Border radius to make it rounded */
-            margin: 20px; /* Margin around the box */
-            padding: 20px; /* Padding inside the box */
-            box-sizing: border-box; /* Include border and padding in the width and height */
+            background-color: #fff;
+            border: 2px solid #333;
+            border-radius: 10px;
+            margin: 20px;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow: hidden;
+            max-height: 400px; /* Adjust the maximum height as needed */
+            overflow-y: auto;
         }
+       
 
         .two-boxes {
             display: flex;
@@ -147,17 +142,61 @@
         }
 
         .two-boxes .rectangle-box {
-            width: 70%; /* 70% for the first box */
+            width: 70%;
         }
 
         .two-boxes .rectangle-box:nth-child(2) {
-            width: 30%; /* 30% for the second box */
+            width: 30%;
         }
+
+        .stock-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            max-height: 300px; /* Adjust the height as needed */
+            overflow-y: auto;
+        }
+
+        .stock-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .stock-name {
+            flex-grow: 1;
+        }
+
+        .stock-value {
+            margin-left: 10px;
+            font-weight: bold;
+        }
+
+        .arrow {
+            font-size: 18px;
+            margin-left: 5px;
+        }
+
+        .arrow-up {
+            color: green;
+        }
+
+        .arrow-down {
+            color: red;
+        }
+
+        .checkbox-limit-exceeded {
+            border: 2px solid red;
+            box-shadow: 0 0 10px red;
+        }
+
     </style>
 </head>
 <body>
     <header>
-        <div class="logo">Mock Stock Server</div>
+        <div class="logo"><img src="logo.png" alt="Mock Stock Server"></div>
         <nav>
             <ul>
                 <li><a href="#overview">Overview</a></li>
@@ -171,7 +210,6 @@
         <div class="user-details-panel" id="userDetailsPanel">
             <p>User Name</p>
             <p>Email: user@example.com</p>
-            <!-- Additional user details can be added here -->
         </div>
     </header>
     <div class="black-block">
@@ -179,49 +217,208 @@
             <div class="box-content">
                 <div class="box-title">My Wallet</div>
                 <div class="box-value">$17,879</div>
-                <div class="box-info">+ $1,587 Last Update Today</div>
             </div>
         </div>
         <div class="invisible-box">
             <div class="box-content">
                 <div class="box-title">Total Investment</div>
                 <div class="box-value">$58,497</div>
-                <div class="box-info">+ $18,759 Billed Last Month</div>
             </div>
         </div>
         <div class="invisible-box">
             <div class="box-content">
                 <div class="box-title">Return of Investment</div>
                 <div class="box-value">44.9%</div>
-                <div class="box-info">- 15.9% Last Update an hour ago</div>
             </div>
         </div>
     </div>
 
     <div class="two-boxes">
-        <div class="rectangle-box">
-            <!-- Content inside the rectangle box -->
-            Box 1
+        <div class="rectangle-box" id="chartContainer">
         </div>
-        <div class="rectangle-box">
-            <!-- Content inside the rectangle box -->
-            Box 2
+        <div class="rectangle-box" id="stockListBox">
+            <h3>Stocks Bought</h3>
+            <ul class="stock-list">
+                <li class="stock-item">
+                    <input type="checkbox" class="stock-checkbox">
+                    <span class="stock-name">Company A</span>
+                    <span class="stock-value">123.45</span>
+                    <span class="arrow arrow-up">↑</span>
+                </li>
+                <li class="stock-item">
+                    <input type="checkbox" class="stock-checkbox">
+                    <span class="stock-name">Company B</span>
+                    <span class="stock-value">67.89</span>
+                    <span class="arrow arrow-down">↓</span>
+                </li>
+                <li class="stock-item">
+                    <input type="checkbox" class="stock-checkbox">
+                    <span class="stock-name">Company C</span>
+                    <span class="stock-value">234.56</span>
+                    <span class="arrow arrow-up">↑</span>
+                </li>
+                <li class="stock-item">
+                    <input type="checkbox" class="stock-checkbox">
+                    <span class="stock-name">Company D</span>
+                    <span class="stock-value">98.76</span>
+                    <span class="arrow arrow-down">↓</span>
+                </li>
+                <li class="stock-item">
+                    <input type="checkbox" class="stock-checkbox">
+                    <span class="stock-name">Company E</span>
+                    <span class="stock-value">150.00</span>
+                    <span class="arrow arrow-up">↑</span>
+                </li>
+                <li class="stock-item">
+                    <input type="checkbox" class="stock-checkbox">
+                    <span class="stock-name">Company F</span>
+                    <span class="stock-value">200.10</span>
+                    <span class="arrow arrow-down">↓</span>
+                </li>
+                <li class="stock-item">
+                    <input type="checkbox" class="stock-checkbox">
+                    <span class="stock-name">Company G</span>
+                    <span class="stock-value">123.55</span>
+                    <span class="arrow arrow-up">↑</span>
+                </li>
+                <li class="stock-item">
+                    <input type="checkbox" class="stock-checkbox">
+                    <span class="stock-name">Company H</span>
+                    <span class="stock-value">98.50</span>
+                    <span class="arrow arrow-down">↓</span>
+                </li>
+                <li class="stock-item">
+                    <input type="checkbox" class="stock-checkbox">
+                    <span class="stock-name">Company I</span>
+                    <span class="stock-value">145.80</span>
+                    <span class="arrow arrow-up">↑</span>
+                </li>
+                <li class="stock-item">
+                    <input type="checkbox" class="stock-checkbox">
+                    <span class="stock-name">Company J</span>
+                    <span class="stock-value">56.75</span>
+                    <span class="arrow arrow-down">↓</span>
+                </li>
+                <li class="stock-item">
+                    <input type="checkbox" class="stock-checkbox">
+                    <span class="stock-name">Company K</span>
+                    <span class="stock-value">210.20</span>
+                    <span class="arrow arrow-up">↑</span>
+                </li>
+                <li class="stock-item">
+                    <input type="checkbox" class="stock-checkbox">
+                    <span class="stock-name">Company L</span>
+                    <span class="stock-value">78.65</span>
+                    <span class="arrow arrow-down">↓</span>
+                </li>
+                <li class="stock-item">
+                    <input type="checkbox" class="stock-checkbox">
+                    <span class="stock-name">Company M</span>
+                    <span class="stock-value">34.90</span>
+                    <span class="arrow arrow-up">↑</span>
+                </li>
+                <li class="stock-item">
+                    <input type="checkbox" class="stock-checkbox">
+                    <span class="stock-name">Company N</span>
+                    <span class="stock-value">178.50</span>
+                    <span class="arrow arrow-down">↓</span>
+                </li>
+                <li class="stock-item">
+                    <input type="checkbox" class="stock-checkbox">
+                    <span class="stock-name">Company O</span>
+                    <span class="stock-value">123.65</span>
+                    <span class="arrow arrow-up">↑</span>
+                </li>
+            </ul>
         </div>
     </div>
+
     <div class="two-boxes">
         <div class="rectangle-box">
-            <!-- Content inside the rectangle box -->
-            Box 3
+            History
         </div>
         <div class="rectangle-box">
-            <!-- Content inside the rectangle box -->
-            Box 4
+            Leaderboard
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // Function to toggle user details panel
         function toggleUserDetailsPanel() {
             var panel = document.getElementById("userDetailsPanel");
             panel.classList.toggle("show");
+        }
+
+        // Function to limit checkbox selection to 5
+        const checkboxes = document.querySelectorAll('.stock-checkbox');
+        let checkedCount = 0;
+        const maxChecked = 5;
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    checkedCount++;
+                } else {
+                    checkedCount--;
+                }
+
+                if (checkedCount > maxChecked) {
+                    this.checked = false;
+                    checkedCount--;
+                    alert('You can select up to 5 companies only.');
+                    this.classList.add('checkbox-limit-exceeded');
+                    setTimeout(() => {
+                        this.classList.remove('checkbox-limit-exceeded');
+                    }, 1000);
+                }
+
+                displaySelectedCharts();
+            });
+        });
+
+        // Function to create chart for a company
+        function createChart(companyName, value, color, index) {
+            const chartDiv = document.createElement('div');
+            chartDiv.classList.add('chart');
+            chartDiv.innerHTML = `<canvas id="companyChart${index}"></canvas>`;
+            document.getElementById('chartContainer').appendChild(chartDiv);
+
+            const ctx = document.getElementById(`companyChart${index}`).getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [companyName],
+                    datasets: [{
+                        label: 'Stock Value',
+                        data: [value],
+                        backgroundColor: [color],
+                        borderColor: [color],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Function to display charts for selected companies
+        function displaySelectedCharts() {
+            document.getElementById('chartContainer').innerHTML = ''; // Clear existing charts
+
+            checkboxes.forEach((checkbox, index) => {
+                if (checkbox.checked) {
+                    const companyName = checkbox.parentElement.querySelector('.stock-name').textContent;
+                    const stockValue = parseFloat(checkbox.parentElement.querySelector('.stock-value').textContent);
+                    const color = index % 2 === 0 ? 'rgba(75, 192, 192, 0.2)' : 'rgba(255, 99, 132, 0.2)';
+                    createChart(companyName, stockValue, color, index);
+                }
+            });
         }
     </script>
 </body>
