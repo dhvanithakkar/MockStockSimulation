@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock Stock Server</title>
+    <style>
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            width: calc(100% - 20px);
+            margin: 0 auto;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        nav ul li {
+            margin-right: 20px;
+        }
+
+        nav ul li a {
+            color: #888;
+            text-decoration: none;
+            font-weight: normal;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #fff;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        .user-profile {
+            width: 40px;
+            height: 40px;
+            background-color: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .user-profile:hover {
+            background-color: #ccc;
+        }
+
+        .user-details-panel {
+            position: absolute;
+            top: 50px;
+            right: 10px;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+        .user-details-panel.show {
+            display: block;
+        }
+
+        .sector-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            padding: 20px;
+        }
+
+        .invisible-box {
+            background-color: #444;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            width: calc(30% - 20px);
+            margin: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .invisible-box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .invisible-box::before {
+            content: "";
+            position: absolute;
+            top: -100%;
+            left: 50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: top 0.3s ease;
+            transform: translateX(-50%) rotate(45deg);
+        }
+
+        .invisible-box:hover::before {
+            top: 100%;
+        }
+
+        .box-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .box-title {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .box-value {
+            font-size: 1em;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><img src="logo.png" alt="Mock Stock Server"></div>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html">Overview</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="sector.html">Sector</a></li>
+                <li><a href="#transaction">Transaction</a></li>
+                <li><a href="#news">News</a></li>
+            </ul>
+        </nav>
+        <div class="user-profile" onclick="toggleUserDetailsPanel()">U</div>
+        <div class="user-details-panel" id="userDetailsPanel">
+            <p>User Name</p>
+            <p>Email: user@example.com</p>
+        </div>
+    </header>
+    <div class="sector-container">
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Petrochemicals</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">IT-software</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Banks</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Telecomm Service</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Insurance</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">FMCG</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Capital goods - Non electrical equipment</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Financial Services</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Automobile</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Pharmaceuticals</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Power Generation and Distribution</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Crude oil and Natural Gas</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Trading</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Retails</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Miscellaneous</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Mining and Mining Products</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Cement</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Finance</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Marine Port and Services</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Paints and Varnish</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Aerospace and Defence</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Refineries</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Capital Goods - Electrical Equipment</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Realty</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Steel</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Non- Ferrous Metals</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Infrastructure Investment Trusts</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">E-Commerce/App based Aggregator</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Air Transport Service</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Gas Distribution</div>
+            </div>
+        </div>
+    </div>    
+</body>
+</html>
+    
