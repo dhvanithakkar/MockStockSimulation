@@ -1,10 +1,16 @@
-import mongoose from 'mongoose';
-const uri = "mongodb+srv://vruddhishah173:vruddhi@mockstock.9lxwa9c.mongodb.net/mockstock/stocks"; 
+require('dotenv').config();
+const mysql = require('mysql2/promise');
 
-mongoose.connect(uri)
-  .then(() => console.log('MongoDB database connection established successfully'))
-  .catch(err => console.error('Error connecting to MongoDB database:', err));
+async function connectToDatabase() {
+    const pool = await mysql.createPool({
+      host: 'localhost',
+      user: 'root',
+      password: process.env.DB_PASSWORD,
+      database: 'stock_simulator',
+    });
+    console.log('Connected to database successfully!');
+    return pool;
+  } 
 
-
-
+module.exports = connectToDatabase;
 
