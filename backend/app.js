@@ -22,16 +22,18 @@ async function getPortfolio(teamId) {
   try{
   const pool = await connectToDatabase();
   const [rows] = await pool.query(`
-    SELECT 
-      Transactions.StockSymbol, 
-      Transactions.Quantity, 
-      Transactions.Price AS TransactionPrice, 
-      Stocks.StockName, 
-      Stocks.CurrentPrice
-    FROM Transactions
-    INNER JOIN Stocks ON Transactions.StockSymbol = Stocks.StockSymbol
-    WHERE Transactions.TeamID = ?
-  `, [teamId]);
+  SELECT 
+  Stocks.StockSymbol, 
+  SUM(Transactions.Quantity) AS TotalQuantity, 
+  Transactions.Price AS TransactionPrice, 
+  Stocks.StockName, 
+  Stocks.CurrentPrice
+FROM Transactions
+INNER JOIN Stocks ON Transactions.StockSymbol = Stocks.StockSymbol
+WHERE Transactions.TeamID = ?
+GROUP BY Stocks.StockSymbol
+HAVING SUM(Transactions.Quantity) <> 0;
+`, [teamId]);
   return rows; }
   catch (error) {
     console.error(error);
