@@ -16,6 +16,77 @@ app.get('/portfolio/:teamId', async (req, res) => {
     res.status(500).send('Error fetching portfolio'); 
   }
 });
+app.put('/organiser/events/:eventId/price', async (req, res) => {
+  const eventId = req.params.eventId;
+  const { newPrice } = req.body; 
+
+  try {
+    const updateResult = await updateEventPrice(eventId, newPrice);
+    if (updateResult.error) {
+      return res.status(400).json(updateResult); 
+    }
+    res.json(updateResult);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error'); 
+  }
+});
+
+app.delete('/organiser/:eventId/participants/:participantId', async (req, res) => {
+  const eventId = req.params.eventId;
+  const participantId = req.params.participantId;
+
+  try {
+    const removeResult = await removeParticipant(eventId, participantId);
+    if (removeResult.error) {
+      return res.status(400).json(removeResult); 
+    }
+    res.json(removeResult);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
+async function removeParticipant(eventId, participantId) {
+  try {
+    const pool = await connectToDatabase();
+    const result = await pool.query(`
+      DELETE FROM EventParticipants
+      WHERE EventID = ? AND ParticipantID = ?
+    `, [eventId, participantId]);
+
+    if (result.affectedRows === 0) {
+      throw new Error('Participant not found or removal failed');
+    }
+
+    return { message: 'Participant removed successfully.' };
+  } catch (error) {
+    console.error(error);
+    return { error: error.message }; 
+  }
+}
+
+async function updateEventPrice(eventId, newPrice) {
+  try {
+    const pool = await connectToDatabase();
+    const result = await pool.query(`
+      UPDATE Events
+      SET Price = ?
+      WHERE EventID = ?
+    `, [newPrice, eventId]);
+
+    if (result.affectedRows === 0) {
+      throw new Error('Event not found or update failed');
+    }
+
+    return { message: 'Event price updated successfully.' };
+  } catch (error) {
+    console.error(error);
+    return { error: error.message }; 
+  }
+}
 
 
 async function getPortfolio(teamId) {
@@ -104,39 +175,30 @@ app.post('/sell', async (req, res) => {
     const pool = await connectToDatabase();
 
     try {
-      // Check for sufficient team holdings
       const currentHoldings = await getTeamHoldings(pool, teamId, stockSymbol);
       if (currentHoldings < quantity) {
         return res.status(400).send('Insufficient stock holdings');
       }
-
-      // Get current stock price
       const currentPrice = await getStockPrice(pool, stockSymbol);
       const totalSellValue = quantity * currentPrice;
-
-      // Start transaction (consider adding `await pool.beginTransaction()` later)
-
-      // Update Teams table
       await pool.query(`
         UPDATE Teams
         SET CurrentCash = CurrentCash + ?
         WHERE TeamID = ?
       `, [totalSellValue, teamId]);
 
-      // Update Stocks table (assuming separate table for stocks)
+      // price here
       await pool.query(`
         UPDATE Stocks
         SET AvailableShares = AvailableShares + ?
         WHERE StockSymbol = ?
       `, [quantity, stockSymbol]);
 
-      // Update Transactions table (assuming separate table for transactions)
+    
       await pool.query(`
         INSERT INTO Transactions (TeamID, StockSymbol, Quantity, Price)
         VALUES (?, ?, ?, ?)
-      `, [teamId, stockSymbol, -quantity, currentPrice]); // Negative quantity for selling
-
-      // End transaction (consider adding `await pool.commit()` later)
+      `, [teamId, stockSymbol, -quantity, currentPrice]);
 
       res.status(200).send('Stock sold successfully!');
     } catch (error) {
