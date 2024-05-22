@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Line</title>
+    <style>
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            width: calc(100% - 20px);
+            margin: 0 auto;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        nav ul li {
+            margin-right: 20px;
+        }
+
+        nav ul li a {
+            color: #888;
+            text-decoration: none;
+            font-weight: normal;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #fff;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        .user-profile {
+            width: 40px;
+            height: 40px;
+            background-color: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .user-profile:hover {
+            background-color: #ccc;
+        }
+
+        .user-details-panel {
+            position: absolute;
+            top: 50px;
+            right: 10px;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+        .user-details-panel.show {
+            display: block;
+        }
+
+
+        .stock-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #444;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .stock-line:hover {
+            background-color: #555;
+        }
+
+        .company-name {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .stock-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stock-price, .stock-change {
+            margin-left: 10px;
+        }
+
+        .stock-details {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart {
+            width: 100%;
+            height: 200px;
+        }
+
+        .stock-info {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stock-price-detail, .stock-quantity {
+            margin-right: 20px;
+        }
+
+        .total-amount {
+            margin-right: 20px;
+            font-weight: bold;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #333;
+            color: #fff;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        input[type="number"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><img src="logo.png" alt="Mock Stock Server"></div>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html">Overview</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="sector.html">Sector</a></li>
+                <li><a href="#transaction">Transaction</a></li>
+                <li><a href="#news">News</a></li>
+            </ul>
+        </nav>
+        <div class="user-profile" onclick="toggleUserDetailsPanel()">U</div>
+        <div class="user-details-panel" id="userDetailsPanel">
+            <p>User Name</p>
+            <p>Email: user@example.com</p>
+        </div>
+    </header>
+    <div class="stock-line" onclick="toggleDetails('MarutiSuzuki')">
+        <div class="company-name">Maruti Suzuki</div>
+        <div class="stock-summary">
+            <div class="stock-price">₹12,612</div>
+            <div class="stock-change">+2.1%</div>
+        </div>
+    </div>
+    <div class="stock-details" id="MarutiSuzuki-details">
+        <canvas id="MarutiSuzuki-chart" class="chart"></canvas>
+        <div class="stock-info">
+            <div class="stock-price-detail">Price: ₹12,612</div>
+            <div class="stock-quantity">Available: 3000</div>
+            <input type="number" id="MarutiSuzuki-quantity" placeholder="Quantity to buy" oninput="updateTotalAmount('MarutiSuzuki', 12612)">
+            <div class="total-amount" id="MarutiSuzuki-total">Total: ₹0</div>
+            <button onclick="buyStock('MarutiSuzuki', 12612)">Buy</button>
+            <button onclick="sellStock('MarutiSuzuki', 12612)">Sell</button>
+        </div>
+    </div>
+
+    <div class="stock-line" onclick="toggleDetails('TataMotors')">
+        <div class="company-name">TATA Motors</div>
+        <div class="stock-summary">
+            <div class="stock-price">₹954</div>
+            <div class="stock-change">+1.3%</div>
+        </div>
+    </div>
+    <div class="stock-details" id="TataMotors-details">
+        <canvas id="TataMotors-chart" class="chart"></canvas>
+        <div class="stock-info">
+            <div class="stock-price-detail">Price: ₹954</div>
+            <div class="stock-quantity">Available: 7000</div>
+            <input type="number" id="TataMotors-quantity" placeholder="Quantity to buy" oninput="updateTotalAmount('TataMotors', 954)">
+            <div class="total-amount" id="TataMotors-total">Total: ₹0</div>
+            <button onclick="buyStock('TataMotors', 954)">Buy</button>
+            <button onclick="sellStock('TataMotors', 954)">Sell</button>
+        </div>
+    </div>
+
+    <div class="stock-line" onclick="toggleDetails('MandM')">
+        <div class="company-name">M&M</div>
+        <div class="stock-summary">
+            <div class="stock-price">₹2,504</div>
+            <div class="stock-change">+1.8%</div>
+        </div>
+    </div>
+    <div class="stock-details" id="MandM-details">
+        <canvas id="MandM-chart" class="chart"></canvas>
+        <div class="stock-info">
+            <div class="stock-price-detail">Price: ₹2,504</div>
+            <div class="stock-quantity">Available: 4000</div>
+            <input type="number" id="MandM-quantity" placeholder="Quantity to buy" oninput="updateTotalAmount('MandM', 2504)">
+            <div class="total-amount" id="MandM-total">Total: ₹0</div>
+            <button onclick="buyStock('MandM', 2504)">Buy</button>
+            <button onclick="sellStock('MandM', 2504)">Sell</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            createChart('MarutiSuzuki-chart', [12500, 12600, 12612, 12700, 12650]);
+            createChart('TataMotors-chart', [940, 950, 954, 960, 955]);
+            createChart('MandM-chart', [2480, 2490, 2504, 2510, 2500]);
+        });
+
+        function createChart(chartId, data) {
+            var ctx = document.getElementById(chartId).getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+                    datasets: [{
+                        label: chartId.split('-')[0] + ' Stock Price',
+                        data: data,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 2,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
+        }
+
+        function toggleDetails(company) {
+            var details = document.getElementById(company + '-details');
+            details.style.display = details.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function updateTotalAmount(company, price) {
+            var quantity = document.getElementById(company + '-quantity').value;
+            var totalAmount = quantity * price;
+            document.getElementById(company + '-total').innerText = 'Total: ₹' + totalAmount.toFixed(2);
+        }
+
+        function buyStock(company, price) {
+            var quantity = document.getElementById(company + '-quantity').value;
+            var totalAmount = quantity * price;
+            alert('Buying ' + quantity + ' shares of ' + company + ' for ₹' + totalAmount.toFixed(2));
+        }
+
+        function sellStock(company, price) {
+            var quantity = document.getElementById(company + '-quantity').value;
+            var totalAmount = quantity * price;
+            alert('Selling ' + quantity + ' shares of ' + company + ' for ₹' + totalAmount.toFixed(2));
+        }
+    </script>
+</body>
+</html>

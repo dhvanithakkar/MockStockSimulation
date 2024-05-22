@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Users</title>
+  <style>
+    body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+    }
+
+    header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            width: calc(100% - 20px);
+            margin: 0 auto;
+    }
+
+    nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+    }
+
+    nav ul li {
+            margin-right: 20px;
+    }
+
+    nav ul li a {
+            color: #888;
+            text-decoration: none;
+            font-weight: normal;
+            transition: color 0.3s ease;
+    }
+
+    nav ul li a:hover {
+            color: #fff;
+    }
+
+    .logo img {
+            height: 40px;
+            width: auto;
+    }
+
+    .admin-profile {
+            width: 40px;
+            height: 40px;
+            background-color: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+    }
+
+    .admin-profile:hover {
+            background-color: #ccc;
+    }
+
+    .admin-details-panel {
+            position: absolute;
+            top: 50px;
+            right: 10px;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: none;    
+    }
+
+    .admin-details-panel.show {
+            display: block;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+    }
+    .user-section {
+      margin-top: 30px;
+    }
+    .user-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-gap: 20px;
+      list-style: none;
+      padding: 0;
+    }
+    .user {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      background-color: #f9f9f9;
+    }
+    .user-details {
+      margin-top: 10px;
+    }
+    .user-details p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo"><img src="logo.png" alt="Mock Stock Server"></div>
+    <nav>
+      <ul>
+        <li><a href="admin_game.html">Game Management</a></li>
+        <li><a href="admin_market.html">Stock Management</a></li>
+        <li><a href="admin_transaction.html">Transaction Overview</a></li>
+        <li><a href="admin_users.html">User Management</a></li>
+    </ul>
+    </nav>
+    <div class="admin-profile" onclick="toggleUserDetailsPanel()">U</div>
+    <div class="admin-details-panel" id="adminDetailsPanel">
+        <p>admin Name</p>
+        <p>Email: admin@example.com</p>
+    </div>
+  </header>
+  <div class="container">
+    <h1>User Management</h1>
+
+    <section class="user-section">
+      <h2>User List</h2>
+      <ul class="user-list">
+        <!-- User items will be dynamically added here -->
+      </ul>
+    </section>
+
+    <section class="user-section">
+      <h2>User Details</h2>
+      <div class="user-details" id="userDetails">
+        <!-- User details will be displayed here -->
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Dummy user data for demonstration purposes
+    const users = [
+      { id: 1, name: 'John Doe', email: 'john@example.com', role: 'Admin', status: 'Active' },
+      { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'User', status: 'Inactive' },
+      // Add more users as needed
+    ];
+
+    const userList = document.querySelector('.user-list');
+    const userDetails = document.getElementById('userDetails');
+
+    // Function to display user details
+    function displayUserDetails(user) {
+      userDetails.innerHTML = `
+        <p><strong>Name:</strong> ${user.name}</p>
+        <p><strong>Email:</strong> ${user.email}</p>
+        <p><strong>Role:</strong> ${user.role}</p>
+        <p><strong>Status:</strong> ${user.status}</p>
+      `;
+    }
+
+    // Function to populate user list
+    function populateUserList() {
+      userList.innerHTML = '';
+      users.forEach(user => {
+        const listItem = document.createElement('li');
+        listItem.classList.add('user');
+        listItem.textContent = user.name;
+        listItem.addEventListener('click', () => displayUserDetails(user));
+        userList.appendChild(listItem);
+      });
+    }
+
+    // Initialize user list
+    populateUserList();
+  </script>
+</body>
+</html>

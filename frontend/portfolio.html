@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Portfolio Tracker</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    /* Resetting default margin and padding */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Arial', 'Helvetica', sans-serif;
+        background-color: #f0f0f0;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+
+    header {
+        background-color: #333;
+        color: #fff;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    nav ul {
+        list-style-type: none;
+        display: flex;
+    }
+
+    nav ul li {
+        margin-right: 1rem;
+    }
+
+    nav ul li a {
+        color: #888;
+        text-decoration: none;
+        font-weight: normal;
+        transition: color 0.3s ease;
+    }
+
+    nav ul li a:hover {
+        color: #fff;
+    }
+
+    .logo img {
+        height: 40px;
+        width: auto;
+    }
+
+    .user-profile {
+        width: 40px;
+        height: 40px;
+        background-color: #fff;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .user-profile:hover {
+        background-color: #ccc;
+    }
+
+    .user-details-panel {
+        position: absolute;
+        top: 60px;
+        right: 1rem;
+        background-color: #fff;
+        padding: 1rem;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        display: none;
+    }
+
+    .user-details-panel.show {
+        display: block;
+    }
+
+    .section {
+        padding: 2rem;
+        margin: 2rem;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: #333;
+    }
+    .black-block {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+    }
+
+    .invisible-box {
+            background-color: #222;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            width: 30%;
+            transition: box-shadow 0.3s ease;
+    }
+
+    .invisible-box:hover {
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+    }
+
+    .box-content {
+            margin-bottom: 10px;
+    }
+
+    .box-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+    }
+
+    .box-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ffc107;
+    }
+
+    .stock-item {
+        cursor: pointer;
+        padding: 1rem;
+        border-bottom: 1px solid #ccc;
+        transition: background-color 0.3s ease;
+    }
+
+    .stock-item:last-child {
+        border-bottom: none;
+    }
+
+    .stock-item:hover {
+        background-color: #f9f9f9;
+    }
+
+    .stock-item span {
+        flex: 1;
+    }
+
+    .profit-loss {
+        font-weight: bold;
+    }
+
+    .green {
+        color: green;
+    }
+
+    .red {
+        color: red;
+    }
+</style>
+</head>
+<body>
+    <header>
+        <div class="logo"><img src="logo.png" alt="Mock Stock Server"></div>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html">Overview</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="sector.html">Sector</a></li>
+                <li><a href="news.html">News</a></li>
+            </ul>
+        </nav>
+        <div class="user-profile" onclick="toggleUserDetailsPanel()">U</div>
+        <div class="user-details-panel" id="userDetailsPanel">
+            <p>User Name</p>
+            <p>Email: user@example.com</p>
+        </div>
+    </header>
+    <div class="black-block">
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">My Wallet</div>
+                <div class="box-value">$17,879</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Total Investment</div>
+                <div class="box-value">$58,497</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Return of Investment</div>
+                <div class="box-value">44.9%</div>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <h2 class="section-title">Stock Portfolio Tracker</h2>
+        <div id="portfolio"></div>
+    </div>
+        
+    <div class="section">
+        <h3 class="section-title">Detailed Transaction History</h3>
+        <ul id="transaction-history"></ul>
+    </div>
+    <canvas id="stockGraph" style="display: none;"></canvas> <!-- Hidden canvas for rendering stock graph -->
+<script>
+    // Sample data for demonstration
+    var stocks = [
+        { name: "Company A", symbol: "AAA", quantity: 10, priceBought: 50, currentPrice: 60 },
+        { name: "Company B", symbol: "BBB", quantity: 20, priceBought: 30, currentPrice: 25 }
+    ];
+
+    // Object to store opened graphs
+    var openedGraphs = {};
+
+    // Populate portfolio section
+    var portfolioSection = document.getElementById('portfolio');
+    stocks.forEach(function(stock) {
+        var profitLoss = ((stock.currentPrice - stock.priceBought) * stock.quantity).toFixed(2);
+        var profitLossClass = profitLoss >= 0 ? 'green' : 'red';
+        var stockItem = document.createElement('div');
+        stockItem.classList.add('stock-item');
+        stockItem.innerHTML = `
+            <span>${stock.name} (${stock.symbol}) - ${stock.quantity} units</span>
+            <span>Price Bought: $${stock.priceBought}</span>
+            <span>Current Price: $${stock.currentPrice}</span>
+            <span class="${profitLossClass} profit-loss">Profit/Loss: $${profitLoss}</span>
+        `;
+        stockItem.addEventListener('click', function() {
+            if (!openedGraphs[stock.symbol]) {
+                renderGraph(stock, stockItem);
+                openedGraphs[stock.symbol] = true;
+            }
+        });
+        portfolioSection.appendChild(stockItem);
+    });
+
+    // Function to render graph
+    function renderGraph(stock, stockItem) {
+        // Create a canvas element for the graph
+        var canvas = document.createElement('canvas');
+        canvas.width = 400; // Adjust width as needed
+        canvas.height = 200; // Adjust height as needed
+
+        // Insert the canvas element just below the clicked stock item
+        stockItem.insertAdjacentElement('afterend', canvas);
+
+        var ctx = canvas.getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
+                datasets: [{
+                    label: `${stock.name} (${stock.symbol})`,
+                    data: [65, 59, 80, 81, 56, 55, 40],
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: false
+                    }
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

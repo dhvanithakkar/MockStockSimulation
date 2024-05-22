@@ -130,7 +130,7 @@
             padding: 20px;
             box-sizing: border-box;
             overflow: hidden;
-            max-height: 400px; /* Adjust the maximum height as needed */
+            max-height: 400px; 
             overflow-y: auto;
         }
        
@@ -191,6 +191,26 @@
             border: 2px solid red;
             box-shadow: 0 0 10px red;
         }
+        .stock-checkbox {
+            display: none;
+        }
+
+        /* Style for the toggle button */
+        .toggle-button {
+            background-color: #4CAF50; /* Green background */
+            color: white; /* White text */
+            padding: 10px 20px; /* Padding */
+            border: none; /* No border */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Cursor style */
+            font-size: 16px; /* Font size */
+            margin-bottom: 10px; /* Add some space below the button */
+        }
+
+        /* Style for the toggle button on hover */
+        .toggle-button:hover {
+            background-color: #45a049; /* Darker green */
+        }
 
     </style>
 </head>
@@ -200,10 +220,9 @@
         <nav>
             <ul>
                 <li><a href="dashboard.html">Overview</a></li>
-                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
                 <li><a href="sector.html">Sector</a></li>
-                <li><a href="#transaction">Transaction</a></li>
-                <li><a href="#news">News</a></li>
+                <li><a href="news.html">News</a></li>
             </ul>
         </nav>
         <div class="user-profile" onclick="toggleUserDetailsPanel()">U</div>
@@ -232,12 +251,14 @@
             </div>
         </div>
     </div>
-
     <div class="two-boxes">
         <div class="rectangle-box" id="chartContainer">
         </div>
+
         <div class="rectangle-box" id="stockListBox">
             <h3>Stocks Bought</h3>
+            <button class="toggle-button" onclick="toggleCheckboxes()">Toggle Checkboxes</button>
+
             <ul class="stock-list">
                 <li class="stock-item">
                     <input type="checkbox" class="stock-checkbox">
@@ -348,6 +369,12 @@
         function toggleUserDetailsPanel() {
             var panel = document.getElementById("userDetailsPanel");
             panel.classList.toggle("show");
+        }
+        function toggleCheckboxes() {
+            const checkboxes = document.querySelectorAll('.stock-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.style.display = checkbox.style.display === 'none' ? 'inline-block' : 'none';
+            });
         }
 
         // Function to limit checkbox selection to 5

@@ -147,10 +147,9 @@
         <nav>
             <ul>
                 <li><a href="dashboard.html">Overview</a></li>
-                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
                 <li><a href="sector.html">Sector</a></li>
-                <li><a href="#transaction">Transaction</a></li>
-                <li><a href="#news">News</a></li>
+                <li><a href="news.html">News</a></li>
             </ul>
         </nav>
         <div class="user-profile" onclick="toggleUserDetailsPanel()">U</div>
@@ -160,157 +159,29 @@
         </div>
     </header>
     <div class="sector-container">
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">Petrochemicals</div>
-            </div>
-        </div>
-        <div class="invisible-box">
+        <div class="invisible-box" onclick="navigateToSector('IT-software')">
             <div class="box-content">
                 <div class="box-title">IT-software</div>
             </div>
         </div>
-        <div class="invisible-box">
+        <div class="invisible-box" onclick="navigateToSector('Banks')">
             <div class="box-content">
                 <div class="box-title">Banks</div>
             </div>
         </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">Telecomm Service</div>
-            </div>
-        </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">Insurance</div>
-            </div>
-        </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">FMCG</div>
-            </div>
-        </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">Capital goods - Non electrical equipment</div>
-            </div>
-        </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">Financial Services</div>
-            </div>
-        </div>
-        <div class="invisible-box">
+        <div class="invisible-box" onclick="navigateToSector('Automobile')">
             <div class="box-content">
                 <div class="box-title">Automobile</div>
             </div>
         </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">Pharmaceuticals</div>
-            </div>
-        </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">Power Generation and Distribution</div>
-            </div>
-        </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">Crude oil and Natural Gas</div>
-            </div>
-        </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">Trading</div>
-            </div>
-        </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">Retails</div>
-            </div>
-        </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">Miscellaneous</div>
-            </div>
-        </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">Mining and Mining Products</div>
-            </div>
-        </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">Cement</div>
-            </div>
-        </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">Finance</div>
-            </div>
-        </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">Marine Port and Services</div>
-            </div>
-        </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">Paints and Varnish</div>
-            </div>
-        </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">Aerospace and Defence</div>
-            </div>
-        </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">Refineries</div>
-            </div>
-        </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">Capital Goods - Electrical Equipment</div>
-            </div>
-        </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">Realty</div>
-            </div>
-        </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">Steel</div>
-            </div>
-        </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">Non- Ferrous Metals</div>
-            </div>
-        </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">Infrastructure Investment Trusts</div>
-            </div>
-        </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">E-Commerce/App based Aggregator</div>
-            </div>
-        </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">Air Transport Service</div>
-            </div>
-        </div>
-        <div class="invisible-box">
-            <div class="box-content">
-                <div class="box-title">Gas Distribution</div>
-            </div>
-        </div>
-    </div>    
+    </div> 
+    <script>
+        // Function to navigate to sector page
+        function navigateToSector(sector) {
+            // Redirect to the corresponding sector page
+            window.location.href = `${sector}.html`;
+        }
+    </script>   
 </body>
 </html>
     

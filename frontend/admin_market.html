@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Market Data</title>
+    <style>
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+    }
+
+    header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            width: calc(100% - 20px);
+            margin: 0 auto;
+    }
+
+    nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+    }
+
+    nav ul li {
+            margin-right: 20px;
+    }
+
+    nav ul li a {
+            color: #888;
+            text-decoration: none;
+            font-weight: normal;
+            transition: color 0.3s ease;
+    }
+
+    nav ul li a:hover {
+            color: #fff;
+    }
+
+    .logo img {
+            height: 40px;
+            width: auto;
+    }
+
+    .admin-profile {
+            width: 40px;
+            height: 40px;
+            background-color: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+    }
+
+    .admin-profile:hover {
+            background-color: #ccc;
+    }
+
+    .admin-details-panel {
+            position: absolute;
+            top: 50px;
+            right: 10px;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: none;    
+    }
+
+    .admin-details-panel.show {
+            display: block;
+    }
+        /* Main styles */
+        main {
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin: 20px;
+        }
+
+        section {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            flex-basis: calc(45% - 20px);
+        }
+
+        section h2 {
+            margin-bottom: 20px;
+            color: #343a40;
+            font-size: 1.5rem;
+        }
+
+        /* Form styles */
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #343a40;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            box-sizing: border-box;
+            background-color: #f8f9fa;
+            color: #495057;
+            font-size: 1rem;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #343a40;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 1rem;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        /* List styles */
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        ul li {
+            margin-bottom: 10px;
+        }
+
+        ul li strong {
+            font-weight: bold;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            main {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            section {
+                flex-basis: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><img src="logo.png" alt="Mock Stock Server"></div>
+        <nav>
+            <ul>
+                <li><a href="admin_game.html">Game Management</a></li>
+                <li><a href="admin_market.html">Stock Management</a></li>
+                <li><a href="admin_transaction.html">Transaction Overview</a></li>
+                <li><a href="admin_users.html">User Management</a></li>
+            </ul>
+        </nav>
+        <div class="admin-profile" onclick="toggleUserDetailsPanel()">U</div>
+        <div class="admin-details-panel" id="adminDetailsPanel">
+            <p>Admin Name</p>
+            <p>Email: admin@example.com</p>
+        </div>
+    </header>
+    <main>
+        <section id="stock-listings">
+            <h2>Stock Listings</h2>
+            <!-- Add, update, or remove stock listings functionality -->
+            <!-- Example form for adding a new stock listing -->
+            <form id="add-stock-form">
+                <label for="stock-symbol">Stock Symbol:</label>
+                <input type="text" id="stock-symbol" name="stock-symbol" required>
+                <label for="company-name">Company Name:</label>
+                <input type="text" id="company-name" name="company-name" required>
+                <button type="submit">Add Stock</button>
+            </form>
+            <!-- Display existing stock listings -->
+            <ul id="stock-list">
+                <!-- Populate with existing stock listings -->
+                <li><strong>Stock Symbol:</strong> ABC, <strong>Company Name:</strong> Example Company</li>
+                <!-- More stock listings... -->
+            </ul>
+        </section>
+        <section id="news-announcements">
+            <h2>News and Announcements</h2>
+            <!-- Post market updates -->
+            <!-- Example form for posting market updates -->
+            <form id="post-news-form">
+                <label for="news-title">Title:</label>
+                <input type="text" id="news-title" name="news-title" required>
+                <label for="news-content">Content:</label>
+                <textarea id="news-content" name="news-content" required ></textarea>
+                <button type="submit">Post News</button>
+            </form>
+            <!-- Display existing news and announcements -->
+            <ul id="news-list">
+                <!-- Populate with existing news and announcements -->
+                <li><strong>News Title:</strong> Example News Title, <strong>Content:</strong> Lorem ipsum dolor sit amet.</li>
+                <!-- More news and announcements... -->
+            </ul>
+        </section>
+    </main>
+    <footer>
+        <!-- Add footer content here -->
+    </footer>
+    <script>
+        // JavaScript code for toggling admin details panel
+        function toggleUserDetailsPanel() {
+            var panel = document.getElementById("adminDetailsPanel");
+            panel.classList.toggle("show");
+        }
+        
+        // JavaScript code for handling form submissions (to be added)
+    </script>
+</body>
+</html>
+
