@@ -211,6 +211,142 @@ app.post('/sell', async (req, res) => {
   }
 });
 
+app.get('/organiser/transactions', async (req, res) => {
+  const stockSymbol = req.query.stockSymbol?.toUpperCase(); // optional
+  const userId = req.query.userId; // optional
+
+  try {
+    const pool = await connectToDatabase();
+    let query;
+    let queryParams;
+
+    if (stockSymbol && userId) {
+      // Filter by both stockSymbol and userId
+      query = `
+        SELECT 
+          Transactions.TransactionID,
+          Users.Username AS User,
+          Transactions.TeamID,
+          Transactions.StockSymbol,
+          Transactions.Quantity,
+          Transactions.Price AS TransactionPrice,
+          Transactions.CreatedAt
+        FROM Transactions
+        INNER JOIN Users ON Transactions.UserID = Users.UserID
+        WHERE Transactions.StockSymbol = ? AND Transactions.UserID = ?
+        ORDER BY Transactions.CreatedAt ASC
+      `;
+      queryParams = [stockSymbol, userId];
+    } else if (stockSymbol) {
+      // Filter by stockSymbol only
+      query = `
+        SELECT 
+          Transactions.TransactionID,
+          Users.Username AS User,
+          Transactions.TeamID,
+          Transactions.StockSymbol,
+          Transactions.Quantity,
+          Transactions.Price AS TransactionPrice,
+          Transactions.CreatedAt
+        FROM Transactions
+        INNER JOIN Users ON Transactions.UserID = Users.UserID
+        WHERE Transactions.StockSymbol = ?
+        ORDER BY Transactions.CreatedAt ASC
+      `;
+      queryParams = [stockSymbol];
+    } else if (userId) {
+      // Filter by userId only
+      query = `
+        SELECT 
+          Transactions.TransactionID,
+          Users.Username AS User,
+          Transactions.TeamID,
+          Transactions.StockSymbol,
+          Transactions.Quantity,
+          Transactions.Price AS TransactionPrice,
+          Transactions.CreatedAt
+        FROM Transactions
+        INNER JOIN Users ON Transactions.UserID = Users.UserID
+        WHERE Transactions.UserID = ?
+        ORDER BY Transactions.CreatedAt ASC
+      `;
+      queryParams = [userId];
+    } else {
+      // Retrieve all transactions
+      query = `
+        SELECT 
+          Transactions.TransactionID,
+          Users.Username AS User,
+          Transactions.TeamID,
+          Transactions.StockSymbol,
+          Transactions.Quantity,
+          Transactions.Price AS TransactionPrice,
+          Transactions.CreatedAt
+        FROM Transactions
+        INNER JOIN Users ON Transactions.UserID = Users.UserID
+        ORDER BY Transactions.CreatedAt ASC
+      `;
+      queryParams = [];
+    }
+
+    const [rows] = await pool.query(query, queryParams);
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error fetching transaction history');
+  }
+});
+
+app.post('/organiser/makeStocks', async (req, res) => {
+  const {
+    competitionId,
+    stockSymbol,
+    stockName,
+    initialPrice,
+    currentPrice,
+    availableShares,
+    betaValue,
+    sectorId,
+  } = req.body;
+
+  if (!competitionId || !stockSymbol || !stockName || !initialPrice || !currentPrice || !availableShares || !betaValue || !sectorId) {
+    return res.status(400).send('Missing required fields in request body'); //maybe competition Id is not compulsory 
+  }
+
+  try {
+    const pool = await connectToDatabase();
+    const result = await pool.query(`
+      INSERT INTO Stocks (
+        CompetitionID,
+        StockSymbol,
+        StockName,
+        InitialPrice,
+        CurrentPrice,
+        AvailableShares,
+        BetaValue,
+        SectorID
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `, [
+      competitionId,
+      stockSymbol.toUpperCase(), // Ensure uppercase for symbol consistency
+      stockName,
+      initialPrice,
+      currentPrice,
+      availableShares,
+      betaValue,
+      sectorId,
+    ]);
+
+    if (result.affectedRows === 0) {
+      throw new Error('Failed to create stock');
+    }
+
+    res.json({ message: 'Stock created successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error creating stock');
+  }
+});
 
 async function checkStockAvailability(pool, stockSymbol) {
   const [rows] = await pool.query(`
