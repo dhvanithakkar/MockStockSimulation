@@ -37,3 +37,21 @@ WHERE CompetitionID = 1 AND TeamID = 2;
 
 DELETE FROM Teams
 WHERE CompetitionID = 1 AND TeamID = 2;
+
+-- Leaderboard
+SELECT 
+  team.TeamID,
+  nw.TotalMarketValue + team.CurrentCash AS TotalNetWorth,
+  nw.TotalMarketValue as StockValue,
+  CurrentCash as CashValue
+FROM Teams team
+INNER JOIN (
+  SELECT 
+    t.TeamID,
+    SUM(s.CurrentPrice * CASE WHEN t.TransactionType = 'BUY' THEN t.Quantity ELSE -t.Quantity END) AS TotalMarketValue
+	FROM Transactions t
+	INNER JOIN Stocks s ON t.StockSymbol = s.StockSymbol
+	GROUP BY t.TeamID
+) nw 
+ON team.TeamID = nw.TeamID
+ORDER BY TotalNetWorth DESC;
