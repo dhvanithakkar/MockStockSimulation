@@ -26,15 +26,12 @@ CREATE TABLE Teams (
   FOREIGN KEY (CompetitionID) REFERENCES Competitions(CompetitionID)
 );
 
-TRIGGER:
 DELIMITER //
-CREATE TRIGGER set_team_cash_after_insert
-AFTER INSERT ON Teams
+CREATE TRIGGER set_team_cash_before_insert
+BEFORE INSERT ON Teams
 FOR EACH ROW
 BEGIN
-  UPDATE Teams
-  SET CurrentCash = (SELECT InitialCash FROM Competitions WHERE CompetitionID = NEW.CompetitionID)
-  WHERE TeamID = NEW.TeamID;
+  SET NEW.CurrentCash = (SELECT InitialCash FROM Competitions WHERE CompetitionID = NEW.CompetitionID);
 END //
 DELIMITER ;
 
