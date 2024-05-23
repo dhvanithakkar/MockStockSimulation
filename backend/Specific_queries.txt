@@ -25,15 +25,3 @@ FROM Transactions t
 INNER JOIN Stocks s ON t.StockSymbol = s.StockSymbol
 WHERE TeamID = 1
 GROUP BY s.StockSymbol, s.CurrentPrice;
-
--- INSERT LIKE:
-INSERT INTO Transactions (TeamID, StockSymbol, TransactionType, TransactionTime, Price, Quantity)
-VALUES (1, 'AAPL', 'BUY', NOW(),  150.25, 10),
-       (2, 'AMZN', 'SELL', NOW(),  300.00, 5),
-       (1, 'TSLA', 'BUY', NOW(), 200.50, 20),
-       (3, 'AAPL', 'BUY', NOW(),  150.25, 10),
-       (3, 'AMZN', 'SELL', NOW(),  350.00, 5),
-       (1, 'TSLA', 'SELL', NOW(),  200.50, 10),
-       (1, 'AMZN', 'BUY', NOW(),  240.00, 5),
-       (1, 'AAPL', 'BUY', NOW(),  220.00, 15),
-       (1, 'TSLA', 'BUY', NOW(),  200.50, 20);
