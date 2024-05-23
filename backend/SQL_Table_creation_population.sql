@@ -42,6 +42,9 @@ CREATE TABLE Stocks (
   InitialPrice DECIMAL(10,2) NOT NULL,
   CurrentPrice DECIMAL(10,2) NOT NULL,
   AvailableShares INT NOT NULL,
+  TotalShares INT NOT NULL,
+  BuyOrders INT NOT NULL DEFAULT 0,
+  SellOrders INT NOT NULL DEFAULT 0,
   BetaValue DECIMAL(10,2),
   SectorID INT NOT NULL,
   PRIMARY KEY (StockSymbol, CompetitionID),
@@ -72,6 +75,15 @@ BEGIN
 END //
 DELIMITER ;
 
+DELIMITER //
+CREATE TRIGGER set_available_shares_as_total_on_insert
+BEFORE INSERT ON Stocks
+FOR EACH ROW
+BEGIN
+  SET NEW.AvailableShares = NEW.TotalShares;
+END //
+DELIMITER ;
+
 INSERT INTO Colleges (CollegeName, CollegePassword) VALUES 
   ('NM College', 'password123'),
   ('DJSCE', 'password456');
@@ -90,7 +102,7 @@ INSERT INTO Sectors (SectorName) VALUES
   ('Healthcare'),
   ('Consumer Staples');
 
-INSERT INTO Stocks (CompetitionID, StockSymbol, StockName, InitialPrice, CurrentPrice, AvailableShares, BetaValue, SectorID) VALUES
+INSERT INTO Stocks (CompetitionID, StockSymbol, StockName, InitialPrice, CurrentPrice, TotalShares, BetaValue, SectorID) VALUES
   (1, 'AAPL', 'Apple Inc.', 150.00, 150.00, 10000, 1.00, 1),
   (1, 'AMZN', 'Amazon.com Inc.', 120.00, 120.00, 8000, 1.20, 2),
   (1, 'TSLA', 'Tesla Inc.', 200.00, 200.00, 5000, 1.50, 1),
@@ -101,7 +113,16 @@ INSERT INTO Stocks (CompetitionID, StockSymbol, StockName, InitialPrice, Current
   (1, 'JNJ', 'Johnson & Johnson2', 130.00, 130.00, 7000, 0.80, 3);
 
 INSERT INTO Transactions (TeamID, CompetitionID, StockSymbol, TransactionType, Price, Quantity)
-VALUES (1, 1, 'AAPL', 'BUY',   150.25, 10),
+VALUES (1, 1, 'AAPL', 'BUY',  150.25, 10),
+       (2, 1, 'AMZN', 'SELL', 300.00, 5),
+        (1, 1, 'TSLA', 'BUY', 200.50, 20),
+        (3, 2, 'AAPL', 'BUY', 150.25, 10),
+        (3, 2, 'AMZN', 'SELL', 350.00, 5),
+        (1, 1, 'TSLA', 'SELL', 200.50, 10),
+        (1, 1, 'AMZN', 'BUY', 240.00, 5),
+        (1, 1, 'AAPL', 'BUY', 220.00, 15),
+        (1, 1, 'TSLA', 'BUY', 200.50, 20),
+        (1, 1, 'AAPL', 'BUY',   150.25, 10),
        (2, 1, 'AMZN', 'SELL',  300.00, 5),
        (1, 1, 'TSLA', 'BUY', 200.50, 20),
        (3, 2, 'AAPL', 'BUY',  150.25, 10),
