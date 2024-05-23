@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Transactions</title>
+    <style>
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+    }
+
+    header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            width: calc(100% - 20px);
+            margin: 0 auto;
+    }
+
+    nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+    }
+
+    nav ul li {
+            margin-right: 20px;
+    }
+
+    nav ul li a {
+            color: #888;
+            text-decoration: none;
+            font-weight: normal;
+            transition: color 0.3s ease;
+    }
+
+    nav ul li a:hover {
+            color: #fff;
+    }
+
+    .logo img {
+            height: 40px;
+            width: auto;
+    }
+
+    .admin-profile {
+            width: 40px;
+            height: 40px;
+            background-color: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+    }
+
+    .admin-profile:hover {
+            background-color: #ccc;
+    }
+
+    .admin-details-panel {
+            position: absolute;
+            top: 50px;
+            right: 10px;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: none;    
+    }
+
+    .admin-details-panel.show {
+            display: block;
+    }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .transaction-section {
+            margin-bottom: 40px;
+        }
+
+        .transaction-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .transaction {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .transaction:hover {
+            background-color: #e9e9e9;
+        }
+
+        .transaction-details p {
+            margin: 5px 0;
+        }
+
+        .approval-buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .approval-buttons button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .approval-buttons button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><img src="logo.png" alt="Mock Stock Server"></div>
+        <nav>
+            <ul>
+                <li><a href="admin_game.html">Game Management</a></li>
+                <li><a href="admin_market.html">Stock Management</a></li>
+                <li><a href="admin_transaction.html">Transaction Overview</a></li>
+                <li><a href="admin_users.html">User Management</a></li>
+            </ul>
+        </nav>
+        <div class="admin-profile" onclick="toggleUserDetailsPanel()">U</div>
+        <div class="admin-details-panel" id="adminDetailsPanel">
+            <p>Admin Name</p>
+            <p>Email: admin@example.com</p>
+        </div>
+    </header>
+    <div class="container">
+        <h1>Transaction Management</h1>
+
+        <section class="transaction-section">
+            <h2>Transaction Logs</h2>
+            <ul class="transaction-list" id="transactionLogs">
+                <!-- Transaction logs will be dynamically added here -->
+            </ul>
+        </section>
+
+        <section class="transaction-section">
+            <h2>Transaction Approval</h2>
+            <div class="transaction-details" id="transactionDetails">
+                <!-- Transaction details will be displayed here -->
+            </div>
+            <div class="approval-buttons">
+                <button id="approveButton">Approve</button>
+                <button id="flagButton">Flag</button>
+            </div>
+        </section>
+
+        <section class="transaction-section">
+            <h2>Portfolio Audits</h2>
+            <p>Inspect user portfolios for compliance.</p>
+        </section>
+    </div>
+
+    <script>
+        function toggleUserDetailsPanel() {
+            var panel = document.getElementById("adminDetailsPanel");
+            panel.classList.toggle("show");
+        }
+        // Dummy transaction data for demonstration purposes
+        const transactions = [
+            { id: 1, user: 'John Doe', amount: 100, status: 'Pending' },
+            { id: 2, user: 'Jane Smith', amount: 200, status: 'Pending' },
+            // Add more transactions as needed
+        ];
+
+        const transactionLogs = document.getElementById('transactionLogs');
+        const transactionDetails = document.getElementById('transactionDetails');
+        const approveButton = document.getElementById('approveButton');
+        const flagButton = document.getElementById('flagButton');
+
+        // Function to display transaction details
+        function displayTransactionDetails(transaction) {
+            transactionDetails.innerHTML = `
+                <p><strong>User:</strong> ${transaction.user}</p>
+                <p><strong>Amount:</strong> $${transaction.amount}</p>
+                <p><strong>Status:</strong> ${transaction.status}</p>
+            `;
+        }
+
+        // Function to populate transaction logs
+        function populateTransactionLogs() {
+            transactionLogs.innerHTML = '';
+            transactions.forEach(transaction => {
+                const listItem = document.createElement('li');
+                listItem.classList.add('transaction');
+                listItem.textContent = `Transaction #${transaction.id}`;
+                listItem.addEventListener('click', () => displayTransactionDetails(transaction));
+                transactionLogs.appendChild(listItem);
+            });
+        }
+
+        // Initialize transaction logs
+        populateTransactionLogs();
+
+        // Event listeners for approval buttons
+        approveButton.addEventListener('click', () => {
+            // Logic to approve transaction
+            alert('Transaction Approved');
+        });
+
+        flagButton.addEventListener('click', () => {
+            // Logic to flag transaction
+            alert('Transaction Flagged');
+        });
+    </script>
+</body>
+</html>

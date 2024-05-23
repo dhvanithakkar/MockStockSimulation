@@ -1,0 +1,217 @@
+body {
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    width: calc(100% - 20px);
+    margin: 0 auto;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+nav ul li {
+    margin-right: 20px;
+}
+
+nav ul li a {
+    color: #888;
+    text-decoration: none;
+    font-weight: normal;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #fff;
+}
+
+.logo img {
+    height: 40px;
+    width: auto;
+}
+
+.user-profile {
+    width: 40px;
+    height: 40px;
+    background-color: #fff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.user-profile:hover {
+    background-color: #ccc;
+}
+
+.user-details-panel {
+    position: absolute;
+    top: 50px;
+    right: 10px;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: none;
+}
+
+.user-details-panel.show {
+    display: block;
+}
+
+.black-block {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.invisible-box {
+    background-color: #222;
+    border-radius: 10px;
+    padding: 20px;
+    cursor: pointer;
+    width: 30%;
+    transition: box-shadow 0.3s ease;
+}
+
+.invisible-box:hover {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+}
+
+.box-content {
+    margin-bottom: 10px;
+}
+
+.box-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.box-value {
+    font-size: 36px;
+    font-weight: bold;
+    color: #ffc107;
+}
+
+.rectangle-box {
+    background-color: #fff;
+    border: 2px solid #333;
+    border-radius: 10px;
+    margin: 20px;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+    max-height: 400px; 
+    overflow-y: auto;
+}
+
+
+.two-boxes {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px;
+}
+
+.two-boxes .rectangle-box {
+    width: 70%;
+}
+
+.two-boxes .rectangle-box:nth-child(2) {
+    width: 30%;
+}
+
+.stock-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    max-height: 300px; /* Adjust the height as needed */
+    overflow-y: auto;
+}
+
+.stock-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.stock-name {
+    flex-grow: 1;
+}
+
+.stock-value {
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+.arrow {
+    font-size: 18px;
+    margin-left: 5px;
+}
+
+.arrow-up {
+    color: green;
+}
+
+.arrow-down {
+    color: red;
+}
+
+.checkbox-limit-exceeded {
+    border: 2px solid red;
+    box-shadow: 0 0 10px red;
+}
+.stock-checkbox {
+    display: none;
+}
+
+/* Style for the toggle button */
+.toggle-button {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text (not used) */
+    padding: 5px; /* Small padding */
+    border: none; /* No border */
+    border-radius: 3px; /* Smaller rounded corners */
+    cursor: pointer; /* Cursor style */
+    font-size: 16px; /* Font size for icon (adjust based on icon library) */
+    text-align: center; /* Center the icon */
+}
+
+.toggle-button:before { /* Style the icon using pseudo-element */
+content: "\f0c9"; /* Font Awesome code for "bars" icon */
+font-family: FontAwesome; /* Font family for icon library */
+}
+.timer {
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #444;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+header nav ul li:nth-child(1) a {
+color: #fff; /* Set the color of the "Sector" link to white */
+}

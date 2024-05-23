@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Line</title>
+    <link rel="stylesheet" href="companies.css"> <!-- Link to CSS file -->
+
+</head>
+<body>
+    <header>
+        <div class="logo"><img src="logo.png" alt="Mock Stock Server"></div>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html">Overview</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="sector.html">Sector</a></li>
+                <li><a href="news.html">News</a></li>
+            </ul>
+        </nav>
+        <div class="timer" id="timer">00:00:00</div>
+        <div class="user-profile" onclick="toggleUserDetailsPanel()">U</div>
+        <div class="user-details-panel" id="userDetailsPanel">
+            <p>User Name</p>
+            <p>Email: user@example.com</p>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </header>
+    <br>
+    <div class="stock-line" onclick="toggleDetails('TCS')">
+        <div class="company-name">TCS</div>
+        <div class="stock-summary">
+            <div class="stock-price">₹3,200</div>
+            <div class="stock-change">+1.5%</div>
+        </div>
+    </div>
+        <div class="stock-details-container" id="TCS-details">
+            <div class="stock-details">
+                <div class="details-wrapper">
+                    <div class="chart-container">
+                        <canvas id="TCS-chart" class="chart"></canvas>
+                    </div>
+                    <div class="details-container">
+                        <div class="stock-info">
+                            <div class="stock-price-detail">Price: ₹3,200</div>
+                            <div class="stock-quantity">Available: 5000</div>
+                            <input type="number" id="TCS-quantity" placeholder="Quantity to buy" oninput="updateTotalAmount('TCS', 3200)">
+                            <div class="total-amount" id="TCS-total">Total: ₹0</div>
+                            <div class="button-group">
+                                <button onclick="buyStock('TCS', 3200)">Buy</button>
+                                <button onclick="sellStock('TCS', 3200)">Sell</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="stock-line" onclick="toggleDetails('Infosys')">
+            <div class="company-name">Infosys</div>
+            <div class="stock-summary">
+                <div class="stock-price">₹1,444.3</div>
+                <div class="stock-change">+0.8%</div>
+            </div>
+        </div>
+        <div class="stock-details-container" id="Infosys-details">
+            <div class="stock-details">
+                <div class="details-wrapper">
+                    <div class="chart-container">
+                        <canvas id="Infosys-chart" class="chart"></canvas>
+                    </div>
+                    <div class="details-container">
+                        <div class="stock-info">
+                            <div class="stock-price-detail">Price: ₹1,444.3</div>
+                            <div class="stock-quantity">Available: 8000</div>
+                            <input type="number" id="Infosys-quantity" placeholder="Quantity to buy" oninput="updateTotalAmount('Infosys', 1444.3)">
+                            <div class="total-amount" id="Infosys-total">Total: ₹0</div>
+                            <div class="button-group">
+                                <button onclick="buyStock('Infosys', 1444.3)">Buy</button>
+                                <button onclick="sellStock('Infosys', 1444.3)">Sell</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stock-line" onclick="toggleDetails('HCLTech')">
+            <div class="company-name">HCL Technologies</div>
+            <div class="stock-summary">
+                <div class="stock-price">₹1,339.2</div>
+                <div class="stock-change">+1.2%</div>
+            </div>
+        </div>
+        <div class="stock-details-container" id="HCLTech-details">
+            <div class="stock-details">
+                <div class="details-wrapper">
+                    <div class="chart-container">
+                        <canvas id="HCLTech-chart" class="chart"></canvas>
+                    </div>
+                    <div class="details-container">
+                        <div class="stock-info">
+                            <div class="stock-price-detail">Price: ₹1,339.2</div>
+                            <div class="stock-quantity">Available: 6000</div>
+                            <input type="number" id="HCLTech-quantity" placeholder="Quantity to buy" oninput="updateTotalAmount('HCLTech', 1339.2)">
+                            <div class="total-amount" id="HCLTech-total">Total: ₹0</div>
+                            <div class="button-group">
+                                <button onclick="buyStock('HCLTech', 1339.2)">Buy</button>
+                                <button onclick="sellStock('HCLTech', 1339.2)">Sell</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        function logout() {
+    // Redirect to index.html
+    window.location.href = 'index.html';
+}
+        function toggleUserDetailsPanel() {
+            var panel = document.getElementById("userDetailsPanel");
+            panel.classList.toggle("show");
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+    createChart('TCS-chart', [3100, 3150, 3200, 3250, 3200], 'TCS-details');
+    createChart('Infosys-chart', [1400, 1420, 1444.3, 1450, 1440], 'Infosys-details');
+    createChart('HCLTech-chart', [1300, 1310, 1339.2, 1350, 1340], 'HCLTech-details');
+});
+
+function createChart(chartId, data, detailsId) {
+    var ctx = document.getElementById(chartId).getContext('2d');
+    var detailsContainer = document.getElementById(detailsId);
+    var chartContainer = detailsContainer.querySelector('.chart-container');
+
+    // Set the chart container's width and height
+    chartContainer.style.width = '75%'; // Set the chart container's width to 75%
+    chartContainer.style.height = '100%'; // Set the chart container's height to 100%
+
+    // Create the chart with the dynamically set dimensions
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+            datasets: [{
+                label: chartId.split('-')[0] + ' Stock Price',
+                data: data,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 2,
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false, // Ensure the chart fills its container
+            scales: {
+                y: {
+                    beginAtZero: false
+                }
+            }
+        }
+    });
+}
+
+
+        function toggleDetails(company) {
+            var details = document.getElementById(company + '-details');
+            details.style.display = details.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function updateTotalAmount(company, price) {
+            var quantity = document.getElementById(company + '-quantity').value;
+            var totalAmount = quantity * price;
+            document.getElementById(company + '-total').innerText = 'Total: ₹' + totalAmount.toFixed(2);
+        }
+
+        function buyStock(company, price) {
+            var quantity = document.getElementById(company + '-quantity').value;
+            var totalAmount = quantity * price;
+            alert('Buying ' + quantity + ' shares of ' + company + ' for ₹' + totalAmount.toFixed(2));
+        }
+
+        function sellStock(company, price) {
+            var quantity = document.getElementById(company + '-quantity').value;
+            var totalAmount = quantity * price;
+            alert('Selling ' + quantity + ' shares of ' + company + ' for ₹' + totalAmount.toFixed(2));
+        }
+        function updateTimer() {
+            const timerElement = document.getElementById('timer');
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            timerElement.textContent = `${hours}:${minutes}:${seconds}`;
+        }
+
+        setInterval(updateTimer, 1000); // Update the timer every second
+        updateTimer(); // Initialize the timer immediately
+    </script>
+</body>
+</html>
+

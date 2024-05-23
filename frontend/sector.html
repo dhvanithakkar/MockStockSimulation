@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock Stock Server</title>
+    <link rel="stylesheet" href="sector.css"> <!-- Link to CSS file -->
+</head>
+<body>
+    <header>
+        <div class="logo"><img src="logo.png" alt="Mock Stock Server"></div>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html">Overview</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="sector.html">Sector</a></li>
+                <li><a href="news.html">News</a></li>
+            </ul>
+        </nav>
+        <div class="timer" id="timer">00:00:00</div>
+        <div class="user-profile" onclick="toggleUserDetailsPanel()">U</div>
+        <div class="user-details-panel" id="userDetailsPanel">
+            <p>User Name</p>
+            <p>Email: user@example.com</p>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </header>
+    <div class="sector-container">
+        <div class="invisible-box" onclick="navigateToSector('IT-software')">
+            <div class="box-content">
+                <div class="box-title">IT-software</div>
+            </div>
+        </div>
+        <div class="invisible-box" onclick="navigateToSector('Banks')">
+            <div class="box-content">
+                <div class="box-title">Banks</div>
+            </div>
+        </div>
+        <div class="invisible-box" onclick="navigateToSector('Automobile')">
+            <div class="box-content">
+                <div class="box-title">Automobile</div>
+            </div>
+        </div>
+    </div> 
+    <script src="sector.js"></script> <!-- Link to JavaScript file -->
+</body>
+</html>
+    

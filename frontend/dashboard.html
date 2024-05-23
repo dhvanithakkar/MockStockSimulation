@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock Stock Server</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <header>
+        <div class="logo"><img src="logo.png" alt="Mock Stock Server"></div>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html">Overview</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="sector.html">Sector</a></li>
+                <li><a href="news.html">News</a></li>
+            </ul>
+        </nav>
+        <div class="timer" id="timer">00:00:00</div>
+        <div class="user-profile" onclick="toggleUserDetailsPanel()">U</div>
+        <div class="user-details-panel" id="userDetailsPanel">
+            <p>User Name</p>
+            <p>Email: user@example.com</p>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </header>
+    <div class="black-block">
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">My Wallet</div>
+                <div class="box-value">$17,879</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Total Investment</div>
+                <div class="box-value">$58,497</div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Return of Investment</div>
+                <div class="box-value">44.9%</div>
+            </div>
+        </div>
+    </div>
+    <div class="two-boxes">
+        <div class="rectangle-box" id="chartContainer">
+        </div>
+
+        <div class="rectangle-box" id="stockListBox">
+            <h3><button class="toggle-button" onclick="toggleCheckboxes()"></button> Stocks Bought</h3>
+            
+            <ul class="stock-list">
+                <li class="stock-item">
+                    <input type="checkbox" class="stock-checkbox">
+                    <span class="stock-name">Company A</span>
+                    <span class="stock-value">123.45</span>
+                    <span class="arrow arrow-up">↑</span>
+                </li>
+                <li class="stock-item">
+                    <input type="checkbox" class="stock-checkbox">
+                    <span class="stock-name">Company B</span>
+                    <span class="stock-value">67.89</span>
+                    <span class="arrow arrow-down">↓</span>
+                </li>
+                
+                <li class="stock-item">
+                    <input type="checkbox" class="stock-checkbox">
+                    <span class="stock-name">Company X</span>
+                    <span class="stock-value">150.00</span>
+                    <span class="arrow arrow-up">↑</span>
+                </li>
+                <li class="stock-item">
+                    <input type="checkbox" class="stock-checkbox">
+                    <span class="stock-name">Company Y</span>
+                    <span class="stock-value">200.10</span>
+                    <span class="arrow arrow-down">↓</span>
+                </li>
+                <li class="stock-item">
+                    <input type="checkbox" class="stock-checkbox">
+                    <span class="stock-name">Company Z</span>
+                    <span class="stock-value">123.55</span>
+                    <span class="arrow arrow-up">↑</span>
+                </li>
+            </ul>
+            
+        </div>
+    </div>
+
+    <div class="two-boxes">
+        <div class="rectangle-box">
+            History
+        </div>
+        <div class="rectangle-box">
+            Leaderboard
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>
