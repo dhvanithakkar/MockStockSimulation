@@ -1,3 +1,7 @@
+drop database mockstock;
+create database mockstock;
+use mockstock;
+
 CREATE TABLE Colleges (
   CollegeID INT PRIMARY KEY AUTO_INCREMENT,
   CollegeName VARCHAR(255) NOT NULL,
