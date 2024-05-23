@@ -15,12 +15,13 @@ where teamID = 1;
 -- Portfolio of THIS Team (1)
 SELECT 
   s.StockSymbol, 
+  s.CurrentPrice,
   SUM(CASE WHEN t.TransactionType = 'BUY' THEN t.Quantity * t.Price ELSE -t.Quantity * t.Price END) AS TotalAmountInvested,
-  SUM(CASE WHEN t.TransactionType = 'BUY' THEN t.Quantity ELSE -t.Quantity END) AS CurrentHoldings, s.CurrentPrice, 
+  SUM(CASE WHEN t.TransactionType = 'BUY' THEN t.Quantity ELSE -t.Quantity END) AS CurrentHoldings,
   s.CurrentPrice * SUM(CASE WHEN t.TransactionType = 'BUY' THEN t.Quantity ELSE -t.Quantity END) AS TotalMarketValue
 FROM Transactions t
 INNER JOIN Stocks s ON t.StockSymbol = s.StockSymbol
-WHERE TeamID = 1
+WHERE TeamID = 1 AND s.CompetitionID = 1
 GROUP BY s.StockSymbol, s.CurrentPrice;
 
 -- Delete Stock
