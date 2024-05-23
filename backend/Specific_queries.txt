@@ -1,0 +1,6 @@
+To select ALL transactions of this competition (1):
+
+select * from transactions
+where teamID IN
+( select teamID from teams
+where competitionID = 1);
