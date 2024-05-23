@@ -201,7 +201,7 @@ app.get('/organisers/transactions/:CompetitionID', async (req, res) => {
 //this is for organises to create a new stock
 app.post('/organiser/makeStocks', async (req, res) => {
   const {
-    CompetitionID, stockSymbol, stockName, initialPrice, currentPrice, availableShares, betaValue, sectorId} = req.body;
+    CompetitionID, stockSymbol, stockName, initialPrice, currentPrice, totalShares, betaValue, sectorId} = req.body;
 
   try {
     const pool = await connectToDatabase();
