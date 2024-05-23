@@ -1,0 +1,62 @@
+-- ALL Transactions of THIS competition(1):
+select * from transactions
+where teamID IN
+( select teamID from teams
+where competitionID = 1);
+
+-- Transactions of THIS stock (AAPL)
+select * from transactions
+where teamID IN
+( select teamID from teams
+where competitionID = 1)
+and StockSymbol = "AAPL";
+
+-- Transactions of THIS Team (1)
+select * from transactions
+where teamID = 1;
+
+
+app.get('/organisers/transactions/:stockSymbol/:TeamId', async (req, res) => {
+  const stockSymbol = req.params.stockSymbol;
+  const teamId = req.params.TeamId;
+
+  try {
+    const pool = await connectToDatabase();
+    let query = `
+      SELECT 
+        Transactions.TransactionID,
+        Transactions.TeamID,
+        Transactions.StockSymbol,
+        Transactions.Quantity,
+        Transactions.Price AS TransactionPrice,
+        Transactions.TransactionType,
+        Transactions.TransactionTime
+      FROM Transactions
+    `;
+
+    const params = [];
+
+    if (stockSymbol !== 'all') { 
+      query += ` WHERE Transactions.StockSymbol = ?`;
+      params.push(stockSymbol);
+    }
+
+    if (teamId !== 'all') {  
+      if (stockSymbol !== 'all') {
+        query += ` AND `; 
+      } else {
+        query += ` WHERE `; 
+      }
+      query += ` Transactions.TeamID = ?`;
+      params.push(teamId);
+    }
+
+    query += ` ORDER BY Transactions.CreatedAt ASC;`;
+
+    const result = await pool.query(query, params);
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Can't get transaction history');
+  }
+});

@@ -1,3 +1,7 @@
+drop database mockstock;
+create database mockstock;
+use mockstock;
+
 CREATE TABLE Colleges (
   CollegeID INT PRIMARY KEY AUTO_INCREMENT,
   CollegeName VARCHAR(255) NOT NULL,
@@ -26,35 +30,25 @@ CREATE TABLE Teams (
   FOREIGN KEY (CompetitionID) REFERENCES Competitions(CompetitionID)
 );
 
-TRIGGER:
-DELIMITER //
-CREATE TRIGGER set_team_cash_after_insert
-AFTER INSERT ON Teams
-FOR EACH ROW
-BEGIN
-  UPDATE Teams
-  SET CurrentCash = (SELECT InitialCash FROM Competitions WHERE CompetitionID = NEW.CompetitionID)
-  WHERE TeamID = NEW.TeamID;
-END //
-DELIMITER ;
+CREATE TABLE Sectors (
+  SectorID INT PRIMARY KEY AUTO_INCREMENT,
+  SectorName VARCHAR(255) NOT NULL
+);
 
 CREATE TABLE Stocks (
   CompetitionID INT NOT NULL,
-  StockSymbol VARCHAR(10) PRIMARY KEY,
+  StockSymbol VARCHAR(10) NOT NULL,
   StockName VARCHAR(255) NOT NULL,
   InitialPrice DECIMAL(10,2) NOT NULL,
   CurrentPrice DECIMAL(10,2) NOT NULL,
   AvailableShares INT NOT NULL,
   BetaValue DECIMAL(10,2),
   SectorID INT NOT NULL,
+  PRIMARY KEY (StockSymbol, CompetitionID),
   FOREIGN KEY (CompetitionID) REFERENCES Competitions(CompetitionID),
   FOREIGN KEY (SectorID) REFERENCES Sectors(SectorID)
 );
 
-CREATE TABLE Sectors (
-  SectorID INT PRIMARY KEY AUTO_INCREMENT,
-  SectorName VARCHAR(255) NOT NULL
-);
 
 CREATE TABLE Transactions (
   TransactionID INT PRIMARY KEY AUTO_INCREMENT,
@@ -67,6 +61,15 @@ CREATE TABLE Transactions (
   FOREIGN KEY (TeamID) REFERENCES Teams(TeamID),
   FOREIGN KEY (StockSymbol) REFERENCES Stocks(StockSymbol)
 );
+
+DELIMITER //
+CREATE TRIGGER set_team_cash_before_insert
+BEFORE INSERT ON Teams
+FOR EACH ROW
+BEGIN
+  SET NEW.CurrentCash = (SELECT InitialCash FROM Competitions WHERE CompetitionID = NEW.CompetitionID);
+END //
+DELIMITER ;
 
 INSERT INTO Colleges (CollegeName, CollegePassword) VALUES 
   ('NM College', 'password123'),
@@ -90,4 +93,13 @@ INSERT INTO Stocks (CompetitionID, StockSymbol, StockName, InitialPrice, Current
   (1, 'AAPL', 'Apple Inc.', 150.00, 150.00, 10000, 1.00, 1),
   (1, 'AMZN', 'Amazon.com Inc.', 120.00, 120.00, 8000, 1.20, 2),
   (2, 'TSLA', 'Tesla Inc.', 200.00, 200.00, 5000, 1.50, 1),
-  (2, 'JNJ', 'Johnson & Johnson', 130.00, 130.00, 7000, 0.80, 3)
+  (2, 'JNJ', 'Johnson & Johnson', 130.00, 130.00, 7000, 0.80, 3),
+  (1, 'JNJ', 'Johnson & Johnson2', 130.00, 130.00, 7000, 0.80, 3);
+
+INSERT INTO Transactions (TeamID, StockSymbol, TransactionType, TransactionTime, Price, Quantity)
+VALUES (1, 'AAPL', 'BUY', '2024-05-24 10:00:00', 150.25, 10),
+       (2, 'AMZN', 'SELL', '2024-05-23 15:30:00', 1250.00, 5),
+       (1, 'TSLA', 'BUY', '2024-05-22 09:15:00', 200.50, 20),
+       (3, 'AAPL', 'BUY', '2024-05-24 10:00:00', 150.25, 10),
+       (3, 'AMZN', 'SELL', '2024-05-23 15:30:00', 1250.00, 5),
+       (2, 'TSLA', 'BUY', '2024-05-22 09:15:00', 200.50, 20);
