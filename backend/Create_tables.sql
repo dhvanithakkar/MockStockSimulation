@@ -65,3 +65,12 @@ CREATE TABLE Transactions (
   FOREIGN KEY (TeamID) REFERENCES Teams(TeamID),
   FOREIGN KEY (StockSymbol, CompetitionID) REFERENCES Stocks(StockSymbol, CompetitionID)
 );
+
+CREATE TABLE Graph (
+  stockSymbol VARCHAR(10) NOT NULL,
+  competitionID INT NOT NULL,
+  timest DATETIME NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  PRIMARY KEY (stockSymbol, competitionID, timest)  -- Composite primary key
+--   FOREIGN KEY (stockSymbol, competitionID) REFERENCES Stocks(StockSymbol, CompetitionID)  -- Foreign key relationship
+);
