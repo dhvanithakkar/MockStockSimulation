@@ -46,5 +46,9 @@ BEGIN
   UPDATE Stocks
   SET CurrentPrice = new_price
   WHERE StockSymbol = NEW.StockSymbol AND CompetitionID = NEW.CompetitionID;
+  
+  INSERT INTO Graph(stockSymbol,  competitionID, timest,  price)
+  VALUES (NEW.StockSymbol, NEW.CompetitionID, NEW.TransactionTime, NEW.price);
+  
 END //
 DELIMITER ;
