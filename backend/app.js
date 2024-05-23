@@ -212,7 +212,7 @@ app.post('/organiser/makeStocks', async (req, res) => {
         StockName,
         InitialPrice,
         CurrentPrice,
-        AvailableShares,
+        TotalShares,
         BetaValue,
         SectorID
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -222,7 +222,7 @@ app.post('/organiser/makeStocks', async (req, res) => {
       stockName,
       initialPrice,
       currentPrice,
-      availableShares,
+      totalShares,
       betaValue,
       sectorId,
     ]);
