@@ -22,9 +22,21 @@ CREATE TABLE Teams (
   CompetitionID INT NOT NULL,
   TeamName VARCHAR(255) NOT NULL,
   Email VARCHAR(255),
-  CurrentCash DECIMAL(10,2) NOT NULL DEFAULT (SELECT InitialCash FROM Competitions WHERE CompetitionID = Teams.CompetitionID),
+  CurrentCash DECIMAL(10,2) NOT NULL DEFAULT 0,
   FOREIGN KEY (CompetitionID) REFERENCES Competitions(CompetitionID)
 );
+
+TRIGGER:
+DELIMITER //
+CREATE TRIGGER set_team_cash_after_insert
+AFTER INSERT ON Teams
+FOR EACH ROW
+BEGIN
+  UPDATE Teams
+  SET CurrentCash = (SELECT InitialCash FROM Competitions WHERE CompetitionID = NEW.CompetitionID)
+  WHERE TeamID = NEW.TeamID;
+END //
+DELIMITER ;
 
 CREATE TABLE Stocks (
   CompetitionID INT NOT NULL,
