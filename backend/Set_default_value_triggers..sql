@@ -13,5 +13,8 @@ BEFORE INSERT ON Stocks
 FOR EACH ROW
 BEGIN
   SET NEW.AvailableShares = NEW.TotalShares;
+  INSERT INTO Graph(stockSymbol,  competitionID, timest,  price)
+  VALUES (NEW.StockSymbol, NEW.CompetitionID, CURRENT_TIMESTAMP(), NEW.InitialPrice);
+
 END //
 DELIMITER ;
