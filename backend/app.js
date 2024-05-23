@@ -4,7 +4,7 @@ const connectToDatabase = require('./database');
 const app = express();
 app.use(express.json());
 
-//getting portfolio of a specific team
+//getting portfolio of a specific team. teamID in url
 app.get('/portfolio/:teamId', async (req, res) => {
   const teamId = req.params.teamId;
   try {
@@ -27,16 +27,9 @@ app.get('/portfolio/:teamId', async (req, res) => {
   }
 });
 
-//change price of stock
+//change price of stock, all arguments in request body
 app.put('/organisers/changePrice', async (req, res) => {
-  // Retrieve data from request body
   const { CompetitionID, stockSymbol, newPrice } = req.body;
-
-  // Input validation (optional but recommended)
-  if (!CompetitionID || !stockSymbol || !newPrice) {
-    return res.status(400).send('Missing required fields: CompetitionID, stockSymbol, and newPrice');
-  }
-
   try {
     const pool = await connectToDatabase();
     const sql = `
@@ -60,7 +53,7 @@ app.put('/organisers/changePrice', async (req, res) => {
 
 
 
-
+//api for buying stock, competitionID in url, all others in request body
 app.post('/buy/:CompetitionID', async (req, res) => {
   const CompetitionID = parseInt(req.params.CompetitionID, 10);
   const teamId = req.body.teamId;
@@ -114,6 +107,8 @@ app.post('/buy/:CompetitionID', async (req, res) => {
     res.status(500).send('Error during purchase');
   }
 });
+
+//api for selling. competition id in url, everything else in request body
 app.post('/sell/:competitionID', async (req, res) => {
   const CompetitionID = parseInt(req.params.competitionID, 10);
   const teamId = req.body.teamId;
@@ -136,14 +131,13 @@ app.post('/sell/:competitionID', async (req, res) => {
         WHERE TeamID = ?
       `, [totalSellValue, teamId]);
 
-      // price here
       await pool.query(`
         UPDATE Stocks
         SET AvailableShares = AvailableShares + ?
         WHERE StockSymbol = ? AND CompetitionID = ?;
       `, [quantity, stockSymbol, CompetitionID]);
 
-    
+    //new price formula here
       await pool.query(`
         INSERT INTO Transactions (TeamID, StockSymbol, Quantity, Price)
         VALUES (?, ?, ?, ?)
@@ -160,6 +154,8 @@ app.post('/sell/:competitionID', async (req, res) => {
   }
 });
 
+//api to show transaction history. competiton id in url. if we want all transactions, write all in stockSymbol and teamId in body.
+//if we want stockwise history (history of one particular stock), write all in teamId and specific stock stockSymbol. same if we want teamwise transaction history
 app.get('/organisers/transactions/:CompetitionID', async (req, res) => {
   const CompetitionID = parseInt(req.params.CompetitionID, 10);
   const stockSymbol = req.query.stockSymbol; //write all if you want all
@@ -202,22 +198,10 @@ app.get('/organisers/transactions/:CompetitionID', async (req, res) => {
 });
 
 
-
+//this is for organises to create a new stock
 app.post('/organiser/makeStocks', async (req, res) => {
   const {
-    CompetitionID,
-    stockSymbol,
-    stockName,
-    initialPrice,
-    currentPrice,
-    availableShares,
-    betaValue,
-    sectorId,
-  } = req.body;
-
-  if (!CompetitionID || !stockSymbol || !stockName || !initialPrice || !currentPrice || !availableShares || !betaValue || !sectorId) {
-    return res.status(400).send('Missing required fields in request body'); //maybe competition Id is not compulsory 
-  }
+    CompetitionID, stockSymbol, stockName, initialPrice, currentPrice, availableShares, betaValue, sectorId} = req.body;
 
   try {
     const pool = await connectToDatabase();
