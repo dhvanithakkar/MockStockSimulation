@@ -55,3 +55,10 @@ INNER JOIN (
 ) nw 
 ON team.TeamID = nw.TeamID
 ORDER BY TotalNetWorth DESC;
+
+
+-- Graph data for stock "JNJ" of competition 1
+SELECT Price, TransactionTime
+FROM Transactions
+WHERE StockSymbol = "JNJ" AND CompetitionID = 1
+ORDER BY TransactionTime ASC;
