@@ -4,124 +4,65 @@ const connectToDatabase = require('./database');
 const app = express();
 app.use(express.json());
 
-
+//getting portfolio of a specific team
 app.get('/portfolio/:teamId', async (req, res) => {
-  const teamId = req.params.teamId; 
-
-  try {
-    const holdings = await getPortfolio(teamId); 
-    res.json(holdings); 
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error fetching portfolio'); 
-  }
-});
-
-app.put('/organisers/changePrice/:competitionId/:stockSymbol', async (req, res) => {
-  const competitionId = req.params.competitionId;
-  const stockSymbol = req.params.stockSymbol;
-
-  const { newPrice } = req.body; 
-  if (!newPrice) {
-    return res.status(400).json({ error: 'Missing newPrice in request body' });
-  }
-
-  try {
-    const updateResult = await updatePrice(competitionId, stockSymbol, newPrice); 
-    if (updateResult.error) {
-      return res.status(400).json(updateResult); 
-    }
-    res.json(updateResult);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Internal Server Error');
-  }
-});
-
-
-
-app.delete('/organiser/delete/:participantId', async (req, res) => {
-  const participantId = req.params.participantId;
-
-  try {
-    const removeResult = await removeParticipant(participantId);
-    if (removeResult.error) {
-      return res.status(400).json(removeResult); // Send specific error message
-    }
-    res.json(removeResult);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Internal Server Error');
-  }
-});
-
-
-
-async function removeParticipant(participantId) {
+  const teamId = req.params.teamId;
   try {
     const pool = await connectToDatabase();
-    const result = await pool.query(`
-      DELETE FROM Teams  
-      WHERE TeamsId = ? 
-    `, [participantId]); 
-
-    if (result.affectedRows === 0) {
-      throw new Error('Team not found or removal failed');
-    }
-
-    return { message: 'Team removed successfully.' };
+    const [rows] = await pool.query(`
+      SELECT 
+        s.StockSymbol, 
+        SUM(CASE WHEN t.TransactionType = 'BUY' THEN t.Quantity * t.Price ELSE -t.Quantity * t.Price END) AS TotalAmountInvested,
+        SUM(CASE WHEN t.TransactionType = 'BUY' THEN t.Quantity ELSE -t.Quantity END) AS CurrentHoldings, s.CurrentPrice, 
+        s.CurrentPrice * SUM(CASE WHEN t.TransactionType = 'BUY' THEN t.Quantity ELSE -t.Quantity END) AS TotalMarketValue
+      FROM Transactions t
+      INNER JOIN Stocks s ON t.StockSymbol = s.StockSymbol
+      WHERE TeamID = ?
+      GROUP BY s.StockSymbol, s.CurrentPrice;
+    `, [teamId]);
+    res.json(rows);
   } catch (error) {
     console.error(error);
-    return { error: error.message }; 
+    res.status(500).send('Error fetching portfolio');
   }
-}
+});
 
+//change price of stock
+app.put('/organisers/changePrice', async (req, res) => {
+  // Retrieve data from request body
+  const { CompetitionID, stockSymbol, newPrice } = req.body;
 
-async function updatePrice(competitionId, stockSymbol, newPrice) {
+  // Input validation (optional but recommended)
+  if (!CompetitionID || !stockSymbol || !newPrice) {
+    return res.status(400).send('Missing required fields: CompetitionID, stockSymbol, and newPrice');
+  }
+
   try {
     const pool = await connectToDatabase();
-    const result = await pool.query(`
+    const sql = `
       UPDATE Stocks
       SET CurrentPrice = ?
       WHERE CompetitionID = ? AND StockSymbol = ?
-    `, [newPrice, competitionId, stockSymbol.toUpperCase()]); // Ensure uppercase for symbol consistency
+    `;
+    const [result] = await pool.query(sql, [newPrice, CompetitionID, stockSymbol]);
+
 
     if (result.affectedRows === 0) {
       throw new Error('Stock not found or update failed');
     }
 
-    return { message: 'Stock price updated successfully.' };
+    res.json({ message: 'Stock price updated successfully.' });
   } catch (error) {
     console.error(error);
-    return { error: error.message }; 
+    res.status(400).json({ error: error.message });
   }
-}
+});
 
 
-async function getPortfolio(teamId) {
-  try{
-  const pool = await connectToDatabase();
-  const [rows] = await pool.query(`
-  SELECT 
-  Transactions.StockSymbol, 
-  Transactions.Quantity, 
-  Transactions.Price AS TransactionPrice, 
-  Stocks.StockName, 
-  Stocks.CurrentPrice
-FROM Transactions
-INNER JOIN Stocks ON Transactions.StockSymbol = Stocks.StockSymbol
-WHERE Transactions.TeamID = ?
-`, [teamId]);
-  return rows; }
-  catch (error) {
-    console.error(error);
-    res.status(500).send('Error fetching portfolio');}
-}
 
 
- 
-
-app.post('/buy/:competitionId', async (req, res) => {
+app.post('/buy/:CompetitionID', async (req, res) => {
+  const CompetitionID = parseInt(req.params.CompetitionID, 10);
   const teamId = req.body.teamId;
   const stockSymbol = req.body.stockSymbol;
   const quantity = req.body.quantity;
@@ -133,13 +74,13 @@ app.post('/buy/:competitionId', async (req, res) => {
 
     try {
   
-      const availableShares = await checkStockAvailability(pool, stockSymbol, competitionId);
+      const availableShares = await checkStockAvailability(pool, stockSymbol, CompetitionID);
       if (availableShares < quantity) {
         return res.status(400).send('Insufficient stock available');
       }
 
       const teamFunds = await getTeamFunds(pool, teamId);
-      const totalPrice = quantity * await getStockPrice(pool, stockSymbol, competitionId);
+      const totalPrice = quantity * await getStockPrice(pool, stockSymbol, CompetitionID);
       if (teamFunds < totalPrice) {
         return res.status(400).send('Insufficient funds');
       }
@@ -150,13 +91,13 @@ app.post('/buy/:competitionId', async (req, res) => {
       `, [teamId, stockSymbol, quantity, totalPrice]);
 
       //const currentPrice = write formala here 
-      const currentPrice = await getStockPrice(pool, stockSymbol, competitionId);
+      const currentPrice = await getStockPrice(pool, stockSymbol, CompetitionID);
       const newAvailableShares = availableShares - quantity;
       await pool.query(`
         UPDATE Stocks
-        SET AvailableShares = ?, CurrentPrice = ?
-        WHERE StockSymbol = ?, CompetitionId = ?
-      `, [newAvailableShares, currentPrice, stockSymbol, competitionId]);
+        SET AvailableShares = ? AND CurrentPrice = ?
+        WHERE StockSymbol = ? AND CompetitionID = ?;
+      `, [newAvailableShares, currentPrice, stockSymbol, CompetitionID]);
 
       await pool.query(`
         UPDATE Teams
@@ -173,7 +114,8 @@ app.post('/buy/:competitionId', async (req, res) => {
     res.status(500).send('Error during purchase');
   }
 });
-app.post('/sell', async (req, res) => {
+app.post('/sell/:competitionID', async (req, res) => {
+  const CompetitionID = parseInt(req.params.competitionID, 10);
   const teamId = req.body.teamId;
   const stockSymbol = req.body.stockSymbol;
   const quantity = req.body.quantity;
@@ -186,7 +128,7 @@ app.post('/sell', async (req, res) => {
       if (currentHoldings < quantity) {
         return res.status(400).send('Insufficient stock holdings');
       }
-      const currentPrice = await getStockPrice(pool, stockSymbol, competitionId);
+      const currentPrice = await getStockPrice(pool, stockSymbol, CompetitionID);
       const totalSellValue = quantity * currentPrice;
       await pool.query(`
         UPDATE Teams
@@ -198,8 +140,8 @@ app.post('/sell', async (req, res) => {
       await pool.query(`
         UPDATE Stocks
         SET AvailableShares = AvailableShares + ?
-        WHERE StockSymbol = ?, CompetitionId = ?
-      `, [quantity, stockSymbol, competitionId]);
+        WHERE StockSymbol = ? AND CompetitionID = ?;
+      `, [quantity, stockSymbol, CompetitionID]);
 
     
       await pool.query(`
@@ -218,10 +160,10 @@ app.post('/sell', async (req, res) => {
   }
 });
 
-app.get('/organisers/transactions/:competitionId', async (req, res) => {
-  const competitionId = req.params.competitionId;
-  const stockSymbol = req.body.stockSymbol;
-  const teamId = req.body.TeamId;
+app.get('/organisers/transactions/:CompetitionID', async (req, res) => {
+  const CompetitionID = parseInt(req.params.CompetitionID, 10);
+  const stockSymbol = req.query.stockSymbol; //write all if you want all
+  const teamId = req.query.teamId; //write all if you want all
 
   try {
     const pool = await connectToDatabase();
@@ -229,10 +171,10 @@ app.get('/organisers/transactions/:competitionId', async (req, res) => {
       SELECT *
       FROM Transactions
       INNER JOIN Stocks S ON Transactions.StockSymbol = S.StockSymbol
-      WHERE S.CompetitionId = ?
+      WHERE S.CompetitionID = ?
     `;
 
-    const params = [competitionId];
+    const params = [CompetitionID];
 
     if (stockSymbol !== 'all') {
       query += ` WHERE Transactions.StockSymbol = ?`;
@@ -263,7 +205,7 @@ app.get('/organisers/transactions/:competitionId', async (req, res) => {
 
 app.post('/organiser/makeStocks', async (req, res) => {
   const {
-    competitionId,
+    CompetitionID,
     stockSymbol,
     stockName,
     initialPrice,
@@ -273,7 +215,7 @@ app.post('/organiser/makeStocks', async (req, res) => {
     sectorId,
   } = req.body;
 
-  if (!competitionId || !stockSymbol || !stockName || !initialPrice || !currentPrice || !availableShares || !betaValue || !sectorId) {
+  if (!CompetitionID || !stockSymbol || !stockName || !initialPrice || !currentPrice || !availableShares || !betaValue || !sectorId) {
     return res.status(400).send('Missing required fields in request body'); //maybe competition Id is not compulsory 
   }
 
@@ -291,7 +233,7 @@ app.post('/organiser/makeStocks', async (req, res) => {
         SectorID
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `, [
-      competitionId,
+      CompetitionID,
       stockSymbol,
       stockName,
       initialPrice,
@@ -312,13 +254,15 @@ app.post('/organiser/makeStocks', async (req, res) => {
   }
 });
 
-async function checkStockAvailability(pool, stockSymbol, competitionId) {
+async function checkStockAvailability(pool, stockSymbol, CompetitionID) {
   const [rows] = await pool.query(`
     SELECT AvailableShares
     FROM Stocks
-    WHERE StockSymbol = ?, CompetitionId = ? 
-  `, [stockSymbol, competitionId]);
-
+    WHERE StockSymbol = ? AND CompetitionID = ? 
+  `, [stockSymbol, CompetitionID]); 
+  if (rows.length === 0) {
+    return 0; 
+  }
   return rows[0].AvailableShares;
 }
 
@@ -345,12 +289,12 @@ async function getTeamFunds(pool, teamId) {
   return rows[0].CurrentCash;
 }
 
-async function getStockPrice(pool, stockSymbol, competitionId) {
+async function getStockPrice(pool, stockSymbol, CompetitionID) {
   const [rows] = await pool.query(`
     SELECT CurrentPrice
     FROM Stocks
-    WHERE StockSymbol = ?, CompetitionId = ?
-  `, [stockSymbol, competitionId]);
+    WHERE StockSymbol = ? AND CompetitionID = ?
+  `, [stockSymbol, CompetitionID]);
   return rows[0].CurrentPrice;
 }
 
