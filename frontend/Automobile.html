@@ -165,6 +165,15 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
+        .timer {
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #444;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
     </style>
 </head>
 <body>
@@ -173,12 +182,12 @@
         <nav>
             <ul>
                 <li><a href="dashboard.html">Overview</a></li>
-                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
                 <li><a href="sector.html">Sector</a></li>
-                <li><a href="#transaction">Transaction</a></li>
-                <li><a href="#news">News</a></li>
+                <li><a href="news.html">News</a></li>
             </ul>
         </nav>
+        <div class="timer" id="timer">00:00:00</div>
         <div class="user-profile" onclick="toggleUserDetailsPanel()">U</div>
         <div class="user-details-panel" id="userDetailsPanel">
             <p>User Name</p>
@@ -301,6 +310,17 @@
             var totalAmount = quantity * price;
             alert('Selling ' + quantity + ' shares of ' + company + ' for ₹' + totalAmount.toFixed(2));
         }
+        function updateTimer() {
+            const timerElement = document.getElementById('timer');
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            timerElement.textContent = `${hours}:${minutes}:${seconds}`;
+        }
+
+        setInterval(updateTimer, 1000); // Update the timer every second
+        updateTimer(); // Initialize the timer immediately
     </script>
 </body>
 </html>

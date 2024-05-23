@@ -211,6 +211,14 @@
         .toggle-button:hover {
             background-color: #45a049; /* Darker green */
         }
+        .timer {
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #444;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
 
     </style>
 </head>
@@ -225,6 +233,7 @@
                 <li><a href="news.html">News</a></li>
             </ul>
         </nav>
+        <div class="timer" id="timer">00:00:00</div>
         <div class="user-profile" onclick="toggleUserDetailsPanel()">U</div>
         <div class="user-details-panel" id="userDetailsPanel">
             <p>User Name</p>
@@ -447,6 +456,17 @@
                 }
             });
         }
+        function updateTimer() {
+            const timerElement = document.getElementById('timer');
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            timerElement.textContent = `${hours}:${minutes}:${seconds}`;
+        }
+
+        setInterval(updateTimer, 1000); // Update the timer every second
+        updateTimer(); // Initialize the timer immediately
     </script>
 </body>
 </html>
