@@ -95,3 +95,11 @@ INSERT INTO Stocks (CompetitionID, StockSymbol, StockName, InitialPrice, Current
   (2, 'TSLA', 'Tesla Inc.', 200.00, 200.00, 5000, 1.50, 1),
   (2, 'JNJ', 'Johnson & Johnson', 130.00, 130.00, 7000, 0.80, 3),
   (1, 'JNJ', 'Johnson & Johnson2', 130.00, 130.00, 7000, 0.80, 3);
+
+INSERT INTO Transactions (TeamID, StockSymbol, TransactionType, TransactionTime, Price, Quantity)
+VALUES (1, 'AAPL', 'BUY', '2024-05-24 10:00:00', 150.25, 10),
+       (2, 'AMZN', 'SELL', '2024-05-23 15:30:00', 1250.00, 5),
+       (1, 'TSLA', 'BUY', '2024-05-22 09:15:00', 200.50, 20),
+       (3, 'AAPL', 'BUY', '2024-05-24 10:00:00', 150.25, 10),
+       (3, 'AMZN', 'SELL', '2024-05-23 15:30:00', 1250.00, 5),
+       (2, 'TSLA', 'BUY', '2024-05-22 09:15:00', 200.50, 20);
