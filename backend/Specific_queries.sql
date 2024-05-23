@@ -22,3 +22,18 @@ FROM Transactions t
 INNER JOIN Stocks s ON t.StockSymbol = s.StockSymbol
 WHERE TeamID = 1
 GROUP BY s.StockSymbol, s.CurrentPrice;
+
+-- Delete Stock
+DELETE
+FROM Transactions
+WHERE CompetitionID = 1 AND StockSymbol = 'JNJ';
+
+DELETE FROM Stocks
+WHERE CompetitionID = 1 AND StockSymbol = 'JNJ';
+
+-- Delete Team
+DELETE FROM Transactions
+WHERE CompetitionID = 1 AND TeamID = 2;
+
+DELETE FROM Teams
+WHERE CompetitionID = 1 AND TeamID = 2;
