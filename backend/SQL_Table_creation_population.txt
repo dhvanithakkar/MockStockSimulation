@@ -55,7 +55,7 @@ CREATE TABLE Transactions (
   TeamID INT NOT NULL,
   StockSymbol VARCHAR(10) NOT NULL,
   TransactionType ENUM('BUY', 'SELL') NOT NULL,
-  TransactionTime DATETIME NOT NULL,
+  TransactionTime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   Price DECIMAL(10,2) NOT NULL,
   Quantity INT NOT NULL,
   FOREIGN KEY (TeamID) REFERENCES Teams(TeamID),
