@@ -16,30 +16,37 @@ app.get('/portfolio/:teamId', async (req, res) => {
     res.status(500).send('Error fetching portfolio'); 
   }
 });
-app.put('/organiser/events/:eventId/price', async (req, res) => {
-  const eventId = req.params.eventId;
+
+app.put('/organisers/changePrice/:competitionId/:stockSymbol', async (req, res) => {
+  const competitionId = req.params.competitionId;
+  const stockSymbol = req.params.stockSymbol;
+
   const { newPrice } = req.body; 
+  if (!newPrice) {
+    return res.status(400).json({ error: 'Missing newPrice in request body' });
+  }
 
   try {
-    const updateResult = await updateEventPrice(eventId, newPrice);
+    const updateResult = await updatePrice(competitionId, stockSymbol, newPrice); 
     if (updateResult.error) {
       return res.status(400).json(updateResult); 
     }
     res.json(updateResult);
   } catch (error) {
     console.error(error);
-    res.status(500).send('Internal Server Error'); 
+    res.status(500).send('Internal Server Error');
   }
 });
 
-app.delete('/organiser/:eventId/participants/:participantId', async (req, res) => {
-  const eventId = req.params.eventId;
+
+
+app.delete('/organiser/delete/:participantId', async (req, res) => {
   const participantId = req.params.participantId;
 
   try {
-    const removeResult = await removeParticipant(eventId, participantId);
+    const removeResult = await removeParticipant(participantId);
     if (removeResult.error) {
-      return res.status(400).json(removeResult); 
+      return res.status(400).json(removeResult); // Send specific error message
     }
     res.json(removeResult);
   } catch (error) {
@@ -49,39 +56,41 @@ app.delete('/organiser/:eventId/participants/:participantId', async (req, res) =
 });
 
 
-async function removeParticipant(eventId, participantId) {
+
+async function removeParticipant(participantId) {
   try {
     const pool = await connectToDatabase();
     const result = await pool.query(`
-      DELETE FROM EventParticipants
-      WHERE EventID = ? AND ParticipantID = ?
-    `, [eventId, participantId]);
+      DELETE FROM Teams  
+      WHERE TeamsId = ? 
+    `, [participantId]); 
 
     if (result.affectedRows === 0) {
-      throw new Error('Participant not found or removal failed');
+      throw new Error('Team not found or removal failed');
     }
 
-    return { message: 'Participant removed successfully.' };
+    return { message: 'Team removed successfully.' };
   } catch (error) {
     console.error(error);
     return { error: error.message }; 
   }
 }
 
-async function updateEventPrice(eventId, newPrice) {
+
+async function updatePrice(competitionId, stockSymbol, newPrice) {
   try {
     const pool = await connectToDatabase();
     const result = await pool.query(`
-      UPDATE Events
-      SET Price = ?
-      WHERE EventID = ?
-    `, [newPrice, eventId]);
+      UPDATE Stocks
+      SET CurrentPrice = ?
+      WHERE CompetitionID = ? AND StockSymbol = ?
+    `, [newPrice, competitionId, stockSymbol.toUpperCase()]); // Ensure uppercase for symbol consistency
 
     if (result.affectedRows === 0) {
-      throw new Error('Event not found or update failed');
+      throw new Error('Stock not found or update failed');
     }
 
-    return { message: 'Event price updated successfully.' };
+    return { message: 'Stock price updated successfully.' };
   } catch (error) {
     console.error(error);
     return { error: error.message }; 
@@ -94,16 +103,14 @@ async function getPortfolio(teamId) {
   const pool = await connectToDatabase();
   const [rows] = await pool.query(`
   SELECT 
-  Stocks.StockSymbol, 
-  SUM(Transactions.Quantity) AS TotalQuantity, 
+  Transactions.StockSymbol, 
+  Transactions.Quantity, 
   Transactions.Price AS TransactionPrice, 
   Stocks.StockName, 
   Stocks.CurrentPrice
 FROM Transactions
 INNER JOIN Stocks ON Transactions.StockSymbol = Stocks.StockSymbol
 WHERE Transactions.TeamID = ?
-GROUP BY Stocks.StockSymbol
-HAVING SUM(Transactions.Quantity) <> 0;
 `, [teamId]);
   return rows; }
   catch (error) {
@@ -114,7 +121,7 @@ HAVING SUM(Transactions.Quantity) <> 0;
 
  
 
-app.post('/buy', async (req, res) => {
+app.post('/buy/:competitionId', async (req, res) => {
   const teamId = req.body.teamId;
   const stockSymbol = req.body.stockSymbol;
   const quantity = req.body.quantity;
@@ -126,13 +133,13 @@ app.post('/buy', async (req, res) => {
 
     try {
   
-      const availableShares = await checkStockAvailability(pool, stockSymbol);
+      const availableShares = await checkStockAvailability(pool, stockSymbol, competitionId);
       if (availableShares < quantity) {
         return res.status(400).send('Insufficient stock available');
       }
 
       const teamFunds = await getTeamFunds(pool, teamId);
-      const totalPrice = quantity * await getStockPrice(pool, stockSymbol);
+      const totalPrice = quantity * await getStockPrice(pool, stockSymbol, competitionId);
       if (teamFunds < totalPrice) {
         return res.status(400).send('Insufficient funds');
       }
@@ -143,13 +150,13 @@ app.post('/buy', async (req, res) => {
       `, [teamId, stockSymbol, quantity, totalPrice]);
 
       //const currentPrice = write formala here 
-      const currentPrice = await getStockPrice(pool, stockSymbol);
+      const currentPrice = await getStockPrice(pool, stockSymbol, competitionId);
       const newAvailableShares = availableShares - quantity;
       await pool.query(`
         UPDATE Stocks
         SET AvailableShares = ?, CurrentPrice = ?
-        WHERE StockSymbol = ?
-      `, [newAvailableShares, currentPrice, stockSymbol]);
+        WHERE StockSymbol = ?, CompetitionId = ?
+      `, [newAvailableShares, currentPrice, stockSymbol, competitionId]);
 
       await pool.query(`
         UPDATE Teams
@@ -179,7 +186,7 @@ app.post('/sell', async (req, res) => {
       if (currentHoldings < quantity) {
         return res.status(400).send('Insufficient stock holdings');
       }
-      const currentPrice = await getStockPrice(pool, stockSymbol);
+      const currentPrice = await getStockPrice(pool, stockSymbol, competitionId);
       const totalSellValue = quantity * currentPrice;
       await pool.query(`
         UPDATE Teams
@@ -191,8 +198,8 @@ app.post('/sell', async (req, res) => {
       await pool.query(`
         UPDATE Stocks
         SET AvailableShares = AvailableShares + ?
-        WHERE StockSymbol = ?
-      `, [quantity, stockSymbol]);
+        WHERE StockSymbol = ?, CompetitionId = ?
+      `, [quantity, stockSymbol, competitionId]);
 
     
       await pool.query(`
@@ -211,91 +218,48 @@ app.post('/sell', async (req, res) => {
   }
 });
 
-app.get('/organiser/transactions', async (req, res) => {
-  const stockSymbol = req.query.stockSymbol?.toUpperCase(); // optional
-  const userId = req.query.userId; // optional
+app.get('/organisers/transactions/:competitionId', async (req, res) => {
+  const competitionId = req.params.competitionId;
+  const stockSymbol = req.body.stockSymbol;
+  const teamId = req.body.TeamId;
 
   try {
     const pool = await connectToDatabase();
-    let query;
-    let queryParams;
+    let query = `
+      SELECT *
+      FROM Transactions
+      INNER JOIN Stocks S ON Transactions.StockSymbol = S.StockSymbol
+      WHERE S.CompetitionId = ?
+    `;
 
-    if (stockSymbol && userId) {
-      // Filter by both stockSymbol and userId
-      query = `
-        SELECT 
-          Transactions.TransactionID,
-          Users.Username AS User,
-          Transactions.TeamID,
-          Transactions.StockSymbol,
-          Transactions.Quantity,
-          Transactions.Price AS TransactionPrice,
-          Transactions.CreatedAt
-        FROM Transactions
-        INNER JOIN Users ON Transactions.UserID = Users.UserID
-        WHERE Transactions.StockSymbol = ? AND Transactions.UserID = ?
-        ORDER BY Transactions.CreatedAt ASC
-      `;
-      queryParams = [stockSymbol, userId];
-    } else if (stockSymbol) {
-      // Filter by stockSymbol only
-      query = `
-        SELECT 
-          Transactions.TransactionID,
-          Users.Username AS User,
-          Transactions.TeamID,
-          Transactions.StockSymbol,
-          Transactions.Quantity,
-          Transactions.Price AS TransactionPrice,
-          Transactions.CreatedAt
-        FROM Transactions
-        INNER JOIN Users ON Transactions.UserID = Users.UserID
-        WHERE Transactions.StockSymbol = ?
-        ORDER BY Transactions.CreatedAt ASC
-      `;
-      queryParams = [stockSymbol];
-    } else if (userId) {
-      // Filter by userId only
-      query = `
-        SELECT 
-          Transactions.TransactionID,
-          Users.Username AS User,
-          Transactions.TeamID,
-          Transactions.StockSymbol,
-          Transactions.Quantity,
-          Transactions.Price AS TransactionPrice,
-          Transactions.CreatedAt
-        FROM Transactions
-        INNER JOIN Users ON Transactions.UserID = Users.UserID
-        WHERE Transactions.UserID = ?
-        ORDER BY Transactions.CreatedAt ASC
-      `;
-      queryParams = [userId];
-    } else {
-      // Retrieve all transactions
-      query = `
-        SELECT 
-          Transactions.TransactionID,
-          Users.Username AS User,
-          Transactions.TeamID,
-          Transactions.StockSymbol,
-          Transactions.Quantity,
-          Transactions.Price AS TransactionPrice,
-          Transactions.CreatedAt
-        FROM Transactions
-        INNER JOIN Users ON Transactions.UserID = Users.UserID
-        ORDER BY Transactions.CreatedAt ASC
-      `;
-      queryParams = [];
+    const params = [competitionId];
+
+    if (stockSymbol !== 'all') {
+      query += ` WHERE Transactions.StockSymbol = ?`;
+      params.push(stockSymbol);
     }
 
-    const [rows] = await pool.query(query, queryParams);
-    res.json(rows);
+    if (teamId !== 'all') {
+      if (stockSymbol !== 'all') {
+        query += ` AND `;
+      } else {
+        query += ` WHERE `;
+      }
+      query += ` Transactions.TeamID = ?`;
+      params.push(teamId);
+    }
+
+    query += ` ORDER BY Transactions.CreatedAt ASC;`;
+
+    const result = await pool.query(query, params);
+    res.json(result.rows);
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error fetching transaction history');
+    res.status(500).send('Internal Server Error');
   }
 });
+
+
 
 app.post('/organiser/makeStocks', async (req, res) => {
   const {
@@ -328,7 +292,7 @@ app.post('/organiser/makeStocks', async (req, res) => {
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `, [
       competitionId,
-      stockSymbol.toUpperCase(), // Ensure uppercase for symbol consistency
+      stockSymbol,
       stockName,
       initialPrice,
       currentPrice,
@@ -348,12 +312,12 @@ app.post('/organiser/makeStocks', async (req, res) => {
   }
 });
 
-async function checkStockAvailability(pool, stockSymbol) {
+async function checkStockAvailability(pool, stockSymbol, competitionId) {
   const [rows] = await pool.query(`
     SELECT AvailableShares
     FROM Stocks
-    WHERE StockSymbol = ?
-  `, [stockSymbol]);
+    WHERE StockSymbol = ?, CompetitionId = ? 
+  `, [stockSymbol, competitionId]);
 
   return rows[0].AvailableShares;
 }
@@ -381,12 +345,12 @@ async function getTeamFunds(pool, teamId) {
   return rows[0].CurrentCash;
 }
 
-async function getStockPrice(pool, stockSymbol) {
+async function getStockPrice(pool, stockSymbol, competitionId) {
   const [rows] = await pool.query(`
     SELECT CurrentPrice
     FROM Stocks
-    WHERE StockSymbol = ?
-  `, [stockSymbol]);
+    WHERE StockSymbol = ?, CompetitionId = ?
+  `, [stockSymbol, competitionId]);
   return rows[0].CurrentPrice;
 }
 
