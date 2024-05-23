@@ -1,14 +1,11 @@
 -- ALL Transactions of THIS competition(1):
-select * from transactions
-where teamID IN
-( select teamID from teams
-where competitionID = 1);
+select * from Transactions
+where CompetitionID = 1;
+
 
 -- Transactions of THIS stock (AAPL)
 select * from transactions
-where teamID IN
-( select teamID from teams
-where competitionID = 1)
+where CompetitionID = 1
 and StockSymbol = "AAPL";
 
 -- Transactions of THIS Team (1)
