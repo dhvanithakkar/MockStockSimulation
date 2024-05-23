@@ -243,6 +243,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        function toggleUserDetailsPanel() {
+            var panel = document.getElementById("userDetailsPanel");
+            panel.classList.toggle("show");
+        }
         document.addEventListener('DOMContentLoaded', function () {
             createChart('HDFC-chart', [1450, 1460, 1466.35, 1470, 1460]);
             createChart('ICICI-chart', [1120, 1125, 1132, 1140, 1130]);

@@ -149,6 +149,10 @@
         <div class="news-container" id="news-container"></div>
     </div>
 <script>
+    function toggleUserDetailsPanel() {
+            var panel = document.getElementById("userDetailsPanel");
+            panel.classList.toggle("show");
+        }
     // Sample news data for demonstration
     var news = [
         { headline: "Company A Reports Better-Than-Expected Earnings", impact: "+2%" },

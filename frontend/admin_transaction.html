@@ -189,6 +189,10 @@
     </div>
 
     <script>
+        function toggleUserDetailsPanel() {
+            var panel = document.getElementById("adminDetailsPanel");
+            panel.classList.toggle("show");
+        }
         // Dummy transaction data for demonstration purposes
         const transactions = [
             { id: 1, user: 'John Doe', amount: 100, status: 'Pending' },

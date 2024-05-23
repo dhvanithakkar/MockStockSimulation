@@ -176,9 +176,11 @@
         </div>
     </div> 
     <script>
-        // Function to navigate to sector page
+        function toggleUserDetailsPanel() {
+            var panel = document.getElementById("userDetailsPanel");
+            panel.classList.toggle("show");
+        }
         function navigateToSector(sector) {
-            // Redirect to the corresponding sector page
             window.location.href = `${sector}.html`;
         }
     </script>   

@@ -243,6 +243,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        function toggleUserDetailsPanel() {
+            var panel = document.getElementById("userDetailsPanel");
+            panel.classList.toggle("show");
+        }
         document.addEventListener('DOMContentLoaded', function () {
             createChart('TCS-chart', [3100, 3150, 3200, 3250, 3200]);
             createChart('Infosys-chart', [1400, 1420, 1444.3, 1450, 1440]);

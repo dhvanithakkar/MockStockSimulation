@@ -244,6 +244,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        function toggleUserDetailsPanel() {
+            var panel = document.getElementById("userDetailsPanel");
+            panel.classList.toggle("show");
+        }
         document.addEventListener('DOMContentLoaded', function () {
             createChart('MarutiSuzuki-chart', [12500, 12600, 12612, 12700, 12650]);
             createChart('TataMotors-chart', [940, 950, 954, 960, 955]);

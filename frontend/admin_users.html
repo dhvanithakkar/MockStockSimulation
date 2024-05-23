@@ -153,6 +153,10 @@
   </div>
 
   <script>
+    function toggleUserDetailsPanel() {
+            var panel = document.getElementById("adminDetailsPanel");
+            panel.classList.toggle("show");
+        }
     // Dummy user data for demonstration purposes
     const users = [
       { id: 1, name: 'John Doe', email: 'john@example.com', role: 'Admin', status: 'Active' },

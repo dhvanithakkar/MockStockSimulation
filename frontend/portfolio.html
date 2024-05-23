@@ -219,6 +219,10 @@
     </div>
     <canvas id="stockGraph" style="display: none;"></canvas> <!-- Hidden canvas for rendering stock graph -->
 <script>
+    function toggleUserDetailsPanel() {
+            var panel = document.getElementById("userDetailsPanel");
+            panel.classList.toggle("show");
+        }
     // Sample data for demonstration
     var stocks = [
         { name: "Company A", symbol: "AAA", quantity: 10, priceBought: 50, currentPrice: 60 },
