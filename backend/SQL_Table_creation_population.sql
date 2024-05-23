@@ -76,11 +76,27 @@ END //
 DELIMITER ;
 
 DELIMITER //
-CREATE TRIGGER set_available_shares_as_total_on_insert
+CREATE TRIGGER set_available_shares_on_insert
 BEFORE INSERT ON Stocks
 FOR EACH ROW
 BEGIN
   SET NEW.AvailableShares = NEW.TotalShares;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE TRIGGER update_stock_orders 
+AFTER INSERT ON Transactions
+FOR EACH ROW
+BEGIN
+
+  UPDATE Stocks
+  SET 
+    BuyOrders = IF(NEW.TransactionType = 'BUY', BuyOrders + NEW.Quantity, BuyOrders),
+    SellOrders = IF(NEW.TransactionType = 'SELL', SellOrders + NEW.Quantity, SellOrders),
+    AvailableShares = AvailableShares - IF(NEW.TransactionType = 'BUY', NEW.Quantity, 0) + IF(NEW.TransactionType = 'SELL', NEW.Quantity, 0)
+  WHERE StockSymbol = NEW.StockSymbol AND CompetitionID = NEW.CompetitionID;
+
 END //
 DELIMITER ;
 
