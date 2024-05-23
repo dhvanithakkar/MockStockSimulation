@@ -6,7 +6,7 @@ async function connectToDatabase() {
       host: 'localhost',
       user: 'root',
       password: process.env.DB_PASSWORD,
-      database: 'stock_simulator',
+      database: 'stock_simulation',
     });
     console.log('Connected to database successfully!');
     return pool;
