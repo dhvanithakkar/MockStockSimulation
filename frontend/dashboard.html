@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mock Stock Server</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         body {
             font-family: 'Arial', 'Helvetica', sans-serif;
@@ -198,19 +199,19 @@
         /* Style for the toggle button */
         .toggle-button {
             background-color: #4CAF50; /* Green background */
-            color: white; /* White text */
-            padding: 10px 20px; /* Padding */
+            color: white; /* White text (not used) */
+            padding: 5px; /* Small padding */
             border: none; /* No border */
-            border-radius: 5px; /* Rounded corners */
+            border-radius: 3px; /* Smaller rounded corners */
             cursor: pointer; /* Cursor style */
-            font-size: 16px; /* Font size */
-            margin-bottom: 10px; /* Add some space below the button */
+            font-size: 16px; /* Font size for icon (adjust based on icon library) */
+            text-align: center; /* Center the icon */
         }
 
-        /* Style for the toggle button on hover */
-        .toggle-button:hover {
-            background-color: #45a049; /* Darker green */
-        }
+.toggle-button:before { /* Style the icon using pseudo-element */
+  content: "\f0c9"; /* Font Awesome code for "bars" icon */
+  font-family: FontAwesome; /* Font family for icon library */
+}
         .timer {
             font-size: 18px;
             font-weight: bold;
@@ -219,6 +220,10 @@
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
+        header nav ul li:nth-child(1) a {
+    color: #fff; /* Set the color of the "Sector" link to white */
+}
+
 
     </style>
 </head>
@@ -238,6 +243,7 @@
         <div class="user-details-panel" id="userDetailsPanel">
             <p>User Name</p>
             <p>Email: user@example.com</p>
+            <button onclick="logout()">Logout</button>
         </div>
     </header>
     <div class="black-block">
@@ -265,8 +271,8 @@
         </div>
 
         <div class="rectangle-box" id="stockListBox">
-            <h3>Stocks Bought</h3>
-            <button class="toggle-button" onclick="toggleCheckboxes()">Toggle Checkboxes</button>
+            <h3><button class="toggle-button" onclick="toggleCheckboxes()"></button> Stocks Bought</h3>
+            
 
             <ul class="stock-list">
                 <li class="stock-item">
@@ -374,6 +380,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        function logout() {
+    // Redirect to index.html
+    window.location.href = 'index.html';
+}
         // Function to toggle user details panel
         function toggleUserDetailsPanel() {
             var panel = document.getElementById("userDetailsPanel");

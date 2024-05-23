@@ -133,6 +133,10 @@
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
+        header nav ul li:nth-child(4) a {
+    color: #fff; /* Set the color of the "Sector" link to white */
+}
+
 
     </style>
 </head>
@@ -152,6 +156,7 @@
         <div class="user-details-panel" id="userDetailsPanel">
             <p>User Name</p>
             <p>Email: user@example.com</p>
+            <button onclick="logout()">Logout</button>
         </div>
     </header>
     <div class="container">
@@ -159,6 +164,10 @@
         <div class="news-container" id="news-container"></div>
     </div>
 <script>
+    function logout() {
+    // Redirect to index.html
+    window.location.href = 'index.html';
+}
     function toggleUserDetailsPanel() {
             var panel = document.getElementById("userDetailsPanel");
             panel.classList.toggle("show");
