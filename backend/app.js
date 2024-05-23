@@ -4,7 +4,7 @@ const connectToDatabase = require('./database');
 const app = express();
 app.use(express.json());
 
-//getting portfolio of a specific team
+//getting portfolio of a specific team. teamID in url
 app.get('/portfolio/:teamId', async (req, res) => {
   const teamId = req.params.teamId;
   try {
@@ -27,16 +27,9 @@ app.get('/portfolio/:teamId', async (req, res) => {
   }
 });
 
-//change price of stock
+//change price of stock, all arguments in request body
 app.put('/organisers/changePrice', async (req, res) => {
-  // Retrieve data from request body
   const { CompetitionID, stockSymbol, newPrice } = req.body;
-
-  // Input validation (optional but recommended)
-  if (!CompetitionID || !stockSymbol || !newPrice) {
-    return res.status(400).send('Missing required fields: CompetitionID, stockSymbol, and newPrice');
-  }
-
   try {
     const pool = await connectToDatabase();
     const sql = `
@@ -58,9 +51,33 @@ app.put('/organisers/changePrice', async (req, res) => {
   }
 });
 
+//change beta of stock, all arguments in request body
+app.put('/organisers/changeBeta', async (req, res) => {
+  const { CompetitionID, stockSymbol, newBeta } = req.body;
+  try {
+    const pool = await connectToDatabase();
+    const sql = `
+      UPDATE Stocks
+      SET BetaValue = ?
+      WHERE CompetitionID = ? AND StockSymbol = ?
+    `;
+    const [result] = await pool.query(sql, [newBeta, CompetitionID, stockSymbol]);
+
+
+    if (result.affectedRows === 0) {
+      throw new Error('Stock not found or update failed');
+    }
+
+    res.json({ message: 'Beta value updated successfully.' });
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ error: error.message });
+  }
+});
 
 
 
+//api for buying stock, competitionID in url, all others in request body
 app.post('/buy/:CompetitionID', async (req, res) => {
   const CompetitionID = parseInt(req.params.CompetitionID, 10);
   const teamId = req.body.teamId;
@@ -86,18 +103,31 @@ app.post('/buy/:CompetitionID', async (req, res) => {
       }
 
       await pool.query(`
-        INSERT INTO Transactions (TeamID, StockSymbol, Quantity, Price)
-        VALUES (?, ?, ?, ?)
-      `, [teamId, stockSymbol, quantity, totalPrice]);
+        INSERT INTO Transactions (TeamID, StockSymbol, Quantity, Price, CompetitionID)
+        VALUES (?, ?, ?, ?, ?)
+      `, [teamId, stockSymbol, quantity, totalPrice, CompetitionID]);
 
-      //const currentPrice = write formala here 
-      const currentPrice = await getStockPrice(pool, stockSymbol, CompetitionID);
+       
+  
+      const rows = await pool.query(`
+    SELECT TotalShares, BuyOrders, SellOrders, CurrentPrice, InitialPrice, BetaValue
+    FROM Stocks
+    WHERE StockSymbol = ? AND CompetitionID = ?`, [stockSymbol, CompetitionID]);
+    const TotalShares = rows[0].TotalShares;
+    const BuyOrders = rows[0].BuyOrders;
+    const currentPrice = rows[0].CurrentPrice;
+    const InitialPrice = rows[0].InitialPrice;
+    const BetaValue = rows[0].BetaValue;
+
+    
+    const newPrice = InitialPrice + (InitialPrice * ((BuyOrders - SellOrders) / TotalShares) * Beta) - (currentPrice / 2);
+
       const newAvailableShares = availableShares - quantity;
       await pool.query(`
         UPDATE Stocks
         SET AvailableShares = ? AND CurrentPrice = ?
         WHERE StockSymbol = ? AND CompetitionID = ?;
-      `, [newAvailableShares, currentPrice, stockSymbol, CompetitionID]);
+      `, [newAvailableShares, newPrice, stockSymbol, CompetitionID]);
 
       await pool.query(`
         UPDATE Teams
@@ -114,6 +144,8 @@ app.post('/buy/:CompetitionID', async (req, res) => {
     res.status(500).send('Error during purchase');
   }
 });
+
+//api for selling. competition id in url, everything else in request body
 app.post('/sell/:competitionID', async (req, res) => {
   const CompetitionID = parseInt(req.params.competitionID, 10);
   const teamId = req.body.teamId;
@@ -136,18 +168,27 @@ app.post('/sell/:competitionID', async (req, res) => {
         WHERE TeamID = ?
       `, [totalSellValue, teamId]);
 
-      // price here
-      await pool.query(`
-        UPDATE Stocks
-        SET AvailableShares = AvailableShares + ?
-        WHERE StockSymbol = ? AND CompetitionID = ?;
-      `, [quantity, stockSymbol, CompetitionID]);
 
-    
       await pool.query(`
-        INSERT INTO Transactions (TeamID, StockSymbol, Quantity, Price)
-        VALUES (?, ?, ?, ?)
-      `, [teamId, stockSymbol, -quantity, currentPrice]);
+        INSERT INTO Transactions (TeamID, StockSymbol, Quantity, Price, CompetitionID)
+        VALUES (?, ?, ?, ?, ?)
+      `, [teamId, stockSymbol, -quantity, currentPrice, CompetitionID]);
+
+      const rows = await pool.query(`
+      SELECT TotalShares, BuyOrders, SellOrders, CurrentPrice, InitialPrice, BetaValue
+      FROM Stocks
+      WHERE StockSymbol = ? AND CompetitionID = ?`, [stockSymbol, CompetitionID]);
+      const TotalShares = rows[0].TotalShares;
+      const BuyOrders = rows[0].BuyOrders;
+      const InitialPrice = rows[0].InitialPrice;
+      const BetaValue = rows[0].BetaValue;
+
+      const newPrice = InitialPrice + (InitialPrice * ((BuyOrders - SellOrders) / TotalShares) * Beta) - (currentPrice / 2);
+      await pool.query(`
+      UPDATE Stocks
+      SET AvailableShares = AvailableShares + ? AND CurrentPrice = ?
+      WHERE StockSymbol = ? AND CompetitionID = ?;
+    `, [quantity, newPrice, stockSymbol, CompetitionID]);
 
       res.status(200).send('Stock sold successfully!');
     } catch (error) {
@@ -160,6 +201,8 @@ app.post('/sell/:competitionID', async (req, res) => {
   }
 });
 
+//api to show transaction history. competiton id in url. if we want all transactions, write all in stockSymbol and teamId in body.
+//if we want stockwise history (history of one particular stock), write all in teamId and specific stock stockSymbol. same if we want teamwise transaction history
 app.get('/organisers/transactions/:CompetitionID', async (req, res) => {
   const CompetitionID = parseInt(req.params.CompetitionID, 10);
   const stockSymbol = req.query.stockSymbol; //write all if you want all
@@ -173,7 +216,7 @@ app.get('/organisers/transactions/:CompetitionID', async (req, res) => {
       INNER JOIN Stocks S ON Transactions.StockSymbol = S.StockSymbol
       WHERE S.CompetitionID = ?
     `;
-
+     
     const params = [CompetitionID];
 
     if (stockSymbol !== 'all') {
@@ -202,36 +245,16 @@ app.get('/organisers/transactions/:CompetitionID', async (req, res) => {
 });
 
 
-
+//this is for organises to create a new stock
 app.post('/organiser/makeStocks', async (req, res) => {
   const {
-    CompetitionID,
-    stockSymbol,
-    stockName,
-    initialPrice,
-    currentPrice,
-    availableShares,
-    betaValue,
-    sectorId,
-  } = req.body;
-
-  if (!CompetitionID || !stockSymbol || !stockName || !initialPrice || !currentPrice || !availableShares || !betaValue || !sectorId) {
-    return res.status(400).send('Missing required fields in request body'); //maybe competition Id is not compulsory 
-  }
+    CompetitionID, stockSymbol, stockName, initialPrice, currentPrice, availableShares, betaValue, sectorId} = req.body;
 
   try {
     const pool = await connectToDatabase();
     const result = await pool.query(`
-      INSERT INTO Stocks (
-        CompetitionID,
-        StockSymbol,
-        StockName,
-        InitialPrice,
-        CurrentPrice,
-        AvailableShares,
-        BetaValue,
-        SectorID
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO Stocks (CompetitionID, StockSymbol, StockName, InitialPrice, CurrentPrice, AvailableShares, BetaValue, SectorID) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `, [
       CompetitionID,
       stockSymbol,
@@ -253,6 +276,56 @@ app.post('/organiser/makeStocks', async (req, res) => {
     res.status(500).send('Error creating stock');
   }
 });
+
+//for deleting stock
+app.post('/organiser/deleteStocks', async(req, res) =>{
+  const {StockSymbol, CompetitionID} = req.body;
+  try{
+    const pool = await connectToDatabase();
+    const result = await pool.query(`
+    DELETE
+  FROM Transactions
+  WHERE CompetitionID = ? AND StockSymbol = ?;`, [CompetitionID, StockSymbol]);
+  if (result.affectedRows === 0) {
+    throw new Error('Failed to delete stock');
+  }
+
+  res.json({ message: 'Stock deleted successfully' });
+} 
+catch (error) {
+  console.error(error);
+  res.status(500).send('Error deleting stock');
+}
+
+});
+
+//for deleting team
+app.post('/organiser/deleteTeam', async(req, res) =>{
+  const {TeamID, CompetitionID} = req.body;
+  try{
+    const pool = await connectToDatabase();
+    const result1 = await pool.query(`
+    DELETE FROM Transactions
+WHERE CompetitionID = ? AND TeamID = ?;`, [CompetitionID, TeamID]);
+  if (result1.affectedRows === 0) {
+    throw new Error('Failed to delete team');
+  }
+  const result2 = await pool.query(`
+  DDELETE FROM Teams
+  WHERE CompetitionID = ? AND TeamID = ?;`, [CompetitionID, TeamID]);
+if (result2.affectedRows === 0) {
+  throw new Error('Failed to delete stock');
+}
+
+
+  res.json({ message: 'Team deleted successfully' });
+} 
+catch (error) {
+  console.error(error);
+  res.status(500).send('Error deleting team');
+}
+});
+
 
 async function checkStockAvailability(pool, stockSymbol, CompetitionID) {
   const [rows] = await pool.query(`
@@ -301,6 +374,24 @@ async function getStockPrice(pool, stockSymbol, CompetitionID) {
 
 
 app.listen(8000, () => console.log('Server listening on port 8000'));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
