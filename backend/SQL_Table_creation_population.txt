@@ -26,32 +26,25 @@ CREATE TABLE Teams (
   FOREIGN KEY (CompetitionID) REFERENCES Competitions(CompetitionID)
 );
 
-DELIMITER //
-CREATE TRIGGER set_team_cash_before_insert
-BEFORE INSERT ON Teams
-FOR EACH ROW
-BEGIN
-  SET NEW.CurrentCash = (SELECT InitialCash FROM Competitions WHERE CompetitionID = NEW.CompetitionID);
-END //
-DELIMITER ;
+CREATE TABLE Sectors (
+  SectorID INT PRIMARY KEY AUTO_INCREMENT,
+  SectorName VARCHAR(255) NOT NULL
+);
 
 CREATE TABLE Stocks (
   CompetitionID INT NOT NULL,
-  StockSymbol VARCHAR(10) PRIMARY KEY,
+  StockSymbol VARCHAR(10) NOT NULL,
   StockName VARCHAR(255) NOT NULL,
   InitialPrice DECIMAL(10,2) NOT NULL,
   CurrentPrice DECIMAL(10,2) NOT NULL,
   AvailableShares INT NOT NULL,
   BetaValue DECIMAL(10,2),
   SectorID INT NOT NULL,
+  PRIMARY KEY (StockSymbol, CompetitionID),
   FOREIGN KEY (CompetitionID) REFERENCES Competitions(CompetitionID),
   FOREIGN KEY (SectorID) REFERENCES Sectors(SectorID)
 );
 
-CREATE TABLE Sectors (
-  SectorID INT PRIMARY KEY AUTO_INCREMENT,
-  SectorName VARCHAR(255) NOT NULL
-);
 
 CREATE TABLE Transactions (
   TransactionID INT PRIMARY KEY AUTO_INCREMENT,
@@ -64,6 +57,15 @@ CREATE TABLE Transactions (
   FOREIGN KEY (TeamID) REFERENCES Teams(TeamID),
   FOREIGN KEY (StockSymbol) REFERENCES Stocks(StockSymbol)
 );
+
+DELIMITER //
+CREATE TRIGGER set_team_cash_before_insert
+BEFORE INSERT ON Teams
+FOR EACH ROW
+BEGIN
+  SET NEW.CurrentCash = (SELECT InitialCash FROM Competitions WHERE CompetitionID = NEW.CompetitionID);
+END //
+DELIMITER ;
 
 INSERT INTO Colleges (CollegeName, CollegePassword) VALUES 
   ('NM College', 'password123'),
@@ -87,4 +89,5 @@ INSERT INTO Stocks (CompetitionID, StockSymbol, StockName, InitialPrice, Current
   (1, 'AAPL', 'Apple Inc.', 150.00, 150.00, 10000, 1.00, 1),
   (1, 'AMZN', 'Amazon.com Inc.', 120.00, 120.00, 8000, 1.20, 2),
   (2, 'TSLA', 'Tesla Inc.', 200.00, 200.00, 5000, 1.50, 1),
-  (2, 'JNJ', 'Johnson & Johnson', 130.00, 130.00, 7000, 0.80, 3)
+  (2, 'JNJ', 'Johnson & Johnson', 130.00, 130.00, 7000, 0.80, 3),
+  (1, 'JNJ', 'Johnson & Johnson2', 130.00, 130.00, 7000, 0.80, 3);
