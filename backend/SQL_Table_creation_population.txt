@@ -54,12 +54,13 @@ CREATE TABLE Transactions (
   TransactionID INT PRIMARY KEY AUTO_INCREMENT,
   TeamID INT NOT NULL,
   StockSymbol VARCHAR(10) NOT NULL,
+  CompetitionID INT NOT NULL,
   TransactionType ENUM('BUY', 'SELL') NOT NULL,
-  TransactionTime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  TransactionTime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
   Price DECIMAL(10,2) NOT NULL,
   Quantity INT NOT NULL,
   FOREIGN KEY (TeamID) REFERENCES Teams(TeamID),
-  FOREIGN KEY (StockSymbol) REFERENCES Stocks(StockSymbol)
+  FOREIGN KEY (StockSymbol, CompetitionID) REFERENCES Stocks(StockSymbol, CompetitionID)
 );
 
 DELIMITER //
@@ -92,14 +93,25 @@ INSERT INTO Sectors (SectorName) VALUES
 INSERT INTO Stocks (CompetitionID, StockSymbol, StockName, InitialPrice, CurrentPrice, AvailableShares, BetaValue, SectorID) VALUES
   (1, 'AAPL', 'Apple Inc.', 150.00, 150.00, 10000, 1.00, 1),
   (1, 'AMZN', 'Amazon.com Inc.', 120.00, 120.00, 8000, 1.20, 2),
+  (1, 'TSLA', 'Tesla Inc.', 200.00, 200.00, 5000, 1.50, 1),
+  (2, 'AAPL', 'Apple Inc.', 150.00, 150.00, 10000, 1.00, 1),
+  (2, 'AMZN', 'Amazon.com Inc.', 120.00, 120.00, 8000, 1.20, 2),
   (2, 'TSLA', 'Tesla Inc.', 200.00, 200.00, 5000, 1.50, 1),
   (2, 'JNJ', 'Johnson & Johnson', 130.00, 130.00, 7000, 0.80, 3),
   (1, 'JNJ', 'Johnson & Johnson2', 130.00, 130.00, 7000, 0.80, 3);
 
-INSERT INTO Transactions (TeamID, StockSymbol, TransactionType, TransactionTime, Price, Quantity)
-VALUES (1, 'AAPL', 'BUY', '2024-05-24 10:00:00', 150.25, 10),
-       (2, 'AMZN', 'SELL', '2024-05-23 15:30:00', 1250.00, 5),
-       (1, 'TSLA', 'BUY', '2024-05-22 09:15:00', 200.50, 20),
-       (3, 'AAPL', 'BUY', '2024-05-24 10:00:00', 150.25, 10),
-       (3, 'AMZN', 'SELL', '2024-05-23 15:30:00', 1250.00, 5),
-       (2, 'TSLA', 'BUY', '2024-05-22 09:15:00', 200.50, 20);
+INSERT INTO Transactions (TeamID, CompetitionID, StockSymbol, TransactionType, Price, Quantity)
+VALUES (1, 1, 'AAPL', 'BUY',   150.25, 10),
+       (2, 1, 'AMZN', 'SELL',  300.00, 5),
+       (1, 1, 'TSLA', 'BUY', 200.50, 20),
+       (3, 2, 'AAPL', 'BUY',  150.25, 10),
+       (3, 2, 'AMZN', 'SELL',  350.00, 5),
+       (1, 1, 'TSLA', 'SELL', 200.50, 10),
+       (1, 1, 'JNJ', 'BUY', 240.00, 5),
+       (1, 1, 'JNJ', 'BUY',  220.00, 15),
+       (2, 1, 'JNJ', 'BUY',  150.25, 10),
+       (2, 1, 'JNJ', 'SELL',  350.00, 5),
+       (1, 1, 'JNJ', 'SELL', 200.50, 10),
+       (3, 2, 'JNJ', 'BUY', 240.00, 5),
+       (3, 2, 'JNJ', 'BUY',  220.00, 15),
+       (1, 2, 'TSLA', 'BUY', 200.50, 20);
