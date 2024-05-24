@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Function to fetch transaction history from the backend API
   async function fetchTransactions() {
     const competitionId = 1;  // Replace with the actual competition ID or retrieve dynamically
-    const url = `/organisers/transactions/${competitionId}`;
+    const url = `http://localhost:5500/organisers/transactions/${competitionId}`;
     
     try {
       const response = await fetch(url);
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
     transactions.forEach(transaction => {
       const listItem = document.createElement('li');
       listItem.innerHTML = `
-        <strong>${transaction.TransactionType}:</strong> ${transaction.Quantity} shares of ${transaction.StockSymbol} at $${transaction.Price.toFixed(2)} (${transaction.Timestamp})
+        <strong>${transaction.TransactionType}:</strong> ${transaction.Quantity} shares of ${transaction.StockSymbol} at $${transaction.Price} (${transaction.TransactionTime})
       `;
       transactionList.appendChild(listItem);
     });
