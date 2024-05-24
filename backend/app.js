@@ -260,7 +260,7 @@ app.get('/organiser/leaderboard/:competitionID', async(req, res) => {
     const pool = await connectToDatabase();
     let query = `
     SELECT 
-  team.TeamID,
+  team.TeamName,
   nw.TotalMarketValue + team.CurrentCash AS TotalNetWorth,
   nw.TotalMarketValue as StockValue,
   CurrentCash as CashValue

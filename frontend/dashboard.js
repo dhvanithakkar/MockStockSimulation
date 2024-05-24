@@ -1,3 +1,35 @@
+// Function to fetch leaderboard data
+async function fetchLeaderboard(competitionID) {
+    try {
+        const response = await fetch(`http://localhost:5500/organiser/leaderboard/${competitionID}`);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching leaderboard data:', error);
+        return [];
+    }
+}
+
+// Function to display leaderboard
+async function displayLeaderboard(competitionID) {
+    const leaderboardData = await fetchLeaderboard(competitionID);
+    const leaderboardContainer = document.querySelector('.rectangle-box.leaderboard');
+
+    leaderboardContainer.innerHTML = ''; // Clear existing leaderboard content
+
+    leaderboardData.forEach((team, index) => {
+        const leaderboardItem = document.createElement('div');
+        leaderboardItem.classList.add('leaderboard-item');
+        leaderboardItem.innerHTML = `
+            <span class="position">${index + 1}</span>
+            <span class="team-name">${team.TeamName}</span>
+            <span class="total-net-worth">${team.TotalNetWorth}</span>
+        `;
+        leaderboardContainer.appendChild(leaderboardItem);
+    });
+}
+
+// Function to logout
 function logout() {
     // Redirect to index.html
     window.location.href = 'index.html';
@@ -98,3 +130,7 @@ function updateTimer() {
 
 setInterval(updateTimer, 1000); // Update the timer every second
 updateTimer(); // Initialize the timer immediately
+
+// Call displayLeaderboard function with the competition ID when needed
+const competitionID = 1;
+displayLeaderboard(competitionID);
