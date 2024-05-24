@@ -1,7 +1,7 @@
 document.getElementById("loginForm").addEventListener("submit", async function(event) {
     event.preventDefault();
     
-    const username = document.getElementById("username").value;
+    let username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
     const role = document.getElementById("role").value;
     const loginFeedback = document.getElementById("loginFeedback");
@@ -12,7 +12,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
     console.log('Role:', role);
 
     try {
-        const response = await fetch('/logincredentials');
+        const response = await fetch('http://localhost:5500/logincredentials');
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -20,7 +20,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
         
         const credentials = await response.json();
         console.log('Fetched credentials:', credentials);
-        
+        username = parseInt(username, 10);
         const user = credentials.find(user => user.TeamID === username && user.TeamPassword === password);
         
         if (user) {
