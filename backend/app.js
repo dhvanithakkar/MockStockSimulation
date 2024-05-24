@@ -14,6 +14,20 @@ app.use(express.json());
 function updategraph(){
 
 }
+app.get('/getsectorwise/:SectorName', async (req, res) => {
+  const SectorName = req.params.SectorName;
+  try{
+    const pool = await connectToDatabase();
+    const [rows] = await pool.query(`
+    SELECT s.CurrentPrice, s.StockSymbol FROM Stocks s and Sectors sec where s.sectorId = sec.sectorId and sec.SectorName = ?`,
+  [SectorName]);
+  console.log(rows);
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error fetching portfolio');
+  }
+});
 
 //getting portfolio of a specific team. teamID in url
 app.get('/portfolio/:CompetitionID/:teamId', async (req, res) => {
@@ -246,7 +260,7 @@ app.get('/organiser/leaderboard/:competitionID', async(req, res) => {
     const pool = await connectToDatabase();
     let query = `
     SELECT 
-  team.TeamID,
+  team.TeamName,
   nw.TotalMarketValue + team.CurrentCash AS TotalNetWorth,
   nw.TotalMarketValue as StockValue,
   CurrentCash as CashValue
@@ -428,3 +442,4 @@ async function getStockPrice(pool, stockSymbol, CompetitionID) {
 
 
 app.listen(5500, () => console.log('Server listening on port 5500'));
+

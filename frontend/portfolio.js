@@ -7,7 +7,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function fetchTransactionHistory(competitionId, teamId) {
     try {
-        const response = await fetch(`/organisers/transactions/${competitionId}?teamId=${teamId}`);
+
+        const response = await fetch(`http://localhost:5500/organisers/transactions/${competitionId}?teamId=${teamId}`);
+
         const transactions = await response.json();
 
         const transactionHistory = document.getElementById('transaction-history');
@@ -15,7 +17,9 @@ async function fetchTransactionHistory(competitionId, teamId) {
 
         transactions.forEach(transaction => {
             const listItem = document.createElement('li');
-            listItem.textContent = `Date: ${transaction.TranationTime}, Stock: ${transaction.StockSymbol}, 
+
+            listItem.textContent = `Date: ${transaction.TransactionTime}, Stock: ${transaction.StockSymbol}, 
+
                                     Quantity: ${transaction.Quantity}, Price: ${transaction.Price}`;
             transactionHistory.appendChild(listItem);
         });
@@ -121,4 +125,7 @@ function updateTimer() {
 }
 
 setInterval(updateTimer, 1000); // Update the timer every second
+
 updateTimer(); // Initialize the timer immediately
+
+
