@@ -1,29 +1,38 @@
 const express = require('express');
 const connectToDatabase = require('./database'); 
-
+const cors = require('cors');
 const app = express();
+const allowedOrigin = 'http://127.0.0.1:5501';
+app.use(cors({
+  origin: allowedOrigin,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type']
+}));
+
 app.use(express.json());
 
 function updategraph(){
-  
+
 }
 
 //getting portfolio of a specific team. teamID in url
-app.get('/portfolio/:teamId', async (req, res) => {
+app.get('/portfolio/:CompetitionID/:teamId', async (req, res) => {
   const teamId = req.params.teamId;
+  const CompetitionID = req.params.CompetitionID;
   try {
     const pool = await connectToDatabase();
     const [rows] = await pool.query(`
-      SELECT 
-        s.StockSymbol, 
-        SUM(CASE WHEN t.TransactionType = 'BUY' THEN t.Quantity * t.Price ELSE -t.Quantity * t.Price END) AS TotalAmountInvested,
-        SUM(CASE WHEN t.TransactionType = 'BUY' THEN t.Quantity ELSE -t.Quantity END) AS CurrentHoldings, s.CurrentPrice, 
-        s.CurrentPrice * SUM(CASE WHEN t.TransactionType = 'BUY' THEN t.Quantity ELSE -t.Quantity END) AS TotalMarketValue
-      FROM Transactions t
-      INNER JOIN Stocks s ON t.StockSymbol = s.StockSymbol
-      WHERE TeamID = ?
-      GROUP BY s.StockSymbol, s.CurrentPrice;
-    `, [teamId]);
+    SELECT 
+    s.StockSymbol, 
+    s.CurrentPrice,
+    SUM(CASE WHEN t.TransactionType = 'BUY' THEN t.Quantity * t.Price ELSE -t.Quantity * t.Price END) AS TotalAmountInvested,
+    SUM(CASE WHEN t.TransactionType = 'BUY' THEN t.Quantity ELSE -t.Quantity END) AS CurrentHoldings,
+    s.CurrentPrice * SUM(CASE WHEN t.TransactionType = 'BUY' THEN t.Quantity ELSE -t.Quantity END) AS TotalMarketValue
+  FROM Transactions t
+  INNER JOIN Stocks s ON t.StockSymbol = s.StockSymbol
+  WHERE TeamID = ? AND s.CompetitionID = ?
+  GROUP BY s.StockSymbol, s.CurrentPrice;
+    `, [teamId, CompetitionID]);
     console.log(rows);
     res.json(rows);
   } catch (error) {
@@ -47,7 +56,22 @@ app.get('/logincredentials', async (req, res) => {
     res.status(500).send('Error fetching login credentials');
   }
 });
-
+//get admin credentials
+app.get('/admincredentials', async (req, res) => {
+  try {
+    const pool = await connectToDatabase();
+    const [rows] = await pool.query(`
+      SELECT 
+      CollegeID  , CollegePassword 
+      FROM Colleges
+      `);
+    console.log(rows);
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error fetching college credentials');
+  }
+});
 
 
 //change price of stock, all arguments in request body
@@ -217,25 +241,28 @@ app.get('/organisers/transactions/:CompetitionID', async (req, res) => {
 
 //for making leaderboard
 app.get('/organiser/leaderboard/:competitionID', async(req, res) => {
-  const CompetitionID = parseInt(req.params.CompetitionID, 10);
+  const CompetitionID = parseInt(req.params.competitionID, 10);
   try{
     const pool = await connectToDatabase();
-    let query = `SELECT team.TeamID,
-    nw.TotalMarketValue + team.CurrentCash AS TotalNetWorth,
-    nw.TotalMarketValue as StockValue,
-    CurrentCash as CashValue
-  FROM Teams team
-  INNER JOIN (
+    let query = `
     SELECT 
-      t.TeamID,
-      SUM(s.CurrentPrice * CASE WHEN t.TransactionType = 'BUY' THEN t.Quantity ELSE -t.Quantity END) AS TotalMarketValue
-    FROM Transactions t
-    INNER JOIN Stocks s ON t.StockSymbol = s.StockSymbol
-    GROUP BY t.TeamID
-  ) nw 
-  ON team.TeamID = nw.TeamID
-  ORDER BY TotalNetWorth DESC;`;
-  const [rows] = await pool.query(query, params);
+  team.TeamID,
+  nw.TotalMarketValue + team.CurrentCash AS TotalNetWorth,
+  nw.TotalMarketValue as StockValue,
+  CurrentCash as CashValue
+FROM Teams team
+INNER JOIN (
+  SELECT 
+    t.TeamID,
+    SUM(s.CurrentPrice * CASE WHEN t.TransactionType = 'BUY' THEN t.Quantity ELSE -t.Quantity END) AS TotalMarketValue
+	FROM Transactions t
+	INNER JOIN Stocks s ON t.StockSymbol = s.StockSymbol
+	GROUP BY t.TeamID
+) nw 
+ON team.TeamID = nw.TeamID
+WHERE team.CompetitionID = ?
+ORDER BY TotalNetWorth DESC`;
+  const [rows] = await pool.query(query, [CompetitionID]);
   res.json(rows);
 } catch (error) {
   console.error(error);
@@ -400,4 +427,4 @@ async function getStockPrice(pool, stockSymbol, CompetitionID) {
 
 
 
-app.listen(8000, () => console.log('Server listening on port 8000'));
+app.listen(5500, () => console.log('Server listening on port 5500'));
