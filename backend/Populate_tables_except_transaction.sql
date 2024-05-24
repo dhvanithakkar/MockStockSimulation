@@ -3,8 +3,8 @@ INSERT INTO Colleges (CollegeName, CollegePassword) VALUES
   ('DJSCE', 'password456');
 
 INSERT INTO Competitions (CollegeID, CompetitionName, StartDate, EndDate, InitialCash, NumberOfParticipants, URL) VALUES
-  (1, 'Mock Stock Tester', '2024-05-23 00:00:00', '2024-05-23 15:00:00', 10000.00, 10, 'https://basic.url.com/mockstocktester'),
-  (2, 'Trading Competition', '2024-07-24 00:00:00', '2024-07-24 11:00:00', 5000.00, 5, 'https://basic.url.com/tradingcompetition');
+  (1, 'Mock Stock Tester', '2024-05-23 00:00:00', '2024-05-23 15:00:00', 10000.00, 10),
+  (2, 'Trading Competition', '2024-07-24 00:00:00', '2024-07-24 11:00:00', 5000.00, 5);
 
 INSERT INTO Teams (CompetitionID, TeamPassword, TeamName, Email) VALUES
   (1, 'team123', 'The Investment Club', 'invest@nm.edu'),
