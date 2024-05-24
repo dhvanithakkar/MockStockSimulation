@@ -55,6 +55,7 @@ INNER JOIN (
 	GROUP BY t.TeamID
 ) nw 
 ON team.TeamID = nw.TeamID
+WHERE team.CompetitionID = 1
 ORDER BY TotalNetWorth DESC;
 
 
