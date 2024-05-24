@@ -1,44 +1,71 @@
+document.addEventListener('DOMContentLoaded', function() {
+    const competitionId = 1; // Example competition ID
+    const teamId = 1; // Example team ID, replace with actual value
+
+    fetchTransactionHistory(competitionId, teamId);
+});
+
+async function fetchTransactionHistory(competitionId, teamId) {
+    try {
+        const response = await fetch(`http://localhost:5500/organisers/transactions/${competitionId}?teamId=${teamId}`);
+        const transactions = await response.json();
+
+        const transactionHistory = document.getElementById('transaction-history');
+        transactionHistory.innerHTML = '';
+
+        transactions.forEach(transaction => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `Date: ${transaction.TransactionTime}, Stock: ${transaction.StockSymbol}, 
+                                    Quantity: ${transaction.Quantity}, Price: ${transaction.Price}`;
+            transactionHistory.appendChild(listItem);
+        });
+    } catch (error) {
+        console.error('Error fetching transaction history:', error);
+    }
+}
+
 function logout() {
     // Redirect to index.html
     window.location.href = 'index.html';
 }
-    function toggleUserDetailsPanel() {
-            var panel = document.getElementById("userDetailsPanel");
-            panel.classList.toggle("show");
+
+function toggleUserDetailsPanel() {
+    var panel = document.getElementById("userDetailsPanel");
+    panel.classList.toggle("show");
+}
+
+// Sample data for demonstration
+var stocks = [
+    { name: "Company A", symbol: "AAA", quantity: 10, priceBought: 50, currentPrice: 60 },
+    { name: "Company B", symbol: "BBB", quantity: 20, priceBought: 30, currentPrice: 25 }
+];
+
+// Object to store opened graphs
+var openedGraphs = {};
+
+// Populate portfolio section
+var portfolioSection = document.getElementById('portfolio');
+stocks.forEach(function(stock) {
+    var profitLoss = ((stock.currentPrice - stock.priceBought) * stock.quantity).toFixed(2);
+    var profitLossClass = profitLoss >= 0 ? 'green' : 'red';
+    var stockItem = document.createElement('div');
+    stockItem.classList.add('stock-item');
+    stockItem.innerHTML = `
+        <span>${stock.name} (${stock.symbol}) - ${stock.quantity} units</span>
+        <span>Price Bought: $${stock.priceBought}</span>
+        <span>Current Price: $${stock.currentPrice}</span>
+        <span class="${profitLossClass} profit-loss">Profit/Loss: $${profitLoss}</span>
+    `;
+    stockItem.addEventListener('click', function() {
+        if (!openedGraphs[stock.symbol]) {
+            renderGraph(stock, stockItem);
+            openedGraphs[stock.symbol] = true;
         }
-    // Sample data for demonstration
-    var stocks = [
-        { name: "Company A", symbol: "AAA", quantity: 10, priceBought: 50, currentPrice: 60 },
-        { name: "Company B", symbol: "BBB", quantity: 20, priceBought: 30, currentPrice: 25 }
-    ];
-
-    // Object to store opened graphs
-    var openedGraphs = {};
-
-    // Populate portfolio section
-    var portfolioSection = document.getElementById('portfolio');
-    stocks.forEach(function(stock) {
-        var profitLoss = ((stock.currentPrice - stock.priceBought) * stock.quantity).toFixed(2);
-        var profitLossClass = profitLoss >= 0 ? 'green' : 'red';
-        var stockItem = document.createElement('div');
-        stockItem.classList.add('stock-item');
-        stockItem.innerHTML = `
-            <span>${stock.name} (${stock.symbol}) - ${stock.quantity} units</span>
-            <span>Price Bought: $${stock.priceBought}</span>
-            <span>Current Price: $${stock.currentPrice}</span>
-            <span class="${profitLossClass} profit-loss">Profit/Loss: $${profitLoss}</span>
-        `;
-        stockItem.addEventListener('click', function() {
-            if (!openedGraphs[stock.symbol]) {
-                renderGraph(stock, stockItem);
-                openedGraphs[stock.symbol] = true;
-            }
-        });
-        portfolioSection.appendChild(stockItem);
     });
+    portfolioSection.appendChild(stockItem);
+});
 
-    // Function to render graph
-    // Function to render graph
+// Function to render graph
 function renderGraph(stock, stockItem) {
     // Create a canvas element for the graph
     var canvas = document.createElement('canvas');
@@ -84,14 +111,14 @@ function renderGraph(stock, stockItem) {
     });
 }
 
-    function updateTimer() {
-            const timerElement = document.getElementById('timer');
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            timerElement.textContent = `${hours}:${minutes}:${seconds}`;
-        }
+function updateTimer() {
+    const timerElement = document.getElementById('timer');
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    timerElement.textContent = `${hours}:${minutes}:${seconds}`;
+}
 
-        setInterval(updateTimer, 1000); // Update the timer every second
-        updateTimer(); // Initialize the timer immediately
+setInterval(updateTimer, 1000); // Update the timer every second
+updateTimer(); // Initialize the timer immediately
