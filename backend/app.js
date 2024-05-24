@@ -32,17 +32,14 @@ app.get('/portfolio/:teamId', async (req, res) => {
   }
 });
 //get teamId and teamPassword
-app.get('/logincredentials/:competitionId', async (req, res) => {
-  const competitionId = req.params.competitionId;
+app.get('/logincredentials', async (req, res) => {
   try {
     const pool = await connectToDatabase();
     const [rows] = await pool.query(`
       SELECT 
         TeamID, TeamPassword 
       FROM Teams
-     WHERE CompetitionID = ?
-      
-    `, [competitionId]);
+      `);
     console.log(rows);
     res.json(rows);
   } catch (error) {
