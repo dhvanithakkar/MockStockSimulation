@@ -1,34 +1,46 @@
-// Dummy transaction data
-let transactions = [
-    { id: 1, type: 'Buy', stock: 'AAPL', quantity: 10, price: 150.25, timestamp: '2024-05-25 09:30:00' },
-    { id: 2, type: 'Sell', stock: 'GOOGL', quantity: 5, price: 2750.50, timestamp: '2024-05-25 10:15:00' },
-    { id: 3, type: 'Buy', stock: 'MSFT', quantity: 8, price: 260.75, timestamp: '2024-05-25 11:00:00' }
-  ];
-  
+document.addEventListener('DOMContentLoaded', function() {
+  // Fetch and display transactions when the page loads
+  fetchTransactions();
+
+  // Function to fetch transaction history from the backend API
+  async function fetchTransactions() {
+    const competitionId = 1;  // Replace with the actual competition ID or retrieve dynamically
+    const url = `/organisers/transactions/${competitionId}`;
+    
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const transactions = await response.json();
+      displayTransactions(transactions);
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+    }
+  }
+
   // Function to display transaction history
-  function displayTransactions() {
+  function displayTransactions(transactions) {
     const transactionList = document.getElementById('transactionList');
     transactionList.innerHTML = '';
-  
+
     transactions.forEach(transaction => {
       const listItem = document.createElement('li');
       listItem.innerHTML = `
-        <strong>${transaction.type}:</strong> ${transaction.quantity} shares of ${transaction.stock} at $${transaction.price.toFixed(2)} (${transaction.timestamp})
+        <strong>${transaction.TransactionType}:</strong> ${transaction.Quantity} shares of ${transaction.StockSymbol} at $${transaction.Price.toFixed(2)} (${transaction.Timestamp})
       `;
       transactionList.appendChild(listItem);
     });
   }
-  
-  // Initial display of transaction history
-  displayTransactions();
+
   function logout() {
     // Redirect to index.html
     window.location.href = 'index.html';
-}
+  }
 
-// Function to toggle user details panel
-function toggleUserDetailsPanel() {
+  // Function to toggle user details panel
+  function toggleUserDetailsPanel() {
     var panel = document.getElementById("userDetailsPanel");
     panel.classList.toggle("show");
-}
-  
+  }
+});
