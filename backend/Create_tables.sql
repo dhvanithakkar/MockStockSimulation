@@ -16,7 +16,6 @@ CREATE TABLE Competitions (
   EndDate DATETIME NOT NULL,
   InitialCash DECIMAL(10,2) NOT NULL,
   NumberOfParticipants INT NOT NULL,
-  URL VARCHAR(255),
   FOREIGN KEY (CollegeID) REFERENCES Colleges(CollegeID)
 );
 
