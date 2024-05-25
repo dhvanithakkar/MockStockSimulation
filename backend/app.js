@@ -11,9 +11,21 @@ app.use(cors({
 
 app.use(express.json());
 
-function updategraph(){
-
-}
+app.get('forgraph/:CompetitionID/:StockSymbol', async (req, res) => {
+    const CompetitionID = req.params.CompetitionID;
+    const StockSymbol = req.params.StockSymbol;
+    try{
+      const pool = await connectToDatabase();
+    const [rows] = await pool.query(`
+    SELECT price, timest from graph where StockSymbol = ? AND CompetitionID = ?`, [StockSymbol, CompetitionID]);
+    console.log(rows);
+    res.json(rows);
+    }
+    catch (error) {
+      console.error(error);
+      res.status(500).send('Error fetching graph');
+    }
+});
 app.get('/getsectorwise/:SectorName', async (req, res) => {
   const SectorName = req.params.SectorName;
   try{
