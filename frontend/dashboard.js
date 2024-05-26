@@ -22,7 +22,9 @@ async function displayLeaderboard(competitionID) {
         leaderboardItem.classList.add('leaderboard-item');
         leaderboardItem.innerHTML = `
             <span class="position">${index + 1}</span>
+
             <span class="team-name">${team.TeamName}</span>
+
             <span class="total-net-worth">${team.TotalNetWorth}</span>
         `;
         leaderboardContainer.appendChild(leaderboardItem);
@@ -133,4 +135,6 @@ updateTimer(); // Initialize the timer immediately
 
 // Call displayLeaderboard function with the competition ID when needed
 const competitionID = 1;
+
 displayLeaderboard(competitionID);
+

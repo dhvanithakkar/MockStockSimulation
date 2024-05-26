@@ -10,6 +10,20 @@ app.use(cors({
 }));
 
 app.use(express.json());
+//to get current cash in my wallet
+app.get('mywallet/:CompetitionID/:TeamID', async (req, res) => {
+  const TeamId = req.params.TeamID;
+  const CompetitionID = req.params.CompetitionID;
+  try{
+    const pool = await connectToDatabase();
+    const [rows] = await pool.query(`
+    SELECT CurrentCash from teams where CompetitionID = ? AND TeamID = ?`, [CompetitionID, TeamID]);
+    res.json(rows);}
+    catch (error) {
+      console.error(error);
+      res.status(500).send('Error fetching current cash');
+    }
+})
 
 app.get('forgraph/:CompetitionID/:StockSymbol', async (req, res) => {
     const CompetitionID = req.params.CompetitionID;
@@ -26,6 +40,25 @@ app.get('forgraph/:CompetitionID/:StockSymbol', async (req, res) => {
       res.status(500).send('Error fetching graph');
     }
 });
+
+//get list of sectors
+app.get('/listsectors/:CompetitionID', async (req, res) => {
+  const CompetitionID = req.params.CompetitionID;
+  try{
+    const pool = await connectToDatabase();
+    const [rows] = await pool.query(`SELECT sect.SectorName from Sectors sect AND Stocks s 
+    WHERE sect.SectorID = s.SectorID AND s.CompetitionID = ?`, [CompetitionID]);
+    console.log(rows);
+    res.json(rows);
+  }
+  catch (error) {
+    console.error(error);
+    res.status(500).send('Error fetching stocks list');
+  }
+})
+
+//get sectorwise stocks
+
 app.get('/getsectorwise/:SectorName', async (req, res) => {
   const SectorName = req.params.SectorName;
   try{
