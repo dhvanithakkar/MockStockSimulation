@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Line</title>
+    <link rel="stylesheet" href="companies.css"> <!-- Link to CSS file -->
+
+</head>
+<body>
+    <header>
+        <div class="logo"><img src="logo.png" alt="Mock Stock Server"></div>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html">Overview</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="sector.html">Sector</a></li>
+                <li><a href="news.html">News</a></li>
+            </ul>
+        </nav>
+        <div class="timer" id="timer">00:00:00</div>
+        <div class="user-profile" onclick="toggleUserDetailsPanel()">U</div>
+        <div class="user-details-panel" id="userDetailsPanel">
+            <p>User Name</p>
+            <p>Email: user@example.com</p>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </header>
+    <br>
+    <div class="stock-line" onclick="toggleDetails('TCS')">
+        <div class="company-name">TCS</div>
+        <div class="stock-summary">
+            <div class="stock-price"></div>
+            <div class="stock-change"></div>
+        </div>
+    </div>
+        <div class="stock-details-container" id="TCS-details">
+            <div class="stock-details">
+                <div class="details-wrapper">
+                    <div class="chart-container">
+                        <canvas id="TCS-chart" class="chart"></canvas>
+                    </div>
+                    <div class="details-container">
+                        <div class="stock-info">
+                            <div class="stock-price-detail">Price: </div>
+                            <div class="stock-quantity">Available: </div>
+                            <input type="number" id="TCS-quantity" placeholder="Quantity to buy" oninput="updateTotalAmount('TCS', 3200)">
+                            <div class="total-amount" id="TCS-total">Total: </div>
+                            <div class="button-group">
+                                <button onclick="buyStock('TCS', )">Buy</button>
+                                <button onclick="sellStock('TCS',)">Sell</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="company.js"></script>
+</body>
+</html>
+
