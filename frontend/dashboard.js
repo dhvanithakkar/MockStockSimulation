@@ -133,42 +133,62 @@ function updateTimer() {
 setInterval(updateTimer, 1000); // Update the timer every second
 updateTimer(); // Initialize the timer immediately
 
-function renderPortfolio(portfolio) {
-    const portfolioSection = document.getElementById('stockListBox');
+function renderPortfolio(stockData) {
     const totalInvestment = document.getElementById('totalInvestment');
     const returnofinvestment = document.getElementById('percent');
-    portfolioSection.innerHTML = ''; // Clear any existing content
     totalInvestment.innerHTML = '';
 
     let sum1 = 0;
     let sum2 = 0;
-    portfolio.forEach(stock => {
-        const profitLoss = ((stock.CurrentPrice - (stock.TotalAmountInvested / stock.CurrentHoldings)) * stock.CurrentHoldings).toFixed(4);
-        const profitLossClass = profitLoss >= 0 ? 'green' : 'red';
-        const stockItem = document.createElement('div');
-        stockItem.classList.add('stock-item');
-        stockItem.innerHTML = `
-            <span>${stock.StockSymbol} - ${stock.CurrentHoldings} units</span>
-            <span>Total Invested: $${stock.TotalAmountInvested}</span>
-            <span>Current Price: $${stock.CurrentPrice}</span>
-            <span>Total Market Value: $${stock.TotalMarketValue}</span>
-            <span class="${profitLossClass} profit-loss">Profit/Loss: $${profitLoss}</span>
-        `;
-        stockItem.addEventListener('click', function() {
-            if (!openedGraphs[stock.StockSymbol]) {
-                renderGraph(stock, stockItem);
-                openedGraphs[stock.StockSymbol] = true;
-            }
-        });
-        portfolioSection.appendChild(stockItem);
-        sum1 = sum1 + Number(stock.TotalAmountInvested);
-        sum2 = sum2 + Number(stock.TotalMarketValue);
-    });
-    totalInvestment.innerHTML = "$ " + sum1;
+  // Assuming you have your data in a Javascript array called 'stockData'
+
+var stockList = document.getElementById("stockListBox").getElementsByClassName("stock-list")[0];
+
+// Clear any existing list items
+stockList.innerHTML = "";
+
+for (var i = 0; i < stockData.length; i++) {
+  var stockItem = document.createElement("li");
+  stockItem.className = "stock-item";
+
+  // Create checkbox element
+  var checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.className = "stock-checkbox";
+  stockItem.appendChild(checkbox);
+
+  // Create span element for company name
+  var companyName = document.createElement("span");
+  companyName.className = "stock-name";
+  companyName.textContent = stockData[i].StockSymbol; 
+  stockItem.appendChild(companyName);
+
+  // Create span element for stock value
+  var stockValue = document.createElement("span");
+  stockValue.className = "stock-value";
+  stockValue.textContent = stockData[i].CurrentPrice; 
+  stockItem.appendChild(stockValue);
+
+  // Create span element for arrow (up or down)
+  const profitLoss = ((stockData[i].CurrentPrice - (stockData[i].TotalAmountInvested / stockData[i].CurrentHoldings)) * stockData[i].CurrentHoldings).toFixed(4);
+  const profitLossClass = profitLoss >= 0 ? 'arrow arrow-up' : 'arrow arrow-down';
+  var arrow = document.createElement("span");
+  arrow.className = profitLossClass;
+  arrow.textContent = profitLoss >= 0 ? 'Up' : 'Down';
+  stockItem.appendChild(arrow);
+
+  // Append the new list item to the stock list
+  stockList.appendChild(stockItem);
+  sum1 = sum1 + Number(stockData[i].TotalAmountInvested);
+sum2 = sum2 + Number(stockData[i].TotalMarketValue);
+}
+console.log(sum1, sum2);
+totalInvestment.innerHTML = "$ " + sum1;
     const roi = ((sum2 - sum1)/sum1 * 100).toFixed(4);
     console.log(roi);
     returnofinvestment.innerHTML = roi + "%";
 }
+
 
 async function fetchWalletData(competitionID, teamID) {
     try {
@@ -201,5 +221,6 @@ const competitionID = 1;
 const teamID = 1; // Replace with the actual team ID
 displayWalletData(competitionID, teamID);
 displayLeaderboard(competitionID);
+fetchPortfolioData(competitionID, teamID);
 
 
