@@ -15,16 +15,15 @@ async function displayLeaderboard(competitionID) {
     const leaderboardData = await fetchLeaderboard(competitionID);
     const leaderboardContainer = document.querySelector('.rectangle-box.leaderboard');
 
-    leaderboardContainer.innerHTML = ''; // Clear existing leaderboard content
+    // Clear existing leaderboard items, but keep the heading
+    leaderboardContainer.innerHTML = '<h2>Leaderboard</h2>';
 
     leaderboardData.forEach((team, index) => {
         const leaderboardItem = document.createElement('div');
         leaderboardItem.classList.add('leaderboard-item');
         leaderboardItem.innerHTML = `
             <span class="position">${index + 1}</span>
-
             <span class="team-name">${team.TeamName}</span>
-
             <span class="total-net-worth">${team.TotalNetWorth}</span>
         `;
         leaderboardContainer.appendChild(leaderboardItem);
@@ -77,50 +76,70 @@ checkboxes.forEach(checkbox => {
     });
 });
 
-// Function to create chart for a company
-function createChart(companyName, value, color, index) {
-    const chartDiv = document.createElement('div');
-    chartDiv.classList.add('chart');
-    chartDiv.innerHTML = `<canvas id="companyChart${index}"></canvas>`;
-    document.getElementById('chartContainer').appendChild(chartDiv);
+// Function to fetch graph data
+async function fetchGraphData(competitionID, stockSymbol) {
+    try {
+        const response = await fetch(`http://localhost:5500/forgraph/${competitionID}/${stockSymbol}`);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching graph data:', error);
+        return [];
+    }
+}
 
-    const ctx = document.getElementById(`companyChart${index}`).getContext('2d');
+// Function to create a chart for a company
+function createChart(container, data, companyName) {
+    const ctx = document.createElement('canvas');
+    container.appendChild(ctx);
+
     const chart = new Chart(ctx, {
-        type: 'bar',
+        type: 'line',
         data: {
-            labels: [companyName],
+            labels: data.map(d => new Date(d.timest).toLocaleDateString()),
             datasets: [{
-                label: 'Stock Value',
-                data: [value],
-                backgroundColor: [color],
-                borderColor: [color],
-                borderWidth: 1
+                label: companyName,
+                data: data.map(d => d.price),
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                fill: false,
             }]
         },
         options: {
             scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day'
+                    }
+                },
                 y: {
                     beginAtZero: true
                 }
             }
         }
     });
+
+    return chart;
 }
 
-// Function to display charts for selected companies
-function displaySelectedCharts() {
-    document.getElementById('chartContainer').innerHTML = ''; // Clear existing charts
+// Function to display selected charts
+async function displaySelectedCharts() {
+    const chartContainer = document.getElementById('chartContainer');
+    chartContainer.innerHTML = ''; // Clear existing charts
 
-    checkboxes.forEach((checkbox, index) => {
+    const checkboxes = document.querySelectorAll('.stock-checkbox');
+    for (let checkbox of checkboxes) {
         if (checkbox.checked) {
             const companyName = checkbox.parentElement.querySelector('.stock-name').textContent;
-            const stockValue = parseFloat(checkbox.parentElement.querySelector('.stock-value').textContent);
-            const color = index % 2 === 0 ? 'rgba(75, 192, 192, 0.2)' : 'rgba(255, 99, 132, 0.2)';
-            createChart(companyName, stockValue, color, index);
+            const stockSymbol = companyName; // Assuming stock symbol is the company name
+            const data = await fetchGraphData(1, stockSymbol); // Replace 1 with the actual CompetitionID
+            createChart(chartContainer, data, companyName);
         }
-    });
+    }
 }
 
+// Function to update the timer
 function updateTimer() {
     const timerElement = document.getElementById('timer');
     const now = new Date();
@@ -140,56 +159,55 @@ function renderPortfolio(stockData) {
 
     let sum1 = 0;
     let sum2 = 0;
-  // Assuming you have your data in a Javascript array called 'stockData'
+    var stockList = document.getElementById("stockListBox").getElementsByClassName("stock-list")[0];
 
-var stockList = document.getElementById("stockListBox").getElementsByClassName("stock-list")[0];
+    // Clear any existing list items
+    stockList.innerHTML = "";
 
-// Clear any existing list items
-stockList.innerHTML = "";
+    for (var i = 0; i < stockData.length; i++) {
+        var stockItem = document.createElement("li");
+        stockItem.className = "stock-item";
 
-for (var i = 0; i < stockData.length; i++) {
-  var stockItem = document.createElement("li");
-  stockItem.className = "stock-item";
+        // Create checkbox element
+        var checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.className = "stock-checkbox";
+        stockItem.appendChild(checkbox);
 
-  // Create checkbox element
-  var checkbox = document.createElement("input");
-  checkbox.type = "checkbox";
-  checkbox.className = "stock-checkbox";
-  stockItem.appendChild(checkbox);
+        // Create span element for company name
+        var companyName = document.createElement("span");
+        companyName.className = "stock-name";
+        companyName.textContent = stockData[i].StockSymbol; 
+        stockItem.appendChild(companyName);
 
-  // Create span element for company name
-  var companyName = document.createElement("span");
-  companyName.className = "stock-name";
-  companyName.textContent = stockData[i].StockSymbol; 
-  stockItem.appendChild(companyName);
+        // Create span element for stock value
+        var stockValue = document.createElement("span");
+        stockValue.className = "stock-value";
+        stockValue.textContent = stockData[i].CurrentPrice; 
+        stockItem.appendChild(stockValue);
 
-  // Create span element for stock value
-  var stockValue = document.createElement("span");
-  stockValue.className = "stock-value";
-  stockValue.textContent = stockData[i].CurrentPrice; 
-  stockItem.appendChild(stockValue);
+        // Create span element for arrow (up or down)
+        const profitLoss = ((stockData[i].CurrentPrice - (stockData[i].TotalAmountInvested / stockData[i].CurrentHoldings)) * stockData[i].CurrentHoldings).toFixed(4);
+        const profitLossClass = profitLoss >= 0 ? 'arrow arrow-up' : 'arrow arrow-down';
+        var arrow = document.createElement("span");
+        arrow.className = profitLossClass;
+        arrow.textContent = profitLoss >= 0 ? '↑' : '↓';
+        stockItem.appendChild(arrow);
 
-  // Create span element for arrow (up or down)
-  const profitLoss = ((stockData[i].CurrentPrice - (stockData[i].TotalAmountInvested / stockData[i].CurrentHoldings)) * stockData[i].CurrentHoldings).toFixed(4);
-  const profitLossClass = profitLoss >= 0 ? 'arrow arrow-up' : 'arrow arrow-down';
-  var arrow = document.createElement("span");
-  arrow.className = profitLossClass;
-  arrow.textContent = profitLoss >= 0 ? 'Up' : 'Down';
-  stockItem.appendChild(arrow);
+        // Append the new list item to the stock list
+        stockList.appendChild(stockItem);
+        sum1 = sum1 + Number(stockData[i].TotalAmountInvested);
+        sum2 = sum2 + Number(stockData[i].TotalMarketValue);
+    }
 
-  // Append the new list item to the stock list
-  stockList.appendChild(stockItem);
-  sum1 = sum1 + Number(stockData[i].TotalAmountInvested);
-sum2 = sum2 + Number(stockData[i].TotalMarketValue);
-}
-console.log(sum1, sum2);
-totalInvestment.innerHTML = "$ " + sum1;
-    const roi = ((sum2 - sum1)/sum1 * 100).toFixed(4);
+    console.log(sum1, sum2);
+    totalInvestment.innerHTML = "$ " + sum1;
+    const roi = ((sum2 - sum1) / sum1 * 100).toFixed(4);
     console.log(roi);
     returnofinvestment.innerHTML = roi + "%";
 }
 
-
+// Function to fetch wallet data
 async function fetchWalletData(competitionID, teamID) {
     try {
         const response = await fetch(`http://localhost:5500/mywallet/${competitionID}/${teamID}`);
@@ -207,6 +225,8 @@ async function displayWalletData(competitionID, teamID) {
     const walletValueElement = document.getElementById('walletValue');
     walletValueElement.textContent = `$${walletValue}`;
 }
+
+// Function to fetch portfolio data
 async function fetchPortfolioData(competitionId, teamId) {
     try {
         const response = await fetch(`http://localhost:5500/portfolio/${competitionId}/${teamId}`);
@@ -216,11 +236,10 @@ async function fetchPortfolioData(competitionId, teamId) {
         console.error('Error fetching portfolio:', error);
     }
 }
-// Call displayWalletData function with the competition ID and team ID
+
+// Initial function calls
 const competitionID = 1;
 const teamID = 1; // Replace with the actual team ID
 displayWalletData(competitionID, teamID);
 displayLeaderboard(competitionID);
 fetchPortfolioData(competitionID, teamID);
-
-
