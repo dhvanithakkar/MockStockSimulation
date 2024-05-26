@@ -1,15 +1,24 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const competitionId = 1; // Example competition ID
+    const competitionId = 1; // Example competition ID, replace with actual value
     const teamId = 1; // Example team ID, replace with actual value
 
+    fetchPortfolioData(competitionId, teamId);
     fetchTransactionHistory(competitionId, teamId);
 });
 
+async function fetchPortfolioData(competitionId, teamId) {
+    try {
+        const response = await fetch(`http://localhost:5500/portfolio/${competitionId}/${teamId}`);
+        const portfolio = await response.json();
+        renderPortfolio(portfolio);
+    } catch (error) {
+        console.error('Error fetching portfolio:', error);
+    }
+}
+
 async function fetchTransactionHistory(competitionId, teamId) {
     try {
-
         const response = await fetch(`http://localhost:5500/organisers/transactions/${competitionId}?teamId=${teamId}`);
-
         const transactions = await response.json();
 
         const transactionHistory = document.getElementById('transaction-history');
@@ -17,9 +26,7 @@ async function fetchTransactionHistory(competitionId, teamId) {
 
         transactions.forEach(transaction => {
             const listItem = document.createElement('li');
-
             listItem.textContent = `Date: ${transaction.TransactionTime}, Stock: ${transaction.StockSymbol}, 
-
                                     Quantity: ${transaction.Quantity}, Price: ${transaction.Price}`;
             transactionHistory.appendChild(listItem);
         });
@@ -28,65 +35,54 @@ async function fetchTransactionHistory(competitionId, teamId) {
     }
 }
 
+function renderPortfolio(portfolio) {
+    const portfolioSection = document.getElementById('portfolio');
+    portfolioSection.innerHTML = ''; // Clear any existing content
+
+    portfolio.forEach(stock => {
+        const profitLoss = ((stock.CurrentPrice - (stock.TotalAmountInvested / stock.CurrentHoldings)) * stock.CurrentHoldings).toFixed(2);
+        const profitLossClass = profitLoss >= 0 ? 'green' : 'red';
+        const stockItem = document.createElement('div');
+        stockItem.classList.add('stock-item');
+        stockItem.innerHTML = `
+            <span>${stock.StockSymbol} - ${stock.CurrentHoldings} units</span>
+            <span>Total Invested: $${stock.TotalAmountInvested.toFixed(2)}</span>
+            <span>Current Price: $${stock.CurrentPrice.toFixed(2)}</span>
+            <span class="${profitLossClass} profit-loss">Profit/Loss: $${profitLoss}</span>
+        `;
+        stockItem.addEventListener('click', function() {
+            if (!openedGraphs[stock.StockSymbol]) {
+                renderGraph(stock, stockItem);
+                openedGraphs[stock.StockSymbol] = true;
+            }
+        });
+        portfolioSection.appendChild(stockItem);
+    });
+}
+
 function logout() {
-    // Redirect to index.html
     window.location.href = 'index.html';
 }
 
 function toggleUserDetailsPanel() {
-    var panel = document.getElementById("userDetailsPanel");
+    const panel = document.getElementById("userDetailsPanel");
     panel.classList.toggle("show");
 }
 
-// Sample data for demonstration
-var stocks = [
-    { name: "Company A", symbol: "AAA", quantity: 10, priceBought: 50, currentPrice: 60 },
-    { name: "Company B", symbol: "BBB", quantity: 20, priceBought: 30, currentPrice: 25 }
-];
-
-// Object to store opened graphs
-var openedGraphs = {};
-
-// Populate portfolio section
-var portfolioSection = document.getElementById('portfolio');
-stocks.forEach(function(stock) {
-    var profitLoss = ((stock.currentPrice - stock.priceBought) * stock.quantity).toFixed(2);
-    var profitLossClass = profitLoss >= 0 ? 'green' : 'red';
-    var stockItem = document.createElement('div');
-    stockItem.classList.add('stock-item');
-    stockItem.innerHTML = `
-        <span>${stock.name} (${stock.symbol}) - ${stock.quantity} units</span>
-        <span>Price Bought: $${stock.priceBought}</span>
-        <span>Current Price: $${stock.currentPrice}</span>
-        <span class="${profitLossClass} profit-loss">Profit/Loss: $${profitLoss}</span>
-    `;
-    stockItem.addEventListener('click', function() {
-        if (!openedGraphs[stock.symbol]) {
-            renderGraph(stock, stockItem);
-            openedGraphs[stock.symbol] = true;
-        }
-    });
-    portfolioSection.appendChild(stockItem);
-});
-
-// Function to render graph
 function renderGraph(stock, stockItem) {
-    // Create a canvas element for the graph
-    var canvas = document.createElement('canvas');
-    canvas.width = 400; // Adjust width as needed
-    canvas.height = 200; // Adjust height as needed
-    canvas.classList.add('graph-canvas'); // Add a class for easier selection
-
-    // Insert the canvas element just below the clicked stock item
+    const canvas = document.createElement('canvas');
+    canvas.width = 400;
+    canvas.height = 200;
+    canvas.classList.add('graph-canvas');
     stockItem.insertAdjacentElement('afterend', canvas);
 
-    var ctx = canvas.getContext('2d');
-    var chart = new Chart(ctx, {
+    const ctx = canvas.getContext('2d');
+    const chart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
             datasets: [{
-                label: `${stock.name} (${stock.symbol})`,
+                label: `${stock.StockSymbol}`,
                 data: [65, 59, 80, 81, 56, 55, 40],
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1,
@@ -102,15 +98,10 @@ function renderGraph(stock, stockItem) {
         }
     });
 
-    // Add click event to close the graph
     canvas.addEventListener('click', function(event) {
-        // Prevent event propagation to the canvas element, so it doesn't trigger the closing immediately
         event.stopPropagation();
-        // Remove the canvas
         canvas.remove();
-        // Update the openedGraphs object
-        openedGraphs[stock.symbol] = false;
-        // Remove the chart instance
+        openedGraphs[stock.StockSymbol] = false;
         chart.destroy();
     });
 }
@@ -124,8 +115,5 @@ function updateTimer() {
     timerElement.textContent = `${hours}:${minutes}:${seconds}`;
 }
 
-setInterval(updateTimer, 1000); // Update the timer every second
-
-updateTimer(); // Initialize the timer immediately
-
-
+setInterval(updateTimer, 1000);
+updateTimer();
