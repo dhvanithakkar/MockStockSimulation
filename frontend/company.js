@@ -100,6 +100,7 @@ function generateStockHTML(stock) {
                 </div>
                 <div class="details-container">
                     <div class="stock-info">
+<<<<<<< HEAD
                         <div class="stock-price-detail">Price: ${stock.CurrentPrice} </div>
                         <div class="stock-quantity">Available: ${stock.AvailableShares}</div>
                         <input type="number" id="${stock.StockSymbol}-quantity" placeholder="Quantity to buy" oninput="updateTotalAmount('${stock.StockSymbol}', ${stock.CurrentPrice})">
@@ -107,6 +108,15 @@ function generateStockHTML(stock) {
                         <div class="button-group">
                             <button onclick="buyStock('${stock.StockSymbol}', ${stock.CurrentPrice})">Buy</button>
                             <button onclick="sellStock('${stock.StockSymbol}', ${stock.CurrentPrice})">Sell</button>
+=======
+                        <div class="stock-price-detail">Price: </div>
+                        <div class="stock-quantity">Available: </div>
+                        <input type="number" id="${stock.StockSymbol}-quantity" placeholder="Quantity to buy" oninput="updateTotalAmount('${stock.StockSymbol}', 3200)">
+                        <div class="total-amount" id="${stock.StockSymbol}-total">Total: </div>
+                        <div class="button-group">
+                            <button onclick="buyStock('${stock.StockSymbol}', 3200)">Buy</button>
+                            <button onclick="sellStock('${stock.StockSymbol}', 3200)">Sell</button>
+>>>>>>> ae087f2fdabc70062dbd59826c855e998dca5317
                         </div>
                     </div>
                 </div>
@@ -116,10 +126,16 @@ function generateStockHTML(stock) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+<<<<<<< HEAD
     fetch('http://localhost:5500/companies')
         .then(response => response.json())
         .then(data => {
             console.log(data);
+=======
+    fetch('/companies')
+        .then(response => response.json())
+        .then(data => {
+>>>>>>> ae087f2fdabc70062dbd59826c855e998dca5317
             const stocksContainer = document.getElementById('stocks-container');
             data.forEach(stock => {
                 stocksContainer.innerHTML += generateStockHTML(stock);
@@ -129,4 +145,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     setInterval(updateTimer, 1000);
     updateTimer();
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> ae087f2fdabc70062dbd59826c855e998dca5317
