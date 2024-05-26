@@ -4,7 +4,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     fetchPortfolioData(competitionId, teamId);
     fetchTransactionHistory(competitionId, teamId);
+    fetchWalletData(competitionId, teamId); // Add this line
 });
+
+async function fetchWalletData(competitionId, teamId) {
+    try {
+        const response = await fetch(`http://localhost:5500/mywallet/${competitionId}/${teamId}`);
+        const walletData = await response.json();
+        const walletValue = document.getElementById('wallet-value');
+        walletValue.textContent = `$${walletData.CurrentCash}`;
+    } catch (error) {
+        console.error('Error fetching wallet data:', error);
+    }
+}
+
 
 async function fetchPortfolioData(competitionId, teamId) {
     try {
