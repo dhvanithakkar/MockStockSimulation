@@ -58,6 +58,7 @@ app.get('/listsectors/:CompetitionID', async (req, res) => {
 })
 
 //get sectorwise stocks
+
 app.get('/getsectorwise/:SectorName', async (req, res) => {
   const SectorName = req.params.SectorName;
   try{
