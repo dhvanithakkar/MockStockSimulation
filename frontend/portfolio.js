@@ -35,19 +35,27 @@ async function fetchTransactionHistory(competitionId, teamId) {
     }
 }
 
+
+
 function renderPortfolio(portfolio) {
     const portfolioSection = document.getElementById('portfolio');
+    const totalInvestment = document.getElementById('totalInvestment');
+    const returnofinvestment = document.getElementById('percent');
     portfolioSection.innerHTML = ''; // Clear any existing content
+    totalInvestment.innerHTML = '';
 
+    let sum1 = 0;
+    let sum2 = 0;
     portfolio.forEach(stock => {
-        const profitLoss = ((stock.CurrentPrice - (stock.TotalAmountInvested / stock.CurrentHoldings)) * stock.CurrentHoldings).toFixed(2);
+        const profitLoss = ((stock.CurrentPrice - (stock.TotalAmountInvested / stock.CurrentHoldings)) * stock.CurrentHoldings).toFixed(4);
         const profitLossClass = profitLoss >= 0 ? 'green' : 'red';
         const stockItem = document.createElement('div');
         stockItem.classList.add('stock-item');
         stockItem.innerHTML = `
             <span>${stock.StockSymbol} - ${stock.CurrentHoldings} units</span>
-            <span>Total Invested: $${stock.TotalAmountInvested.toFixed(2)}</span>
-            <span>Current Price: $${stock.CurrentPrice.toFixed(2)}</span>
+            <span>Total Invested: $${stock.TotalAmountInvested}</span>
+            <span>Current Price: $${stock.CurrentPrice}</span>
+            <span>Total Market Value: $${stock.TotalMarketValue}</span>
             <span class="${profitLossClass} profit-loss">Profit/Loss: $${profitLoss}</span>
         `;
         stockItem.addEventListener('click', function() {
@@ -57,7 +65,12 @@ function renderPortfolio(portfolio) {
             }
         });
         portfolioSection.appendChild(stockItem);
+        sum1 = sum1 + Number(stock.TotalAmountInvested);
+        sum2 = sum2 + Number(stock.TotalMarketValue);
     });
+    totalInvestment.innerHTML = "INR" + sum1;
+    const roi = ((sum2 - sum1)/sum1 * 100).toFixed(4);
+    returnofinvestment.innerHTML = roi + "%";
 }
 
 function logout() {
@@ -117,3 +130,5 @@ function updateTimer() {
 
 setInterval(updateTimer, 1000);
 updateTimer();
+
+
