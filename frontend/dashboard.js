@@ -133,8 +133,28 @@ function updateTimer() {
 setInterval(updateTimer, 1000); // Update the timer every second
 updateTimer(); // Initialize the timer immediately
 
-// Call displayLeaderboard function with the competition ID when needed
-const competitionID = 1;
+// Function to fetch wallet data
+async function fetchWalletData(competitionID, teamID) {
+    try {
+        const response = await fetch(`http://localhost:5500/mywallet/${competitionID}/${teamID}`);
+        const data = await response.json();
+        return data.CurrentCash;
+    } catch (error) {
+        console.error('Error fetching wallet data:', error);
+        return 0; // Default to 0 if there's an error
+    }
+}
 
+// Function to display wallet data
+async function displayWalletData(competitionID, teamID) {
+    const walletValue = await fetchWalletData(competitionID, teamID);
+    const walletValueElement = document.getElementById('walletValue');
+    walletValueElement.textContent = `$${walletValue}`;
+}
+
+// Call displayWalletData function with the competition ID and team ID
+const competitionID = 1;
+const teamID = 1; // Replace with the actual team ID
+displayWalletData(competitionID, teamID);
 displayLeaderboard(competitionID);
 
