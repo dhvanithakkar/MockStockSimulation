@@ -2,7 +2,7 @@ function logout() {
     // Redirect to index.html
     window.location.href = 'index.html';
 }
-function createChart(chartId, data, detailsId) {
+function createChart(chartId, data, timestamps, detailsId) {
     var ctx = document.getElementById(chartId).getContext('2d');
     var detailsContainer = document.getElementById(detailsId);
     var chartContainer = detailsContainer.querySelector('.chart-container');
@@ -15,7 +15,7 @@ function createChart(chartId, data, detailsId) {
     new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+            labels: timestamps,
             datasets: [{
                 label: chartId.split('-')[0] + ' Stock Price',
                 data: data,

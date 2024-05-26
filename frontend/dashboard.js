@@ -133,8 +133,73 @@ function updateTimer() {
 setInterval(updateTimer, 1000); // Update the timer every second
 updateTimer(); // Initialize the timer immediately
 
-// Call displayLeaderboard function with the competition ID when needed
-const competitionID = 1;
+function renderPortfolio(portfolio) {
+    const portfolioSection = document.getElementById('stockListBox');
+    const totalInvestment = document.getElementById('totalInvestment');
+    const returnofinvestment = document.getElementById('percent');
+    portfolioSection.innerHTML = ''; // Clear any existing content
+    totalInvestment.innerHTML = '';
 
+    let sum1 = 0;
+    let sum2 = 0;
+    portfolio.forEach(stock => {
+        const profitLoss = ((stock.CurrentPrice - (stock.TotalAmountInvested / stock.CurrentHoldings)) * stock.CurrentHoldings).toFixed(4);
+        const profitLossClass = profitLoss >= 0 ? 'green' : 'red';
+        const stockItem = document.createElement('div');
+        stockItem.classList.add('stock-item');
+        stockItem.innerHTML = `
+            <span>${stock.StockSymbol} - ${stock.CurrentHoldings} units</span>
+            <span>Total Invested: $${stock.TotalAmountInvested}</span>
+            <span>Current Price: $${stock.CurrentPrice}</span>
+            <span>Total Market Value: $${stock.TotalMarketValue}</span>
+            <span class="${profitLossClass} profit-loss">Profit/Loss: $${profitLoss}</span>
+        `;
+        stockItem.addEventListener('click', function() {
+            if (!openedGraphs[stock.StockSymbol]) {
+                renderGraph(stock, stockItem);
+                openedGraphs[stock.StockSymbol] = true;
+            }
+        });
+        portfolioSection.appendChild(stockItem);
+        sum1 = sum1 + Number(stock.TotalAmountInvested);
+        sum2 = sum2 + Number(stock.TotalMarketValue);
+    });
+    totalInvestment.innerHTML = "$ " + sum1;
+    const roi = ((sum2 - sum1)/sum1 * 100).toFixed(4);
+    console.log(roi);
+    returnofinvestment.innerHTML = roi + "%";
+}
+
+async function fetchWalletData(competitionID, teamID) {
+    try {
+        const response = await fetch(`http://localhost:5500/mywallet/${competitionID}/${teamID}`);
+        const data = await response.json();
+        return data.CurrentCash;
+    } catch (error) {
+        console.error('Error fetching wallet data:', error);
+        return 0; // Default to 0 if there's an error
+    }
+}
+
+// Function to display wallet data
+async function displayWalletData(competitionID, teamID) {
+    const walletValue = await fetchWalletData(competitionID, teamID);
+    const walletValueElement = document.getElementById('walletValue');
+    walletValueElement.textContent = `$${walletValue}`;
+}
+async function fetchPortfolioData(competitionId, teamId) {
+    try {
+        const response = await fetch(`http://localhost:5500/portfolio/${competitionId}/${teamId}`);
+        const portfolio = await response.json();
+        renderPortfolio(portfolio);
+    } catch (error) {
+        console.error('Error fetching portfolio:', error);
+    }
+}
+// Call displayWalletData function with the competition ID and team ID
+const competitionID = 1;
+const teamID = 1; // Replace with the actual team ID
+displayWalletData(competitionID, teamID);
 displayLeaderboard(competitionID);
+
 

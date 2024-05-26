@@ -32,9 +32,10 @@ app.get('/mywallet/:CompetitionID/:TeamID', async (req, res) => {
 });
 
 
-app.get('forgraph/:CompetitionID/:StockSymbol', async (req, res) => {
+app.get('/forgraph/:CompetitionID/:StockSymbol', async (req, res) => {
     const CompetitionID = req.params.CompetitionID;
     const StockSymbol = req.params.StockSymbol;
+    console.log(CompetitionID, StockSymbol);
     try{
       const pool = await connectToDatabase();
     const [rows] = await pool.query(`
