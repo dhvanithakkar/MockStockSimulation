@@ -116,20 +116,33 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="companies.js"></script>
 
-<script>
+    <script>
+        async function fetchGraphData(CompetitionID, StockSymbol) {
+            try {
+                const response = await fetch(`/forgraph/${CompetitionID}/${StockSymbol}`);
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error(error);
+                return null;
+            }
+        }
     
-    function toggleUserDetailsPanel() {
-        var panel = document.getElementById("userDetailsPanel");
-        panel.classList.toggle("show");
-    }
-    document.addEventListener('DOMContentLoaded', function () {
-        createChart('MarutiSuzuki-chart', [12550, 12600, 12612, 12650, 12630], 'MarutiSuzuki-details');
-        createChart('TATAMotors-chart', [940, 950, 954, 960, 955], 'TATAMotors-details');
-        createChart('M&M-chart', [2480, 2500, 2504, 2510, 2502], 'M&M-details');
-    });
-
+        async function updateChart(chartId, CompetitionID, StockSymbol) {
+            const graphData = await fetchGraphData(CompetitionID, StockSymbol);
+            if (graphData) {
+                const prices = graphData.map(entry => entry.price);
+                createChart(chartId, prices, `${StockSymbol}-details`);
+            }
+        }
     
-</script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            await updateChart('MarutiSuzuki-chart', 'yourCompetitionID', 'MarutiSuzuki');
+            await updateChart('TATAMotors-chart', 'yourCompetitionID', 'TATAMotors');
+            await updateChart('M&M-chart', 'yourCompetitionID', 'M&M');
+        });
+    </script>
+    
 </body>
 </html>
                
