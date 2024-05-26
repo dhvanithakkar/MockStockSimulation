@@ -47,7 +47,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
             const credentials = await response.json();
             console.log('Fetched credentials:', credentials);
             username = parseInt(username, 10);
-            const user = credentials.find(user => user.TeamID === username && user.TeamPassword === password);
+            const user = credentials.find(user => user. CollegeID === username && user.CollegePassword === password);
             
             if (user) {
                 console.log('User authenticated');

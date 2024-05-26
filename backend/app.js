@@ -11,19 +11,26 @@ app.use(cors({
 
 app.use(express.json());
 //to get current cash in my wallet
-app.get('mywallet/:CompetitionID/:TeamID', async (req, res) => {
-  const TeamId = req.params.TeamID;
+app.get('/mywallet/:CompetitionID/:TeamID', async (req, res) => {
   const CompetitionID = req.params.CompetitionID;
-  try{
+  const TeamID = req.params.TeamID;
+  try {
     const pool = await connectToDatabase();
     const [rows] = await pool.query(`
-    SELECT CurrentCash from teams where CompetitionID = ? AND TeamID = ?`, [CompetitionID, TeamID]);
-    res.json(rows);}
-    catch (error) {
-      console.error(error);
-      res.status(500).send('Error fetching current cash');
+      SELECT t.CurrentCash 
+      FROM teams t
+      WHERE t.CompetitionID = ? AND t.TeamID = ?`, [CompetitionID, TeamID]);
+    if (rows.length === 0) {
+      return res.status(404).send('Team not found');
     }
-})
+
+    res.json(rows[0]); 
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error fetching team cash');
+  }
+});
+
 
 app.get('forgraph/:CompetitionID/:StockSymbol', async (req, res) => {
     const CompetitionID = req.params.CompetitionID;
@@ -46,8 +53,12 @@ app.get('/listsectors/:CompetitionID', async (req, res) => {
   const CompetitionID = req.params.CompetitionID;
   try{
     const pool = await connectToDatabase();
-    const [rows] = await pool.query(`SELECT sect.SectorName from Sectors sect AND Stocks s 
-    WHERE sect.SectorID = s.SectorID AND s.CompetitionID = ?`, [CompetitionID]);
+    const [rows] = await pool.query(`SELECT SectorName 
+    FROM Sectors 
+    WHERE SectorID IN
+    ( SELECT SectorID
+    FROM Stocks 
+    WHERE CompetitionID = ?);`, [CompetitionID]);
     console.log(rows);
     res.json(rows);
   }
