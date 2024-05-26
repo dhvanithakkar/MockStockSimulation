@@ -66,6 +66,10 @@ WHERE StockSymbol = "JNJ" AND CompetitionID = 1
 ORDER BY TransactionTime ASC;
 
 
--- Get sectors
-SELECT * FROM Sectors
-ORDER BY SectorID ASC;
+-- Get sector names having stocks in competition 1
+SELECT SectorName 
+FROM Sectors 
+WHERE SectorID IN
+( SELECT SectorID
+FROM Stocks 
+WHERE CompetitionID = 2);
