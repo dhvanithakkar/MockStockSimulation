@@ -1,17 +1,15 @@
 function logout() {
-    // Redirect to index.html
     window.location.href = 'index.html';
 }
+
 function createChart(chartId, data, timestamps, detailsId) {
     var ctx = document.getElementById(chartId).getContext('2d');
     var detailsContainer = document.getElementById(detailsId);
     var chartContainer = detailsContainer.querySelector('.chart-container');
 
-    // Set the chart container's width and height
-    chartContainer.style.width = '75%'; // Set the chart container's width to 75%
-    chartContainer.style.height = '100%'; // Set the chart container's height to 100%
+    chartContainer.style.width = '75%';
+    chartContainer.style.height = '100%';
 
-    // Create the chart with the dynamically set dimensions
     new Chart(ctx, {
         type: 'line',
         data: {
@@ -26,7 +24,7 @@ function createChart(chartId, data, timestamps, detailsId) {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false, // Ensure the chart fills its container
+            maintainAspectRatio: false,
             scales: {
                 y: {
                     beginAtZero: false
@@ -36,9 +34,21 @@ function createChart(chartId, data, timestamps, detailsId) {
     });
 }
 
-function toggleDetails(company) {
+function toggleDetails(company, competitionID) {
     var details = document.getElementById(company + '-details');
-    details.style.display = details.style.display === 'block' ? 'none' : 'block';
+    if (details.style.display === 'block') {
+        details.style.display = 'none';
+    } else {
+        fetch(`/forgraph/${competitionID}/${company}`)
+            .then(response => response.json())
+            .then(data => {
+                const prices = data.map(item => item.price);
+                const timestamps = data.map(item => new Date(item.timest).toLocaleString());
+                createChart(`${company}-chart`, prices, timestamps, `${company}-details`);
+                details.style.display = 'block';
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    }
 }
 
 function updateTotalAmount(company, price) {
@@ -68,15 +78,54 @@ function updateTimer() {
     timerElement.textContent = `${hours}:${minutes}:${seconds}`;
 }
 
-setInterval(updateTimer, 1000); // Update the timer every second
-updateTimer(); // Initialize the timer immediately
-
 function toggleUserDetailsPanel() {
     var panel = document.getElementById("userDetailsPanel");
     panel.classList.toggle("show");
 }
+
+function generateStockHTML(stock) {
+    return `
+    <div class="stock-line" onclick="toggleDetails('${stock.StockSymbol}', ${stock.CompetitionID})">
+        <div class="company-name">${stock.StockSymbol}</div>
+        <div class="stock-summary">
+            <div class="stock-price"></div>
+            <div class="stock-change"></div>
+        </div>
+    </div>
+    <div class="stock-details-container" id="${stock.StockSymbol}-details">
+        <div class="stock-details">
+            <div class="details-wrapper">
+                <div class="chart-container">
+                    <canvas id="${stock.StockSymbol}-chart" class="chart"></canvas>
+                </div>
+                <div class="details-container">
+                    <div class="stock-info">
+                        <div class="stock-price-detail">Price: </div>
+                        <div class="stock-quantity">Available: </div>
+                        <input type="number" id="${stock.StockSymbol}-quantity" placeholder="Quantity to buy" oninput="updateTotalAmount('${stock.StockSymbol}', 3200)">
+                        <div class="total-amount" id="${stock.StockSymbol}-total">Total: </div>
+                        <div class="button-group">
+                            <button onclick="buyStock('${stock.StockSymbol}', 3200)">Buy</button>
+                            <button onclick="sellStock('${stock.StockSymbol}', 3200)">Sell</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>`;
+}
+
 document.addEventListener('DOMContentLoaded', function () {
-createChart('TCS-chart', [3100, 3150, 3200, 3250, 3200], 'TCS-details');
-createChart('Infosys-chart', [1400, 1420, 1444.3, 1450, 1440], 'Infosys-details');
-createChart('HCLTech-chart', [1300, 1310, 1339.2, 1350, 1340], 'HCLTech-details');
+    fetch('/companies')
+        .then(response => response.json())
+        .then(data => {
+            const stocksContainer = document.getElementById('stocks-container');
+            data.forEach(stock => {
+                stocksContainer.innerHTML += generateStockHTML(stock);
+            });
+        })
+        .catch(error => console.error('Error fetching companies:', error));
+
+    setInterval(updateTimer, 1000);
+    updateTimer();
 });
