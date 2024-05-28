@@ -222,6 +222,39 @@ async function fetchPortfolioData(competitionId, teamId) {
         console.error('Error fetching portfolio:', error);
     }
 }
+// Function to fetch transaction history data
+async function fetchTransactionHistory(competitionId, teamId) {
+    try {
+        const response = await fetch(`http://localhost:5500/organisers/transactions/${competitionId}?teamId=${teamId}`);
+        const transactionHistory = await response.json();
+        renderTransactionHistory(transactionHistory);
+    } catch (error) {
+        console.error('Error fetching transaction history:', error);
+    }
+}
+
+function renderTransactionHistory(transactionHistory) {
+    const historyContainer = document.querySelector('.rectangle-box.history .history-list');
+    historyContainer.innerHTML = ''; // Clear existing history
+
+    transactionHistory.forEach(transaction => {
+        const historyItem = document.createElement("div");
+        historyItem.className = "history-item";
+
+        // Display transaction details
+        historyItem.innerHTML = `
+            <span class="transaction-type">${transaction.TransactionType}</span>
+            <span class="stock-symbol">${transaction.StockSymbol}</span>
+            <span class="quantity">${transaction.Quantity}</span>
+            <span class="price">${transaction.Price}</span>
+            <span class="timestamp">${transaction.Timestamp}</span>
+        `;
+
+        historyContainer.appendChild(historyItem);
+    });
+}
+
+
 
 // Initial function calls
 const competitionID = 1;
@@ -229,3 +262,5 @@ const teamID = 1; // Replace with the actual team ID
 displayWalletData(competitionID, teamID);
 displayLeaderboard(competitionID);
 fetchPortfolioData(competitionID, teamID);
+fetchTransactionHistory(competitionID, teamID);
+
