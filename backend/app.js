@@ -236,8 +236,8 @@ app.post('/buy/:CompetitionID', async (req, res) => {
         return res.status(400).send('Insufficient funds');
       }
       await pool.query(`
-        INSERT INTO Transactions (TeamID, StockSymbol, Quantity, Price, TransactionType)
-        VALUES (?, ?, ?, ?, 'BUY')
+        INSERT INTO Transactions (TeamID, StockSymbol, Quantity, Price, TransactionType, CompetitionID)
+        VALUES (?, ?, ?, ?, 'BUY', CompetitionID)
       `, [teamId, stockSymbol, quantity, totalPrice]);
       updategraph();
       
@@ -395,7 +395,7 @@ app.post('/organiser/makeStocks', async (req, res) => {
     const pool = await connectToDatabase();
     
 
-const preparedStatement = `INSERT INTO Stocks (CompetitionID, StockSymbol, StockName, InitialPrice, TotalShares, BetaValue, SectorID) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+const preparedStatement = `INSERT INTO Stocks (CompetitionID, StockSymbol, StockName, InitialPrice, TotalShares, BetaValue, SectorID, CurrentPrice) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
 const result = await pool.query(preparedStatement, [
   CompetitionID,
   stockSymbol,
@@ -404,6 +404,7 @@ const result = await pool.query(preparedStatement, [
   TotalShares,
   betaValue,
   sectorId,
+  initialPrice
 ]);
 if (result.affectedRows === 0) {
       throw new Error('Failed to create stock');

@@ -66,23 +66,23 @@ document.querySelector('.stock-list').addEventListener('click', handleCheckboxCl
 // Function to fetch graph data
 async function fetchGraphData(competitionID, stockSymbol) {
     try {
-        fetch(`http://localhost:5500/forgraph/${competitionID}/${stockSymbol}`)
-            .then(response => response.json())
-            .then(data => {
-                const prices = data.map(item => item.price);
-                const timestamps = data.map(item => new Date(item.timest).toLocaleString());})
-                .catch(error => console.error('Error fetching data:', error));
+        const response = await fetch(`http://localhost:5500/forgraph/${competitionID}/${stockSymbol}`);
+        const data = await response.json();
+        return data.map(item => ({
+            price: item.price,
+            timestamp: new Date(item.timest).toLocaleString()
+        }));
     } catch (error) {
         console.error('Error fetching graph data:', error);
         return [];
     }
 }
 
-// Function to create a chart for a company
+
 function createChart(chartId, data, timestamps, detailsId) {
-    var ctx = document.getElementById(chartId).getContext('2d');
-    var detailsContainer = document.getElementById(detailsId);
-    var chartContainer = detailsContainer.getElementById('chartContainer');
+    const ctx = document.getElementById(chartId).getContext('2d');
+    const detailsContainer = document.getElementById(detailsId);
+    const chartContainer = detailsContainer.querySelector('#chartContainer');
 
     chartContainer.style.width = '75%';
     chartContainer.style.height = '100%';
@@ -111,6 +111,8 @@ function createChart(chartId, data, timestamps, detailsId) {
     });
 }
 
+
+
 // Function to display selected charts
 async function displaySelectedCharts() {
     const chartContainer = document.getElementById('chartContainer');
@@ -121,11 +123,25 @@ async function displaySelectedCharts() {
         if (checkbox.checked) {
             const companyName = checkbox.parentElement.querySelector('.stock-name').textContent;
             const stockSymbol = companyName; // Assuming stock symbol is the company name
-            const data = await fetchGraphData(1, stockSymbol); // Replace 1 with the actual CompetitionID
-            createChart(chartId, data, timestamps, detailsId);
+            const graphData = await fetchGraphData(1, stockSymbol); // Replace 1 with the actual CompetitionID
+
+            if (graphData.length) {
+                const data = graphData.map(item => item.price);
+                const timestamps = graphData.map(item => item.timestamp);
+                const chartId = `chart-${stockSymbol}`;
+                const detailsId = `details-${stockSymbol}`;
+
+                // Create the canvas element for the chart
+                const canvas = document.createElement('canvas');
+                canvas.id = chartId;
+                chartContainer.appendChild(canvas);
+
+                createChart(chartId, data, timestamps, detailsId);
+            }
         }
     }
 }
+
 
 // Function to update the timer
 function updateTimer() {
