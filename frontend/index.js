@@ -26,6 +26,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
         
         if (user) {
             console.log('User authenticated');
+            sessionStorage.setItem('teamId', user.TeamID);
         
                 window.location.href = "dashboard.html";
         

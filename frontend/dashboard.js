@@ -239,7 +239,7 @@ async function fetchPortfolioData(competitionId, teamId) {
 
 // Initial function calls
 const competitionID = 1;
-const teamID = 1; // Replace with the actual team ID
+const teamId = sessionStorage.getItem('teamId');
 displayWalletData(competitionID, teamID);
 displayLeaderboard(competitionID);
 fetchPortfolioData(competitionID, teamID);
