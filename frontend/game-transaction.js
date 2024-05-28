@@ -4,19 +4,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   fetchPortfolioData(competitionId, teamId);
   fetchTransactionHistory(competitionId, teamId);
-  fetchWalletData(competitionId, teamId); // Add this line
-});
 
-async function fetchWalletData(competitionId, teamId) {
-  try {
-      const response = await fetch(`http://localhost:5500/mywallet/${competitionId}/${teamId}`);
-      const walletData = await response.json();
-      const walletValue = document.getElementById('wallet-value');
-      walletValue.textContent = `$ ${walletData.CurrentCash}`;
-  } catch (error) {
-      console.error('Error fetching wallet data:', error);
-  }
-}
+
+});
 
 
 async function fetchPortfolioData(competitionId, teamId) {
@@ -52,13 +42,8 @@ async function fetchTransactionHistory(competitionId, teamId) {
 
 function renderPortfolio(portfolio) {
   const portfolioSection = document.getElementById('portfolio');
-  const totalInvestment = document.getElementById('totalInvestment');
-  const returnofinvestment = document.getElementById('percent');
   portfolioSection.innerHTML = ''; // Clear any existing content
-  totalInvestment.innerHTML = '';
 
-  let sum1 = 0;
-  let sum2 = 0;
   portfolio.forEach(stock => {
       const profitLoss = ((stock.CurrentPrice - (stock.TotalAmountInvested / stock.CurrentHoldings)) * stock.CurrentHoldings).toFixed(4);
       const profitLossClass = profitLoss >= 0 ? 'green' : 'red';
@@ -78,13 +63,8 @@ function renderPortfolio(portfolio) {
           }
       });
       portfolioSection.appendChild(stockItem);
-      sum1 = sum1 + Number(stock.TotalAmountInvested);
-      sum2 = sum2 + Number(stock.TotalMarketValue);
+
   });
-  totalInvestment.innerHTML = "$ " + sum1;
-  const roi = ((sum2 - sum1)/sum1 * 100).toFixed(4);
-  console.log(roi);
-  returnofinvestment.innerHTML = roi + "%";
 }
 
 function logout() {
@@ -144,4 +124,3 @@ function updateTimer() {
 
 setInterval(updateTimer, 1000);
 updateTimer();
-
