@@ -1,36 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Transaction History</title>
-  <link rel="stylesheet" href="game-transaction.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Portfolio Tracker</title>
+<link rel="stylesheet" href="portfolio.css"> <!-- Link to CSS file -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <header>
-    <div class="logo"><img src="logo.png" alt="Mock Stock Server"></div>
-    <nav>
-      <ul>
-        <li><a href="game-details.html">User Management</a></li>
-        <li><a href="game-stocks.html">Stocks</a></li>
-        <li><a href="game-transaction.html">Transaction</a></li>
-        <li><a href="game_news.html">News</a></li>
-      </ul>
-    </nav>
-    <div class="user-profile" onclick="toggleUserDetailsPanel()">U</div>
-    <div class="user-details-panel" id="userDetailsPanel">
-      <p>User Name</p>
-      <p>Email: user@example.com</p>
-      <button onclick="logout()">Logout</button>
+    <header>
+        <div class="logo"><img src="logo.png" alt="Mock Stock Server"></div>
+        <nav>
+          <ul>
+            <li><a href="game-details.html">User Management</a></li>
+            <li><a href="game-stocks.html">Stocks</a></li>
+            <li><a href="game-transaction.html">Transaction</a></li>
+            <li><a href="game_news.html">News</a></li>
+        </ul>
+        </nav>
+        <div class="timer" id="timer">00:00:00</div>
+        <div class="user-profile" onclick="toggleUserDetailsPanel()">U</div>
+        <div class="user-details-panel" id="userDetailsPanel">
+            <p>User Name</p>
+            <p>Email: user@example.com</p>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </header>
+    <div class="black-block">
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">My Wallet</div>
+                <div class="box-value" id = "wallet-value"></div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Total Investment</div>
+                <div class="box-value" id = "totalInvestment"></div>
+            </div>
+        </div>
+        <div class="invisible-box">
+            <div class="box-content">
+                <div class="box-title">Return of Investment</div>
+                <div class="box-value" id = "percent"></div>
+            </div>
+        </div>
     </div>
-  </header>
-  <div class="container">
-    <h2>Transaction History</h2>
-    <ul class="transaction-list" id="transactionList">
-      <!-- Transaction history items will be added here -->
-    </ul>
-  </div>
-  <script src="game-transaction.js"></script> <!-- Link to JavaScript file -->
-
+    <div class="section">
+        <h2 class="section-title">Stock Portfolio Tracker</h2>
+        <div id="portfolio"></div>
+    </div>
+        
+    <div class="section">
+        <h3 class="section-title">Detailed Transaction History</h3>
+        <ul id="transaction-history"></ul>
+    </div>
+    <canvas id="stockGraph" style="display: none;"></canvas> <!-- Hidden canvas for rendering stock graph -->
+    <script src="portfolio.js"></script> <!-- Link to JavaScript file -->
 </body>
 </html>

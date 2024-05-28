@@ -10,6 +10,8 @@ function nextStep(next) {
       gameDetails.startTime = document.getElementById('startTime').value;
       gameDetails.endDate = document.getElementById('endDate').value;
       gameDetails.endTime = document.getElementById('endTime').value;
+    } else if (currentStep === 3) {
+      gameDetails.initialBudget = document.getElementById('initialBudget').value;
     }
     currentStep = next;
     updateFormVisibility();
@@ -33,7 +35,7 @@ function submitForm() {
 function addGameToList() {
   const gamesList = document.getElementById('gamesList');
   const listItem = document.createElement('li');
-  listItem.innerHTML = `<strong>${gameDetails.name}</strong><p>Start: ${gameDetails.startDate} ${gameDetails.startTime}</p><p>End: ${gameDetails.endDate} ${gameDetails.endTime}</p><p>${gameDetails.description}</p>`;
+  listItem.innerHTML = `<strong>${gameDetails.name}</strong><p>Start: ${gameDetails.startDate} ${gameDetails.startTime}</p><p>End: ${gameDetails.endDate} ${gameDetails.endTime}</p><p>Initial Budget: ${gameDetails.initialBudget}</p><p>${gameDetails.description}</p>`;
   listItem.addEventListener('click', () => {
     // Assuming there's a details page at /game-details.html that takes a query parameter for the game name
     window.location.href = `/game-details.html?name=${encodeURIComponent(gameDetails.name)}`;
