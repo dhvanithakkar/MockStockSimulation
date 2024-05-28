@@ -26,7 +26,7 @@ function createStock() {
   };
 
   // Send an HTTP POST request to the API endpoint
-  fetch('http://localhost:5500//organiser/makeStocks', {
+  fetch('http://localhost:5500/organiser/makeStocks', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
