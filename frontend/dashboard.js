@@ -81,6 +81,7 @@ async function fetchGraphData(competitionID, stockSymbol) {
     try {
         const response = await fetch(`http://localhost:5500/forgraph/${competitionID}/${stockSymbol}`);
         const data = await response.json();
+        console.log(data);
         return data;
     } catch (error) {
         console.error('Error fetching graph data:', error);
@@ -133,7 +134,8 @@ async function displaySelectedCharts() {
         if (checkbox.checked) {
             const companyName = checkbox.parentElement.querySelector('.stock-name').textContent;
             const stockSymbol = companyName; // Assuming stock symbol is the company name
-            const data = await fetchGraphData(1, stockSymbol); // Replace 1 with the actual CompetitionID
+            const data = await fetchGraphData(1, stockSymbol);
+            console.log("Called fetchGraph function") // Replace 1 with the actual CompetitionID
             createChart(chartContainer, data, companyName);
         }
     }
@@ -200,10 +202,8 @@ function renderPortfolio(stockData) {
         sum2 = sum2 + Number(stockData[i].TotalMarketValue);
     }
 
-    console.log(sum1, sum2);
     totalInvestment.innerHTML = "$ " + sum1;
     const roi = ((sum2 - sum1) / sum1 * 100).toFixed(4);
-    console.log(roi);
     returnofinvestment.innerHTML = roi + "%";
 }
 
