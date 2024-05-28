@@ -16,11 +16,42 @@ function showUpdateForm() {
 function createStock() {
   var stockName = document.getElementById("stockName").value;
   var stockPrice = document.getElementById("stockPrice").value;
-  addStockToList(stockName, stockPrice);
-  closeModal("createStockModal");
+  var betaPrice = document.getElementById("betaPrice").value;
+
+  // Prepare the data to send in the request body
+  var data = {
+    stockName: stockName,
+    initialPrice: stockPrice,
+    betaValue: betaPrice
+  };
+
+  // Send an HTTP POST request to the API endpoint
+  fetch('http://localhost:5500//organiser/makeStocks', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Failed to create stock');
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log(data.message); // Assuming the response contains a message field
+    addStockToList(stockName, stockPrice);
+    closeModal("createStockModal");
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    // Handle error, e.g., display an error message to the user
+  });
 }
 
-
+function updateStock() {
+}
 
 function deleteStock() {
   var selectedStock = document.querySelector(".stocks-list li.selected");
