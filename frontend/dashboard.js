@@ -66,10 +66,12 @@ document.querySelector('.stock-list').addEventListener('click', handleCheckboxCl
 // Function to fetch graph data
 async function fetchGraphData(competitionID, stockSymbol) {
     try {
-        const response = await fetch(`http://localhost:5500/forgraph/${competitionID}/${stockSymbol}`);
-        const data = await response.json();
-        console.log(data);
-        return data;
+        fetch(`http://localhost:5500/forgraph/${competitionID}/${stockSymbol}`)
+            .then(response => response.json())
+            .then(data => {
+                const prices = data.map(item => item.price);
+                const timestamps = data.map(item => new Date(item.timest).toLocaleString());})
+                .catch(error => console.error('Error fetching data:', error));
     } catch (error) {
         console.error('Error fetching graph data:', error);
         return [];
@@ -77,38 +79,36 @@ async function fetchGraphData(competitionID, stockSymbol) {
 }
 
 // Function to create a chart for a company
-function createChart(container, data, companyName) {
-    const ctx = document.createElement('canvas');
-    container.appendChild(ctx);
+function createChart(chartId, data, timestamps, detailsId) {
+    var ctx = document.getElementById(chartId).getContext('2d');
+    var detailsContainer = document.getElementById(detailsId);
+    var chartContainer = detailsContainer.getElementById('chartContainer');
 
-    const chart = new Chart(ctx, {
+    chartContainer.style.width = '75%';
+    chartContainer.style.height = '100%';
+
+    new Chart(ctx, {
         type: 'line',
         data: {
-            labels: data.map(d => new Date(d.timest).toLocaleDateString()),
+            labels: timestamps,
             datasets: [{
-                label: companyName,
-                data: data.map(d => d.price),
+                label: chartId.split('-')[0] + ' Stock Price',
+                data: data,
                 borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1,
-                fill: false,
+                borderWidth: 2,
+                fill: false
             }]
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             scales: {
-                x: {
-                    type: 'time',
-                    time: {
-                        unit: 'day'
-                    }
-                },
                 y: {
-                    beginAtZero: true
+                    beginAtZero: false
                 }
             }
         }
     });
-
-    return chart;
 }
 
 // Function to display selected charts
@@ -122,7 +122,7 @@ async function displaySelectedCharts() {
             const companyName = checkbox.parentElement.querySelector('.stock-name').textContent;
             const stockSymbol = companyName; // Assuming stock symbol is the company name
             const data = await fetchGraphData(1, stockSymbol); // Replace 1 with the actual CompetitionID
-            createChart(chartContainer, data, companyName);
+            createChart(chartId, data, timestamps, detailsId);
         }
     }
 }
@@ -258,7 +258,7 @@ function renderTransactionHistory(transactionHistory) {
 
 // Initial function calls
 const competitionID = 1;
-const teamID = 1; // Replace with the actual team ID
+const teamID = 1; //sessionStorage.getItem('teamId');
 displayWalletData(competitionID, teamID);
 displayLeaderboard(competitionID);
 fetchPortfolioData(competitionID, teamID);
