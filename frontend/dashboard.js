@@ -49,33 +49,19 @@ function toggleCheckboxes() {
     });
 }
 
-// Function to limit checkbox selection to 5
-const checkboxes = document.querySelectorAll('.stock-checkbox');
-let checkedCount = 0;
-const maxChecked = 5;
+// Function to update charts whenever a checkbox is clicked
+function handleCheckboxClick(event) {
+    const clickedElement = event.target;
 
-checkboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', function() {
-        if (this.checked) {
-            checkedCount++;
-            console.log("changed");
-        } else {
-            checkedCount--;
-        }
-
-        if (checkedCount > maxChecked) {
-            this.checked = false;
-            checkedCount--;
-            alert('You can select up to 5 companies only.');
-            this.classList.add('checkbox-limit-exceeded');
-            setTimeout(() => {
-                this.classList.remove('checkbox-limit-exceeded');
-            }, 1000);
-        }
-
+    // Check if the clicked element is a checkbox
+    if (clickedElement.classList.contains('stock-checkbox')) {
         displaySelectedCharts();
-    });
-});
+    }
+}
+
+// Attach event listener to a parent element containing all the checkboxes
+document.querySelector('.stock-list').addEventListener('click', handleCheckboxClick);
+
 
 // Function to fetch graph data
 async function fetchGraphData(competitionID, stockSymbol) {
