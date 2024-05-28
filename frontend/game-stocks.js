@@ -17,12 +17,18 @@ function createStock() {
   var stockName = document.getElementById("stockName").value;
   var stockPrice = document.getElementById("stockPrice").value;
   var betaPrice = document.getElementById("betaPrice").value;
+  var stockSymbol = document.getElementById("stockSymbol").value;
+  var TotalShares = document.getElementById("TotalShares").value;
 
   // Prepare the data to send in the request body
   var data = {
+    CompetitionID: '1',
     stockName: stockName,
+    stockSymbol: stockSymbol,
     initialPrice: stockPrice,
-    betaValue: betaPrice
+    betaValue: betaPrice,
+    sectorId: 1,
+    TotalShares: TotalShares
   };
 
   // Send an HTTP POST request to the API endpoint
