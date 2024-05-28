@@ -69,7 +69,7 @@ app.get('/listsectors/:CompetitionID', async (req, res) => {
   const CompetitionID = req.params.CompetitionID;
   try{
     const pool = await connectToDatabase();
-    const [rows] = await pool.query(`SELECT SectorName 
+    const [rows] = await pool.query(`SELECT SectorName, SectorID
     FROM Sectors 
     WHERE SectorID IN
     ( SELECT SectorID
