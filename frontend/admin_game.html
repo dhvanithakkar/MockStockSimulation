@@ -47,8 +47,17 @@
             <label for="description">Description:</label>
             <textarea id="description" rows="4"></textarea>
           </div>
+          <button type="button" onclick="nextStep(4)">Next</button>
+        </div>
+        <div id="step4" class="form-step">
+          <h3>Step 4: Initial Budget</h3>
+          <div class="form-group">
+            <label for="initialBudget">Initial Budget:</label>
+            <input type="number" id="initialBudget" required>
+          </div>
           <button type="button" onclick="submitForm()">Submit</button>
         </div>
+        
       </form>
     </div>
   </div>
