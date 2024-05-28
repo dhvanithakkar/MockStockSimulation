@@ -60,8 +60,39 @@ function updateTotalAmount(company, price) {
 function buyStock(company, price) {
     var quantity = document.getElementById(company + '-quantity').value;
     var totalAmount = quantity * price;
-    alert('Buying ' + quantity + ' shares of ' + company + ' for ₹' + totalAmount.toFixed(2));
+    var stockSymbol = company; // Assuming company is the stock symbol
+    var CompetitionID = 1; // Assuming a static CompetitionID for now
+    var teamId = 1; // Assuming a static teamId for now
+
+    fetch(`http://localhost:5500/buy/${CompetitionID}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            teamId: teamId,
+            stockSymbol: stockSymbol,
+            quantity: quantity
+        })
+    })
+    .then(response => {
+        if (response.ok) {
+            // Handle success, maybe show a confirmation message
+            alert('Purchase successful!');
+        } else {
+            // Handle error response
+            return response.text().then(errorMessage => {
+                throw new Error(errorMessage);
+            });
+        }
+    })
+    .catch(error => {
+        // Handle fetch error
+        console.error('Error buying stock:', error);
+        alert('Error buying stock: ' + error.message);
+    });
 }
+
 
 function sellStock(company, price) {
     var quantity = document.getElementById(company + '-quantity').value;
