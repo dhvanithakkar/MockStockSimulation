@@ -58,6 +58,7 @@ checkboxes.forEach(checkbox => {
     checkbox.addEventListener('change', function() {
         if (this.checked) {
             checkedCount++;
+            console.log("changed");
         } else {
             checkedCount--;
         }
@@ -238,7 +239,7 @@ async function fetchPortfolioData(competitionId, teamId) {
 
 // Initial function calls
 const competitionID = 1;
-const teamId = sessionStorage.getItem('teamId');
+const teamID = 1; //sessionStorage.getItem('teamId');
 displayWalletData(competitionID, teamID);
 displayLeaderboard(competitionID);
 fetchPortfolioData(competitionID, teamID);
