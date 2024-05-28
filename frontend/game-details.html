@@ -7,49 +7,70 @@
   <link rel="stylesheet" href="game-details.css">
 </head>
 <body>
-    <header>
-        <div class="logo"><img src="logo.png" alt="Mock Stock Server"></div>
-        <nav>
-            <ul>
-                <li><a href="game-details.html">UserManagement</a></li>
-                <li><a href="game-stocks.html">Stocks</a></li>
-                <li><a href="game-transaction.html">Transaction</a></li>
-                <li><a href="game_news.html">News</a></li>
-            </ul>
-        </nav>
-        <div class="user-profile" onclick="toggleUserDetailsPanel()">U</div>
-        <div class="user-details-panel" id="userDetailsPanel">
-            <p>User Name</p>
-            <p>Email: user@example.com</p>
-            <button onclick="logout()">Logout</button>
-        </div>
-    </header>
+  <header>
+    <div class="logo"><img src="logo.png" alt="Mock Stock Server"></div>
+    <nav>
+      <ul>
+        <li><a href="game-details.html">User Management</a></li>
+        <li><a href="game-stocks.html">Stocks</a></li>
+        <li><a href="game-transaction.html">Transaction</a></li>
+        <li><a href="game_news.html">News</a></li>
+      </ul>
+    </nav>
+    <div class="user-profile" onclick="toggleUserDetailsPanel()">U</div>
+    <div class="user-details-panel" id="userDetailsPanel">
+      <p>User Name</p>
+      <p>Email: user@example.com</p>
+      <button onclick="logout()">Logout</button>
+    </div>
+  </header>
   <div class="container">
     <div class="details-container">
       <h2 id="gameName"></h2>
       <div id="gameDetails" class="user-management">
         <h3>User Management</h3>
-        <form id="userForm" class="user-form">
-          <div class="input-group">
-            <label for="username">Username:</label>
-            <input type="text" id="username" required>
-          </div>
-          <div class="input-group">
-            <label for="password">Password:</label>
-            <input type="password" id="password" required>
-          </div>
-          <button type="button" onclick="addUser()">Add User</button>
-        </form>
+        <button class="add-user-button" onclick="toggleAddUserForm()">Add User</button>
+        <div class="add-user-form" id="addUserForm">
+          <form id="userForm" class="user-form">
+            <div class="input-group">
+              <label for="name">Name:</label>
+              <input type="text" id="name" required>
+            </div>
+            <div class="input-group">
+              <label for="email">Email:</label>
+              <input type="email" id="email" required>
+            </div>
+            <div class="input-group">
+              <label for="password">Password:</label>
+              <input type="text" id="password" readonly>
+            </div>
+            <div class="input-group">
+              <label for="teamNo">Team No:</label>
+              <input type="text" id="teamNo" readonly>
+            </div>
+            <button type="button" onclick="addUser()">Add User</button>
+          </form>
+        </div>
         <h4>Users List</h4>
         <ul id="usersList" class="users-list"></ul>
       </div>
-      <div class="graph-container">
-        <canvas id="portfolioGraph"></canvas>
+      <div class="user-details" id="userDetails">
+        <h4>User Details</h4>
+        <p id="detailName"></p>
+        <p id="detailEmail"></p>
+        <p id="detailTeamNo"></p>
+        <p id="detailBalance"></p>
+        <p id="detailStocks"></p>
+        <p id="detailTransactions"></p>
+        <div class="graph-container">
+          <canvas id="portfolioGraph"></canvas>
+        </div>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="game-script.js"></script>
+  <script src="game-details.js"></script>
+
 </body>
 </html>

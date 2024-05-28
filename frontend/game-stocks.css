@@ -172,4 +172,24 @@ body {
   button:hover {
     background-color: #555;
   }
+  .stocks-container {
+    flex: 1;
+  }
   
+  .stock-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .stocks-list {
+    list-style: none;
+  }
+  
+  .stock-details {
+    flex: 2;
+  }
+  
+  .stock-details canvas {
+    margin-top: 20px;
+  }
