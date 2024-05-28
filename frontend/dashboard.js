@@ -24,7 +24,7 @@ async function displayLeaderboard(competitionID) {
         leaderboardItem.innerHTML = `
             <span class="position">${index + 1}</span>
             <span class="team-name">${team.TeamName}</span>
-            <span class="total-net-worth">${team.TotalNetWorth}</span>
+            <span class="total-net-worth">$${team.TotalNetWorth}</span>
         `;
         leaderboardContainer.appendChild(leaderboardItem);
     });
