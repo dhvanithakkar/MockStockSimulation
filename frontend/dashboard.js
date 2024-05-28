@@ -234,24 +234,28 @@ async function fetchTransactionHistory(competitionId, teamId) {
 }
 
 function renderTransactionHistory(transactionHistory) {
-    const historyContainer = document.querySelector('.rectangle-box.history .history-list');
-    historyContainer.innerHTML = ''; // Clear existing history
-
-    transactionHistory.forEach(transaction => {
+    const historyContainer = document.getElementById('history-list');
+    historyContainer.innerHTML = '<h2>Recent Transactions</h2>';
+    const maxTransactions = 5;
+    const transactionCount = Math.min(transactionHistory.length, maxTransactions);
+    
+    for (let i = 0; i < transactionCount; i++) {
+        const transaction = transactionHistory[i];
         const historyItem = document.createElement("div");
         historyItem.className = "history-item";
-
+    
         // Display transaction details
         historyItem.innerHTML = `
             <span class="transaction-type">${transaction.TransactionType}</span>
             <span class="stock-symbol">${transaction.StockSymbol}</span>
             <span class="quantity">${transaction.Quantity}</span>
             <span class="price">${transaction.Price}</span>
-            <span class="timestamp">${transaction.Timestamp}</span>
+            <span class="timestamp">${transaction.TransactionTime}</span>
         `;
-
+    
         historyContainer.appendChild(historyItem);
-    });
+    }
+    
 }
 
 
