@@ -61,10 +61,39 @@ function updateStock() {
 
 function deleteStock() {
   var selectedStock = document.querySelector(".stocks-list li.selected");
-  if (selectedStock) {
-    selectedStock.remove();
+  if (!selectedStock) {
+    console.error('No stock selected');
+    return;
   }
+
+  // Extract the stock symbol and competition ID from the selected stock
+  var stockSymbol = selectedStock.dataset.symbol;
+  var competitionId = selectedStock.dataset.competitionId;
+
+  // Send an HTTP DELETE request to the API endpoint
+  fetch(`http://localhost:5500/organiser/deleteStock?stockSymbol=${stockSymbol}&CompetitionID=${competitionId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Failed to delete stock');
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log(data.message); // Assuming the response contains a message field
+    selectedStock.remove(); // Remove the deleted stock from the UI
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    // Handle error, e.g., display an error message to the user
+  });
 }
+
+
 
 function toggleUserDetailsPanel() {
   var panel = document.getElementById("userDetailsPanel");
