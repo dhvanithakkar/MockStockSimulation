@@ -134,8 +134,7 @@ async function displaySelectedCharts() {
         if (checkbox.checked) {
             const companyName = checkbox.parentElement.querySelector('.stock-name').textContent;
             const stockSymbol = companyName; // Assuming stock symbol is the company name
-            const data = await fetchGraphData(1, stockSymbol);
-            console.log("Called fetchGraph function") // Replace 1 with the actual CompetitionID
+            const data = await fetchGraphData(1, stockSymbol); // Replace 1 with the actual CompetitionID
             createChart(chartContainer, data, companyName);
         }
     }

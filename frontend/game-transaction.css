@@ -168,6 +168,6 @@ nav ul li a:hover {
       border-radius: 5px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   }
-  header nav ul li:nth-child(2) a {
+  header nav ul li:nth-child(3) a {
 color: #fff; /* Set the color of the "Sector" link to white */
 }

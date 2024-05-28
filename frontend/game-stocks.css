@@ -193,3 +193,6 @@ body {
   .stock-details canvas {
     margin-top: 20px;
   }
+  header nav ul li:nth-child(2) a {
+    color: #fff; /* Set the color of the "Sector" link to white */
+    }

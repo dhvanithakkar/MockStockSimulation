@@ -147,3 +147,6 @@ nav ul li a:hover {
 .user-details-panel.show {
   display: block;
 }
+header nav ul li:nth-child(4) a {
+  color: #fff; /* Set the color of the "Sector" link to white */
+  }
