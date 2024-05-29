@@ -1,4 +1,5 @@
 
+
 drop database mockstock;
 create database mockstock;
 use mockstock;
@@ -75,6 +76,14 @@ CREATE TABLE StockGraphs (
 --   FOREIGN KEY (stockSymbol, competitionID) REFERENCES Stocks(StockSymbol, CompetitionID)  -- Foreign key relationship
 );
 
+CREATE TABLE News (
+  NewsID INT PRIMARY KEY AUTO_INCREMENT,  -- Auto-incrementing primary key
+  Title VARCHAR(255) NOT NULL,
+  Content TEXT NOT NULL,
+  ScheduledTime DATETIME NOT NULL
+);
+
+
 DELIMITER //
 CREATE TRIGGER set_team_cash_before_insert
 BEFORE INSERT ON Teams
@@ -97,6 +106,8 @@ END //
 DELIMITER ;
 -- Buy: reduce current cash, reduce availableStocks, update the buy orders, update price
 -- Sell: Increase current cash, Increase availableStocks,  update the sell orders, update price
+
+
 
 DELIMITER //
 CREATE TRIGGER update_current_cash 
@@ -203,4 +214,3 @@ VALUES (1, 1, 'AAPL','2024-05-24 00:00:00', 'BUY',  150.25, 10),
 	   (3, 2, 'AMZN','2024-05-23 02:00:00',  'SELL', 120.00, 2),
        (3, 2, 'TSLA','2024-05-23 02:00:00',  'SELL', 200.50, 11),
        (3, 2, 'JNJ' ,'2024-05-23 02:00:00',  'SELL', 135.50, 1);
---
