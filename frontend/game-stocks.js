@@ -181,6 +181,8 @@ function addStockToList(name, price) {
   var stocksList = document.getElementById("stocksList");
   var li = document.createElement("li");
   li.textContent = name + " - $" + price;
+  li.dataset.symbol = name; // Assuming stock name is the symbol
+  li.dataset.competitionId = '1'; // Replace with actual competition ID
   li.onclick = function() {
     var selectedStock = document.querySelector(".stocks-list li.selected");
     if (selectedStock) {
@@ -190,3 +192,23 @@ function addStockToList(name, price) {
   };
   stocksList.appendChild(li);
 }
+
+async function fetchStocks() {
+  try {
+    const response = await fetch('http://localhost:5500/organiser/displayStocks/1'); // Replace 1 with the actual CompetitionID
+    if (response.ok) {
+      const stocks = await response.json();
+      stocks.forEach(stock => addStockToList(stock.StockName, stock.CurrentPrice));
+    } else {
+      console.error('Error fetching stocks:', await response.text());
+      // Handle API errors by displaying an error message to the user
+    }
+  } catch (error) {
+    console.error('Error fetching stocks:', error);
+    // Handle other errors during the fetch request
+  }
+}
+window.onload = async function() {
+  await fetchStocks(); // Call fetchStocks on page load
+  // ... other initialization code
+};
