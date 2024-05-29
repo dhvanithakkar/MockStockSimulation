@@ -223,3 +223,4 @@ INSERT INTO News (Title, Content, ScheduledTime) VALUES
   ('Market Correction Expected?', 'Analysts warn of a possible short-term market...', '2024-06-17 12:00:00');
 
 alter table competitions add description text default null;
+ALTER TABLE news ADD COLUMN CompetitionID INT NOT NULL;
