@@ -439,7 +439,9 @@ app.get('/organiser/displayStocks/:CompetitionID', async(req, res) => {
   try{
     const pool = await connectToDatabase();
     const [rows] = await pool.query(`
-    SELECT StockSymbol, StockName, CurrentPrice, Betaalue, AvailableShares where CompetitionID = ?`, [CompetitionID]);
+    SELECT StockSymbol, StockName, CurrentPrice, BetaValue, AvailableShares 
+    FROM stocks
+    where CompetitionID = ?`, [CompetitionID]);
     console.log(rows);
     res.json(rows);
     }
@@ -559,6 +561,58 @@ app.post('/organiser/createTeam', async (req, res) => {
     res.status(500).send('Error creating team');
   }
 });
+
+//for creating news
+app.post('/news/create', async (req, res) => {
+  const { title, content, CompetitionID } = req.body;
+
+  console.log('Received data:', { title, content, CompetitionID });
+
+  try {
+    const pool = await connectToDatabase();
+
+    const preparedStatement = `
+      INSERT INTO News (Title, Content, CompetitionID)
+      VALUES (?, ?, ?)
+    `;
+
+    const result = await pool.query(preparedStatement, [title, content, CompetitionID]);
+
+    if (result.affectedRows === 0) {
+      throw new Error('Failed to create news entry');
+    }
+
+    res.json({ message: 'News created successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error creating news entry');
+  }
+});
+
+app.post('/news/display', async (req, res) => {
+  const { CompetitionID } = req.body;
+
+
+  try {
+    const pool = await connectToDatabase();
+
+    const preparedStatement = `
+      SELECT * FROM NEWS WHERE CompetitionID = ?
+    `;
+
+    const result = await pool.query(preparedStatement, [CompetitionID]);
+
+    if (result.affectedRows === 0) {
+      throw new Error('Failed to create news entry');
+    }
+
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error displaying news');
+  }
+});
+
 
 //for deleting team
 app.post('/organiser/deleteTeam', async(req, res) =>{
