@@ -1,17 +1,17 @@
 let currentStep = 1;
 let gameDetails = {};
+const CollegeID = 1;
 
 function nextStep(next) {
   if (next > currentStep) {
     if (currentStep === 1) {
-      gameDetails.name = document.getElementById('gameName').value;
+      gameDetails.CompetitionName = document.getElementById('gameName').value;
     } else if (currentStep === 2) {
-      gameDetails.startDate = document.getElementById('startDate').value;
-      gameDetails.startTime = document.getElementById('startTime').value;
-      gameDetails.endDate = document.getElementById('endDate').value;
-      gameDetails.endTime = document.getElementById('endTime').value;
+      formatDateTime();
+      gameDetails.CollegeID = CollegeID;
     } else if (currentStep === 3) {
-      gameDetails.initialBudget = document.getElementById('initialBudget').value;
+
+      gameDetails.InitialCash = Number(document.getElementById('initialBudget').value);
     }
     currentStep = next;
     updateFormVisibility();
@@ -27,7 +27,7 @@ function updateFormVisibility() {
 }
 
 async function submitForm() {
-  gameDetails.description = document.getElementById('description').value;
+  gameDetails.Description = document.getElementById('description').value;
 
   try {
     const response = await fetch('http://localhost:5500/organiser/makeGame', {
@@ -107,6 +107,6 @@ function formatDateTime() {
   var startDateTime = startDate + ' ' + startTime + ':00';
   var endDateTime = endDate + ' ' + endTime + ':00';
 
-  document.getElementById('startDate').value = startDateTime;
-  document.getElementById('endDate').value = endDateTime;
+  gameDetails.StartDate = startDateTime;
+  gameDetails.EndDate = endDateTime;
 }

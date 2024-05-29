@@ -363,7 +363,7 @@ app.post('/organiser/makeGame', async (req, res) => {
   
   try {
     const pool = await connectToDatabase();
-const preparedStatement = `INSERT INTO Stocks (CompetitionID, CollegeID, CompetitionName, StartDate, EndDate  , InitialCash , NumberOfParticipants, Description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+const preparedStatement = `INSERT INTO Competitions (CompetitionID, CollegeID, CompetitionName, StartDate, EndDate  , InitialCash , NumberOfParticipants, Description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
 const result = await pool.query(preparedStatement, [
   CompetitionID, CollegeID, CompetitionName, StartDate, EndDate, InitialCash , NumberOfParticipants, Description
 ]);
