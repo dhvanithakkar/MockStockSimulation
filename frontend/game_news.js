@@ -1,7 +1,49 @@
 document.addEventListener("DOMContentLoaded", function() {
   const newsForm = document.getElementById("newsForm");
   const newsList = document.getElementById("newsList");
-  const competitionID = 1;  
+  const competitionID = 1;  // Fixed value for CompetitionID
+
+  // Function to fetch and display news
+  async function fetchAndDisplayNews() {
+    try {
+      const response = await fetch('http://localhost:5500/news/display', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ CompetitionID: competitionID })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch news entries');
+      }
+
+      const newsEntries = await response.json();
+
+      // Clear the news list
+      newsList.innerHTML = '';
+
+      if (newsEntries.message) {
+        newsList.innerHTML = '<p>No news entries found.</p>';
+      } else {
+        newsEntries.forEach(news => {
+          const newsItem = document.createElement("div");
+          newsItem.classList.add("news-item");
+          newsItem.innerHTML = `
+            <h3>${news.Title}</h3>
+            <p>${news.Content}</p>
+          `;
+          newsList.appendChild(newsItem);
+        });
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error displaying news entries');
+    }
+  }
+
+  // Initial fetch and display of news
+  fetchAndDisplayNews();
 
   newsForm.addEventListener("submit", async function(event) {
     event.preventDefault();
@@ -31,19 +73,11 @@ document.addEventListener("DOMContentLoaded", function() {
       const result = await response.json();
       console.log(result.message);
 
-      // Create a new news item
-      const newsItem = document.createElement("div");
-      newsItem.classList.add("news-item");
-      newsItem.innerHTML = `
-        <h3>${newsTitle}</h3>
-        <p>${newsContent}</p>
-      `;
-
-      // Append the new news item to the news list
-      newsList.appendChild(newsItem);
-
       // Clear the form fields
       newsForm.reset();
+
+      // Fetch and display news after creating a new entry
+      fetchAndDisplayNews();
 
     } catch (error) {
       console.error('Error:', error);
