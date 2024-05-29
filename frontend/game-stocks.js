@@ -72,10 +72,15 @@ function updateStock() {
   var newBeta = prompt("Enter the new beta value for the stock:");
 
   // Prepare the data to send in the request body
-  var data = {
+  var data1 = {
     CompetitionID: competitionId,
     stockSymbol: stockSymbol,
     newPrice: parseFloat(newPrice), // Convert to float
+
+  };
+  var data2 = {
+    CompetitionID: competitionId,
+    stockSymbol: stockSymbol,
     newBeta: parseFloat(newBeta) // Convert to float
   };
 
@@ -85,7 +90,7 @@ function updateStock() {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data1)
   })
   .then(response => {
     if (!response.ok) {
@@ -108,7 +113,7 @@ function updateStock() {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data2)
   })
   .then(response => {
     if (!response.ok) {
@@ -144,7 +149,7 @@ function deleteStock() {
 
   // Send an HTTP DELETE request to the API endpoint
   fetch(`http://localhost:5500/organiser/deleteStocks`, {
-    method: 'POST',
+    method: 'DELETE',
     headers: {
       'Content-Type': 'application/json'
     },
