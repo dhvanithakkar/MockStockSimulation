@@ -10,8 +10,9 @@ function nextStep(next) {
       formatDateTime();
       gameDetails.CollegeID = CollegeID;
     } else if (currentStep === 3) {
-
+      gameDetails.NumberOfParticipants = 100;
       gameDetails.InitialCash = Number(document.getElementById('initialBudget').value);
+      console.log(gameDetails.InitialCash);
     }
     currentStep = next;
     updateFormVisibility();
