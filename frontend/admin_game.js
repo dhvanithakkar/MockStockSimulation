@@ -26,11 +26,30 @@ function updateFormVisibility() {
   document.getElementById(`step${currentStep}`).style.display = 'block';
 }
 
-function submitForm() {
+async function submitForm() {
   gameDetails.description = document.getElementById('description').value;
-  addGameToList();
-  resetForm();
+
+  try {
+    const response = await fetch('http://localhost:5500/organiser/makeGame', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(gameDetails)
+    });
+
+    if (response.ok) {
+      addGameToList();
+      resetForm();
+      await fetchGames(); // Call to fetch games after successful creation
+    } else {
+      console.error('Error creating game:', await response.text());
+      // Handle API errors by displaying an error message to the user
+    }
+  } catch (error) {
+    console.error('Error submitting form:', error);
+    // Handle other errors during the fetch request
+  }
 }
+
 
 function addGameToList() {
   const gamesList = document.getElementById('gamesList');
@@ -48,4 +67,34 @@ function resetForm() {
   gameDetails = {};
   document.getElementById('gameForm').reset();
   updateFormVisibility();
+}
+async function fetchGames() {
+  try {
+    const response = await fetch('/organiser/displayGames');
+    if (response.ok) {
+      const games = await response.json();
+      displayGames(games);
+    } else {
+      console.error('Error fetching games:', await response.text());
+      // Handle API errors by displaying an error message to the user
+    }
+  } catch (error) {
+    console.error('Error fetching games:', error);
+    // Handle other errors during the fetch request
+  }
+}
+function displayGames(games) {
+  const gameList = document.getElementById('gameListFetched');
+  gameList.innerHTML = ''; // Clear existing content
+
+  games.forEach(game => {
+    const listItem = document.createElement('li');
+    listItem.innerHTML = `<strong>${game.CompetitionName}</strong>
+                          <p>Start: ${game.StartDate}</p>
+                          <p>End: ${game.EndDate}</p>
+                          <p>Initial Budget: ${game.InitialCash}</p>
+                          <p>${game.Description}</p>`;
+    // Add event listener for details page similar to addGameToList function
+    gameList.appendChild(listItem);
+  });
 }
