@@ -62,13 +62,14 @@ async function addUser() {
   } else {
     alert('Please fill in all fields');
   }
+}
+
+async function showUserDetails(name, email, teamNo) {
+  document.getElementById('detailName').textContent = `Name: ${name}`;
+  document.getElementById('detailEmail').textContent = `Email: ${email}`;
+  document.getElementById('detailTeamNo').textContent = `Team No: ${teamNo}`;
   
-  async function showUserDetails(name, email, teamNo) {
-    document.getElementById('detailName').textContent = `Name: ${name}`;
-    document.getElementById('detailEmail').textContent = `Email: ${email}`;
-    document.getElementById('detailTeamNo').textContent = `Team No: ${teamNo}`;
-    
-    const { balance, stocks, transactions } = await fetchUserDetails(name, email, teamNo);
+  const { balance, stocks, transactions } = await fetchUserDetails(name, email, teamNo);
 
   document.getElementById('detailBalance').textContent = `Balance: ${balance}`;
   document.getElementById('detailStocks').textContent = `Stocks Bought: ${stocks}`;
@@ -111,14 +112,35 @@ async function addUser() {
   });
 }
 
-// Simulated backend fetch function
-async function fetchUserDetails(name, email, teamNo) {
-  // Simulate a delay for fetching data
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  // Example data returned from backend
-  return {
-    balance: `$${(Math.random() * 10000).toFixed(2)}`,
-    stocks: 'AAPL, GOOG, TSLA',
-    transactions: 'Bought AAPL, Sold TSLA'
-  };
+// Function to fetch and display teams
+async function fetchAndDisplayTeams(competitionID) {
+  try {
+    const response = await fetch(`http://localhost:5500/organiser/displayTeams/${competitionID}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch teams: ${response.statusText}`);
+    }
+    const teams = await response.json();
+    displayTeams(teams);
+  } catch (error) {
+    console.error(error);
+    alert('Error fetching teams');
+  }
 }
+
+// Function to display teams in the UI
+function displayTeams(teams) {
+  const teamsList = document.getElementById('teamsList');
+  teamsList.innerHTML = ''; // Clear previous list
+
+  teams.forEach(team => {
+    const teamItem = document.createElement('li');
+    teamItem.textContent = `Team Name: ${team.TeamName}, Team ID: ${team.TeamID}, Current Cash: ${team.CurrentCash}`;
+    teamsList.appendChild(teamItem);
+  });
+}
+
+// Call fetchAndDisplayTeams when the page loads
+window.addEventListener('load', () => {
+  const competitionID = 1; // You may change this to match your competition ID
+  fetchAndDisplayTeams(competitionID);
+});
