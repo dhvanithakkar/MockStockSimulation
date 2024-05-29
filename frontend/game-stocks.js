@@ -22,7 +22,7 @@ function createStock() {
 
   // Prepare the data to send in the request body
   var data = {
-    CompetitionID: '1',
+    CompetitionID: '1', 
     stockName: stockName,
     stockSymbol: stockSymbol,
     initialPrice: stockPrice,
