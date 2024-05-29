@@ -11,7 +11,7 @@ function nextStep(next) {
       gameDetails.endDate = document.getElementById('endDate').value;
       gameDetails.endTime = document.getElementById('endTime').value;
     } else if (currentStep === 3) {
-      gameDetails.initialBudget = document.getElementById('initialBudget').value;
+      gameDetails.InitialCash = document.getElementById('initialBudget').value;
     }
     currentStep = next;
     updateFormVisibility();
@@ -70,7 +70,7 @@ function resetForm() {
 }
 async function fetchGames() {
   try {
-    const response = await fetch('/organiser/displayGames');
+    const response = await fetch('http://localhost:5500/organiser/displayGames');
     if (response.ok) {
       const games = await response.json();
       displayGames(games);
