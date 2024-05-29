@@ -222,3 +222,4 @@ INSERT INTO News (Title, Content, ScheduledTime) VALUES
   ('Industry Leader Makes Acquisition', 'A major player in the [Industry] sector acquired...', '2024-06-12 16:00:00'),
   ('Market Correction Expected?', 'Analysts warn of a possible short-term market...', '2024-06-17 12:00:00');
 
+alter table competitions add description text default null;
