@@ -1,4 +1,4 @@
-drop database mockstock;
+ScheduledTimedrop database mockstock;
 create database mockstock;
 use mockstock;
 
@@ -79,7 +79,7 @@ CREATE TABLE News (
   NewsID INT PRIMARY KEY AUTO_INCREMENT,  -- Auto-incrementing primary key
   Title VARCHAR(255) NOT NULL,
   Content TEXT NOT NULL,
-  ScheduledTime DATETIME NOT NULL,
+  ScheduledTime DATETIME,
   CompetitionID INT NOT NULL,
   FOREIGN KEY (CompetitionID) REFERENCES Competitions(CompetitionID)
 );
