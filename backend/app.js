@@ -456,6 +456,27 @@ app.get('/organiser/displayTeams/:CompetitionID', async (req, res) => {
   }
 });
 
+//end date and time
+app.get('/endTime/:CompetitionID', async (req, res) => {
+  const CompetitionID = parseInt(req.params.CompetitionID, 10);
+  
+  try {
+    const pool = await connectToDatabase();
+    
+    const [rows] = await pool.query(`
+      SELECT EndDate
+      FROM Competitions
+      WHERE CompetitionID = ?
+    `, [CompetitionID]);
+
+    console.log(rows);
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error fetching end time');
+  }
+});
+
 
 
 //for deleting stock
