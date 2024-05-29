@@ -25,11 +25,13 @@ WHERE TeamID = 1 AND s.CompetitionID = 1
 GROUP BY s.StockSymbol, s.CurrentPrice;
 
 -- Delete Stock
-DELETE
-FROM Transactions
+DELETE FROM Transactions
 WHERE CompetitionID = 1 AND StockSymbol = 'JNJ';
 
 DELETE FROM Stocks
+WHERE CompetitionID = 1 AND StockSymbol = 'JNJ';
+
+DELETE FROM StockGraphs
 WHERE CompetitionID = 1 AND StockSymbol = 'JNJ';
 
 -- Delete Team
