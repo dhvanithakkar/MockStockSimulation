@@ -359,13 +359,13 @@ ORDER BY TotalNetWorth DESC`;
 //this is for organises to create a new game
 app.post('/organiser/makeGame', async (req, res) => {
   const {
-    CompetitionID, CollegeID, CompetitionName, StartDate, EndDate  , InitialCash , NumberOfParticipants} = req.body;
+    CompetitionID, CollegeID, CompetitionName, StartDate, EndDate  , InitialCash , NumberOfParticipants, Description} = req.body;
   
   try {
     const pool = await connectToDatabase();
-const preparedStatement = `INSERT INTO Stocks (CompetitionID, CollegeID, CompetitionName, StartDate, EndDate  , InitialCash , NumberOfParticipants) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+const preparedStatement = `INSERT INTO Stocks (CompetitionID, CollegeID, CompetitionName, StartDate, EndDate  , InitialCash , NumberOfParticipants, Description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
 const result = await pool.query(preparedStatement, [
-  CompetitionID, CollegeID, CompetitionName, StartDate, EndDate  , InitialCash , NumberOfParticipants
+  CompetitionID, CollegeID, CompetitionName, StartDate, EndDate, InitialCash , NumberOfParticipants, Description
 ]);
 if (result.affectedRows === 0) {
       throw new Error('Failed to create stock');
@@ -417,7 +417,21 @@ if (result.affectedRows === 0) {
     res.status(500).send('Error creating stock');
   }
 });
-
+//displaying game list
+app.get('/organiser/displayGames', async(req, res) => {
+  const CompetitionID = parseInt(req.params.CompetitionID, 10);
+  try{
+    const pool = await connectToDatabase();
+    const [rows] = await pool.query(`
+    SELECT CompetitionID, CompetitionName, StartDate, EndDate, InitialCash, Description`);
+    console.log(rows);
+    res.json(rows);
+    }
+    catch (error) {
+      console.error(error);
+      res.status(500).send('Error displaying games');
+    }
+});
 
 //for displaying stocks
 app.get('/organiser/displayStocks/:CompetitionID', async(req, res) => {
