@@ -11,7 +11,7 @@ function nextStep(next) {
       gameDetails.endDate = document.getElementById('endDate').value;
       gameDetails.endTime = document.getElementById('endTime').value;
     } else if (currentStep === 3) {
-      gameDetails.InitialCash = document.getElementById('initialBudget').value;
+      gameDetails.initialBudget = document.getElementById('initialBudget').value;
     }
     currentStep = next;
     updateFormVisibility();
@@ -58,7 +58,7 @@ function addGameToList() {
   listItem.addEventListener('click', () => {
     // Assuming there's a details page at /game-details.html that takes a query parameter for the game name
     window.location.href = `/game-details.html?name=${encodeURIComponent(gameDetails.name)}`;
-  });
+  }); 
   gamesList.appendChild(listItem);
 }
 
@@ -70,7 +70,7 @@ function resetForm() {
 }
 async function fetchGames() {
   try {
-    const response = await fetch('http://localhost:5500/organiser/displayGames');
+    const response = await fetch('/organiser/displayGames');
     if (response.ok) {
       const games = await response.json();
       displayGames(games);
@@ -97,4 +97,16 @@ function displayGames(games) {
     // Add event listener for details page similar to addGameToList function
     gameList.appendChild(listItem);
   });
+}
+function formatDateTime() {
+  var startDate = document.getElementById('startDate').value;
+  var startTime = document.getElementById('startTime').value;
+  var endDate = document.getElementById('endDate').value;
+  var endTime = document.getElementById('endTime').value;
+
+  var startDateTime = startDate + ' ' + startTime + ':00';
+  var endDateTime = endDate + ' ' + endTime + ':00';
+
+  document.getElementById('startDate').value = startDateTime;
+  document.getElementById('endDate').value = endDateTime;
 }
