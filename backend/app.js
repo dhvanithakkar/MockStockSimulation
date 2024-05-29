@@ -419,7 +419,44 @@ if (result.affectedRows === 0) {
 });
 
 
-//for creating team
+//for displaying stocks
+app.get('/organiser/displayStocks/:CompetitionID', async(req, res) => {
+  const CompetitionID = parseInt(req.params.CompetitionID, 10);
+  try{
+    const pool = await connectToDatabase();
+    const [rows] = await pool.query(`
+    SELECT StockSymbol, StockName, CurrentPrice, Betaalue, AvailableShares where CompetitionID = ?`, [CompetitionID]);
+    console.log(rows);
+    res.json(rows);
+    }
+    catch (error) {
+      console.error(error);
+      res.status(500).send('Error fetching stocks');
+    }
+});
+
+//for displaying teams
+app.get('/organiser/displayTeams/:CompetitionID', async (req, res) => {
+  const CompetitionID = parseInt(req.params.CompetitionID, 10);
+  
+  try {
+    const pool = await connectToDatabase();
+    
+    const [rows] = await pool.query(`
+      SELECT TeamName, TeamID, CurrentCash
+      FROM Teams
+      WHERE CompetitionID = ?
+    `, [CompetitionID]);
+
+    console.log(rows);
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error fetching teams');
+  }
+});
+
+
 
 //for deleting stock
 app.delete('/organiser/deleteStocks', async(req, res) =>{
@@ -441,6 +478,51 @@ catch (error) {
   res.status(500).send('Error deleting stock');
 }
 
+});
+
+//for making a team
+app.post('/organiser/createTeam', async (req, res) => {
+  const {
+    TeamID,
+    TeamPassword,
+    CompetitionID,
+    TeamName,
+    Email
+  } = req.body;
+  
+  console.log('Received data:', {
+    TeamID,
+    TeamPassword,
+    CompetitionID,
+    TeamName,
+    Email
+  });
+
+  try {
+    const pool = await connectToDatabase();
+
+    const preparedStatement = `
+      INSERT INTO Teams (TeamID, TeamPassword, CompetitionID, TeamName, Email)
+      VALUES (?, ?, ?, ?, ?)
+    `;
+    
+    const result = await pool.query(preparedStatement, [
+      TeamID,
+      TeamPassword,
+      CompetitionID,
+      TeamName,
+      Email
+    ]);
+
+    if (result.affectedRows === 0) {
+      throw new Error('Failed to create team');
+    }
+
+    res.json({ message: 'Team created successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error creating team');
+  }
 });
 
 //for deleting team
