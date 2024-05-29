@@ -237,9 +237,9 @@ app.post('/buy/:CompetitionID', async (req, res) => {
       }
       await pool.query(`
         INSERT INTO Transactions (TeamID, StockSymbol, Quantity, Price, TransactionType, CompetitionID)
-        VALUES (?, ?, ?, ?, 'BUY', CompetitionID)
-      `, [teamId, stockSymbol, quantity, totalPrice]);
-      updategraph();
+        VALUES (?, ?, ?, ?, 'BUY', ?)
+      `, [teamId, stockSymbol, quantity, totalPrice, CompetitionID]);
+    
       
     } catch (error) {
       console.error('Error buying stock:', error);
@@ -264,18 +264,20 @@ app.post('/sell/:competitionID', async (req, res) => {
     const pool = await connectToDatabase();
 
     try {
-      const currentHoldings = await getTeamHoldings(pool, teamId, stockSymbol);
+      const currentHoldings = await getTeamHoldings(pool, teamId, stockSymbol, CompetitionID);
+      console.log("Current holdings are", currentHoldings);
       if (currentHoldings < quantity) {
+        console.log("Current holdings are", currentHoldings);
         return res.status(400).send('Insufficient stock holdings');
       }
       
       const currentPrice = await getStockPrice(pool, stockSymbol, CompetitionID);
     
       await pool.query(`
-      INSERT INTO Transactions (TeamID, StockSymbol, Quantity, Price, TransactionType)
-      VALUES (?, ?, ?, ?, 'SELL')
-    `, [teamId, stockSymbol, quantity, currentPrice]);
-    updategraph();
+      INSERT INTO Transactions (TeamID, StockSymbol, Quantity, Price, TransactionType, CompetitionID)
+      VALUES (?, ?, ?, ?, 'SELL', ?)
+    `, [teamId, stockSymbol, quantity, currentPrice, CompetitionID]);
+
       res.status(200).send('Stock sold successfully!');
     } catch (error) {
       console.error('Error selling stock:', error);
@@ -297,10 +299,10 @@ app.get('/organisers/transactions/:CompetitionID', async (req, res) => {
   try {
     const pool = await connectToDatabase();
     let query = `
-      SELECT *
-      FROM Transactions
-      INNER JOIN Stocks S ON Transactions.StockSymbol = S.StockSymbol
-      WHERE S.CompetitionID = ?
+    SELECT *
+    FROM Transactions
+    INNER JOIN Stocks S ON Transactions.StockSymbol = S.StockSymbol
+    WHERE S.CompetitionID = ?
     `;
      
     const params = [CompetitionID];
@@ -316,8 +318,7 @@ app.get('/organisers/transactions/:CompetitionID', async (req, res) => {
       query += ` Transactions.TeamID = ?`;
       params.push(teamId);
     }
-
-
+    query += ` ORDER BY Transactions.TransactionTime DESC`;
     const [rows] = await pool.query(query, params);
     res.json(rows);
   } catch (error) {
@@ -417,14 +418,75 @@ if (result.affectedRows === 0) {
   }
 });
 
+
+//for displaying stocks
+app.get('/organiser/displayStocks/:CompetitionID', async(req, res) => {
+  const CompetitionID = parseInt(req.params.CompetitionID, 10);
+  try{
+    const pool = await connectToDatabase();
+    const [rows] = await pool.query(`
+    SELECT StockSymbol, StockName, CurrentPrice, Betaalue, AvailableShares where CompetitionID = ?`, [CompetitionID]);
+    console.log(rows);
+    res.json(rows);
+    }
+    catch (error) {
+      console.error(error);
+      res.status(500).send('Error fetching stocks');
+    }
+});
+
+//for displaying teams
+app.get('/organiser/displayTeams/:CompetitionID', async (req, res) => {
+  const CompetitionID = parseInt(req.params.CompetitionID, 10);
+  
+  try {
+    const pool = await connectToDatabase();
+    
+    const [rows] = await pool.query(`
+      SELECT TeamName, TeamID, CurrentCash
+      FROM Teams
+      WHERE CompetitionID = ?
+    `, [CompetitionID]);
+
+    console.log(rows);
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error fetching teams');
+  }
+});
+
+//end date and time
+app.get('/endTime/:CompetitionID', async (req, res) => {
+  const CompetitionID = parseInt(req.params.CompetitionID, 10);
+  
+  try {
+    const pool = await connectToDatabase();
+    
+    const [rows] = await pool.query(`
+      SELECT EndDate
+      FROM Competitions
+      WHERE CompetitionID = ?
+    `, [CompetitionID]);
+
+    console.log(rows);
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error fetching end time');
+  }
+});
+
+
+
 //for deleting stock
-app.post('/organiser/deleteStocks', async(req, res) =>{
+app.delete('/organiser/deleteStocks', async(req, res) =>{
   const {StockSymbol, CompetitionID} = req.body;
   try{
     const pool = await connectToDatabase();
     const result = await pool.query(`
     DELETE
-  FROM Transactions
+  FROM Stocks
   WHERE CompetitionID = ? AND StockSymbol = ?;`, [CompetitionID, StockSymbol]);
   if (result.affectedRows === 0) {
     throw new Error('Failed to delete stock');
@@ -437,6 +499,51 @@ catch (error) {
   res.status(500).send('Error deleting stock');
 }
 
+});
+
+//for making a team
+app.post('/organiser/createTeam', async (req, res) => {
+  const {
+    TeamID,
+    TeamPassword,
+    CompetitionID,
+    TeamName,
+    Email
+  } = req.body;
+  
+  console.log('Received data:', {
+    TeamID,
+    TeamPassword,
+    CompetitionID,
+    TeamName,
+    Email
+  });
+
+  try {
+    const pool = await connectToDatabase();
+
+    const preparedStatement = `
+      INSERT INTO Teams (TeamID, TeamPassword, CompetitionID, TeamName, Email)
+      VALUES (?, ?, ?, ?, ?)
+    `;
+    
+    const result = await pool.query(preparedStatement, [
+      TeamID,
+      TeamPassword,
+      CompetitionID,
+      TeamName,
+      Email
+    ]);
+
+    if (result.affectedRows === 0) {
+      throw new Error('Failed to create team');
+    }
+
+    res.json({ message: 'Team created successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error creating team');
+  }
 });
 
 //for deleting team
@@ -479,14 +586,14 @@ async function checkStockAvailability(pool, stockSymbol, CompetitionID) {
   return rows[0].AvailableShares;
 }
 
-async function getTeamHoldings(pool, teamId, stockSymbol) {
+async function getTeamHoldings(pool, teamId, stockSymbol, competitionID) {
   const [rows] = await pool.query(`
-    SELECT SUM(Quantity) AS Quantity
+    SELECT SUM(CASE WHEN TransactionType = 'BUY' THEN Quantity ELSE -Quantity END) AS Quantity
     FROM Transactions
-    WHERE TeamID = ? AND StockSymbol = ?
-  `, [teamId, stockSymbol]);
+    WHERE TeamID = ? AND StockSymbol = ? AND CompetitionID = ?
+  `, [teamId, stockSymbol, competitionID]);
 
-  const holdings = rows[0]?.Quantity || 0;
+  const holdings = rows[0].Quantity;
 
   return holdings;
 }

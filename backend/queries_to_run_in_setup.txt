@@ -1,3 +1,5 @@
+
+
 drop database mockstock;
 create database mockstock;
 use mockstock;
@@ -65,7 +67,7 @@ CREATE TABLE Transactions (
   FOREIGN KEY (StockSymbol, CompetitionID) REFERENCES Stocks(StockSymbol, CompetitionID)
 );
 
-CREATE TABLE Graph (
+CREATE TABLE StockGraphs (
   stockSymbol VARCHAR(10) NOT NULL,
   competitionID INT NOT NULL,
   timest DATETIME NOT NULL,
@@ -73,6 +75,14 @@ CREATE TABLE Graph (
   PRIMARY KEY (stockSymbol, competitionID, timest)  -- Composite primary key
 --   FOREIGN KEY (stockSymbol, competitionID) REFERENCES Stocks(StockSymbol, CompetitionID)  -- Foreign key relationship
 );
+
+CREATE TABLE News (
+  NewsID INT PRIMARY KEY AUTO_INCREMENT,  -- Auto-incrementing primary key
+  Title VARCHAR(255) NOT NULL,
+  Content TEXT NOT NULL,
+  ScheduledTime DATETIME NOT NULL
+);
+
 
 DELIMITER //
 CREATE TRIGGER set_team_cash_before_insert
@@ -89,13 +99,15 @@ BEFORE INSERT ON Stocks
 FOR EACH ROW
 BEGIN
   SET NEW.AvailableShares = NEW.TotalShares;
-  INSERT INTO Graph(stockSymbol,  competitionID, timest,  price)
+  INSERT INTO StockGraphs(stockSymbol,  competitionID, timest,  price)
   VALUES (NEW.StockSymbol, NEW.CompetitionID, CURRENT_TIMESTAMP(), NEW.InitialPrice);
 
 END //
 DELIMITER ;
--- Buy: reduce current cash, reduce availableStocks, update the buy orders, update price
--- Sell: Increase current cash, Increase availableStocks,  update the sell orders, update price
+-- Buy: reduce current cash, reduce availableStocks, update the buy orders, update price
+-- Sell: Increase current cash, Increase availableStocks,  update the sell orders, update price
+
+
 
 DELIMITER //
 CREATE TRIGGER update_current_cash 
@@ -143,7 +155,7 @@ BEGIN
   SET CurrentPrice = new_price
   WHERE StockSymbol = NEW.StockSymbol AND CompetitionID = NEW.CompetitionID;
   
-  INSERT INTO Graph(stockSymbol,  competitionID, timest,  price)
+  INSERT INTO StockGraphs(stockSymbol,  competitionID, timest,  price)
   VALUES (NEW.StockSymbol, NEW.CompetitionID, NEW.TransactionTime, NEW.price);
   
 END //
@@ -202,4 +214,3 @@ VALUES (1, 1, 'AAPL','2024-05-24 00:00:00', 'BUY',  150.25, 10),
 	   (3, 2, 'AMZN','2024-05-23 02:00:00',  'SELL', 120.00, 2),
        (3, 2, 'TSLA','2024-05-23 02:00:00',  'SELL', 200.50, 11),
        (3, 2, 'JNJ' ,'2024-05-23 02:00:00',  'SELL', 135.50, 1);
---
