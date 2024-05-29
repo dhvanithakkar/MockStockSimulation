@@ -1,3 +1,4 @@
+
 drop database mockstock;
 create database mockstock;
 use mockstock;
@@ -65,7 +66,7 @@ CREATE TABLE Transactions (
   FOREIGN KEY (StockSymbol, CompetitionID) REFERENCES Stocks(StockSymbol, CompetitionID)
 );
 
-CREATE TABLE Graph (
+CREATE TABLE StockGraphs (
   stockSymbol VARCHAR(10) NOT NULL,
   competitionID INT NOT NULL,
   timest DATETIME NOT NULL,
@@ -89,13 +90,13 @@ BEFORE INSERT ON Stocks
 FOR EACH ROW
 BEGIN
   SET NEW.AvailableShares = NEW.TotalShares;
-  INSERT INTO Graph(stockSymbol,  competitionID, timest,  price)
+  INSERT INTO StockGraphs(stockSymbol,  competitionID, timest,  price)
   VALUES (NEW.StockSymbol, NEW.CompetitionID, CURRENT_TIMESTAMP(), NEW.InitialPrice);
 
 END //
 DELIMITER ;
--- Buy: reduce current cash, reduce availableStocks, update the buy orders, update price
--- Sell: Increase current cash, Increase availableStocks,  update the sell orders, update price
+-- Buy: reduce current cash, reduce availableStocks, update the buy orders, update price
+-- Sell: Increase current cash, Increase availableStocks,  update the sell orders, update price
 
 DELIMITER //
 CREATE TRIGGER update_current_cash 
@@ -143,7 +144,7 @@ BEGIN
   SET CurrentPrice = new_price
   WHERE StockSymbol = NEW.StockSymbol AND CompetitionID = NEW.CompetitionID;
   
-  INSERT INTO Graph(stockSymbol,  competitionID, timest,  price)
+  INSERT INTO StockGraphs(stockSymbol,  competitionID, timest,  price)
   VALUES (NEW.StockSymbol, NEW.CompetitionID, NEW.TransactionTime, NEW.price);
   
 END //
