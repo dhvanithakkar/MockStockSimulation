@@ -54,7 +54,7 @@ app.get('/forgraph/:CompetitionID/:StockSymbol', async (req, res) => {
     try{
       const pool = await connectToDatabase();
     const [rows] = await pool.query(`
-    SELECT price, timest from graph where StockSymbol = ? AND CompetitionID = ?`, [StockSymbol, CompetitionID]);
+    SELECT price, timest from StockGraphs where StockSymbol = ? AND CompetitionID = ?`, [StockSymbol, CompetitionID]);
     console.log(rows);
     res.json(rows);
     }
