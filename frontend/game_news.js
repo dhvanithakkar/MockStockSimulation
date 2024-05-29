@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function() {
       }
 
       const newsEntries = await response.json();
+      console.log(newsEntries);
 
       // Clear the news list
       newsList.innerHTML = '';
@@ -26,7 +27,8 @@ document.addEventListener("DOMContentLoaded", function() {
       if (newsEntries.message) {
         newsList.innerHTML = '<p>No news entries found.</p>';
       } else {
-        newsEntries.forEach(news => {
+        newsEntries[0].forEach(news => {
+          console.log("item", news.Title, news.Content);
           const newsItem = document.createElement("div");
           newsItem.classList.add("news-item");
           newsItem.innerHTML = `
