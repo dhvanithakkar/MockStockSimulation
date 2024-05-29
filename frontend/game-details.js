@@ -23,29 +23,48 @@ function toggleAddUserForm() {
     return Math.floor(Math.random() * 1000) + 1;
   }
 
-  function addUser() {
+  async function addUser() {
     var name = document.getElementById('name').value;
     var email = document.getElementById('email').value;
-    var password = document.getElementById('password').value;
-    var teamNo = document.getElementById('teamNo').value;
-
+  
     if (name && email) {
-      var userItem = document.createElement('li');
-      userItem.textContent = `Name: ${name}, Email: ${email}, Team No: ${teamNo}`;
-      userItem.dataset.name = name;
-      userItem.dataset.email = email;
-      userItem.dataset.teamNo = teamNo;
-      userItem.addEventListener('click', function() {
-        showUserDetails(this.dataset.name, this.dataset.email, this.dataset.teamNo);
-      });
-      document.getElementById('usersList').appendChild(userItem);
-      document.getElementById('userForm').reset();
-      document.getElementById('addUserForm').style.display = 'none';
+      // Prepare data for API request
+      const data = {
+        TeamName: name, // Assuming TeamName maps to user name
+        Email: email,
+        // Include any other required fields like CompetitionID (get it from elsewhere)
+      };
+  
+      try {
+        // Send a POST request to the API endpoint
+        const response = await fetch('/organiser/createTeam', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+  
+        if (!response.ok) {
+          throw new Error(`Failed to create user: ${response.statusText}`);
+        }
+  
+        const responseData = await response.json();
+        console.log('API response:', responseData);
+  
+        // User created successfully, update UI
+        var userItem = document.createElement('li');
+        userItem.textContent = `Name: ${name}, Email: ${email}`;
+        // No team number displayed as it's not retrieved from the API
+        document.getElementById('usersList').appendChild(userItem);
+        document.getElementById('userForm').reset();
+        document.getElementById('addUserForm').style.display = 'none';
+      } catch (error) {
+        alert(`Error creating user: ${error.message}`);
+      }
     } else {
       alert('Please fill in all fields');
     }
   }
-
+  
   async function showUserDetails(name, email, teamNo) {
     document.getElementById('detailName').textContent = `Name: ${name}`;
     document.getElementById('detailEmail').textContent = `Email: ${email}`;
