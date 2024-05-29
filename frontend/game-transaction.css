@@ -167,11 +167,9 @@ nav ul li a:hover {
       padding: 10px 20px;
       border-radius: 5px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  }
-  header nav ul li:nth-child(3) a {
-color: #fff; /* Set the color of the "Sector" link to white */
 }
-back-button {
+
+.back-button {
   background-color: #ddd; /* Light grey */
   color: black;
   padding: 10px 20px;
@@ -183,3 +181,6 @@ back-button {
   bottom: 10px;
   left: 10px;
 }
+header nav ul li:nth-child(3) a {
+  color: #fff; /* Set the color of the "Sector" link to white */
+  }

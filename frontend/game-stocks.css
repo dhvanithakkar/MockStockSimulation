@@ -196,7 +196,7 @@ body {
   header nav ul li:nth-child(2) a {
     color: #fff; /* Set the color of the "Sector" link to white */
     }
-    back-button {
+    .back-button {
       background-color: #ddd; /* Light grey */
       color: black;
       padding: 10px 20px;
