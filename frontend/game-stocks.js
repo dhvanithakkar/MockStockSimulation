@@ -138,13 +138,18 @@ function deleteStock() {
   var stockSymbol = selectedStock.dataset.symbol;
   var competitionId = selectedStock.dataset.competitionId;
 
+  var data = {
+    CompetitionID: competitionId,
+    stockSymbol: stockSymbol}
+
   // Send an HTTP DELETE request to the API endpoint
-  fetch(`http://localhost:5500/organiser/deleteStock?stockSymbol=${stockSymbol}&CompetitionID=${competitionId}`, {
-    method: 'DELETE',
+  fetch(`http://localhost:5500/organiser/deleteStocks`, {
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-  })
+    body: JSON.stringify(data)
+    })
   .then(response => {
     if (!response.ok) {
       throw new Error('Failed to delete stock');
