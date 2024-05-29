@@ -214,3 +214,11 @@ VALUES (1, 1, 'AAPL','2024-05-24 00:00:00', 'BUY',  150.25, 10),
 	   (3, 2, 'AMZN','2024-05-23 02:00:00',  'SELL', 120.00, 2),
        (3, 2, 'TSLA','2024-05-23 02:00:00',  'SELL', 200.50, 11),
        (3, 2, 'JNJ' ,'2024-05-23 02:00:00',  'SELL', 135.50, 1);
+       
+INSERT INTO News (Title, Content, ScheduledTime) VALUES
+  ('Stock Market Soars!', 'The major stock indices all closed up significantly today...', '2024-06-03 10:00:00'),
+  ('Tech Giant Announces New Product', 'A leading tech company unveiled its latest innovation...', '2024-06-05 14:00:00'),
+  ('Economic Data Shows Positive Signs', 'Recent economic indicators suggest a potential...', '2024-06-10 08:00:00'),
+  ('Industry Leader Makes Acquisition', 'A major player in the [Industry] sector acquired...', '2024-06-12 16:00:00'),
+  ('Market Correction Expected?', 'Analysts warn of a possible short-term market...', '2024-06-17 12:00:00');
+
