@@ -423,7 +423,7 @@ app.get('/organiser/displayGames', async(req, res) => {
   try{
     const pool = await connectToDatabase();
     const [rows] = await pool.query(`
-    SELECT CompetitionID, CompetitionName, StartDate, EndDate, InitialCash, Description`);
+    SELECT CompetitionID, CompetitionName, StartDate, EndDate, InitialCash, Description FROM Competitions`);
     console.log(rows);
     res.json(rows);
     }

@@ -1,23 +1,22 @@
 let currentStep = 1;
 let gameDetails = {};
 const CollegeID = 1;
+fetchGames();
 
 function nextStep(next) {
   if (next > currentStep) {
-    if (currentStep === 1) {
-      gameDetails.CompetitionName = document.getElementById('gameName').value;
-    } else if (currentStep === 2) {
-      formatDateTime();
-      gameDetails.CollegeID = CollegeID;
-    } else if (currentStep === 3) {
-      gameDetails.NumberOfParticipants = 100;
-      gameDetails.InitialCash = Number(document.getElementById('initialBudget').value);
-      console.log(gameDetails.InitialCash);
-    }
+    gameDetails.CompetitionName = document.getElementById('gameName').value;
+    gameDetails.CollegeID = CollegeID;
+    console.log("Initial cash is", document.getElementById('initialBudget').value);
+     // Moved outside
+    gameDetails.NumberOfParticipants = 100;
+    formatDateTime(); // Assuming formatDateTime doesn't rely on previous steps
+
     currentStep = next;
     updateFormVisibility();
   }
 }
+
 
 function updateFormVisibility() {
   const formSteps = document.querySelectorAll('.form-step');
@@ -29,6 +28,7 @@ function updateFormVisibility() {
 
 async function submitForm() {
   gameDetails.Description = document.getElementById('description').value;
+  gameDetails.InitialCash = Number(document.getElementById('initialBudget').value);
 
   try {
     const response = await fetch('http://localhost:5500/organiser/makeGame', {
@@ -38,7 +38,6 @@ async function submitForm() {
     });
 
     if (response.ok) {
-      addGameToList();
       resetForm();
       await fetchGames(); // Call to fetch games after successful creation
     } else {
@@ -52,17 +51,6 @@ async function submitForm() {
 }
 
 
-function addGameToList() {
-  const gamesList = document.getElementById('gamesList');
-  const listItem = document.createElement('li');
-  listItem.innerHTML = `<strong>${gameDetails.name}</strong><p>Start: ${gameDetails.startDate} ${gameDetails.startTime}</p><p>End: ${gameDetails.endDate} ${gameDetails.endTime}</p><p>Initial Budget: ${gameDetails.initialBudget}</p><p>${gameDetails.description}</p>`;
-  listItem.addEventListener('click', () => {
-    // Assuming there's a details page at /game-details.html that takes a query parameter for the game name
-    window.location.href = `/game-details.html?name=${encodeURIComponent(gameDetails.name)}`;
-  }); 
-  gamesList.appendChild(listItem);
-}
-
 function resetForm() {
   currentStep = 1;
   gameDetails = {};
@@ -71,7 +59,7 @@ function resetForm() {
 }
 async function fetchGames() {
   try {
-    const response = await fetch('/organiser/displayGames');
+    const response = await fetch('http://localhost:5500/organiser/displayGames');
     if (response.ok) {
       const games = await response.json();
       displayGames(games);
@@ -85,6 +73,7 @@ async function fetchGames() {
   }
 }
 function displayGames(games) {
+  console.log(games);
   const gameList = document.getElementById('gameListFetched');
   gameList.innerHTML = ''; // Clear existing content
 
