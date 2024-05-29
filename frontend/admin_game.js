@@ -4,19 +4,17 @@ const CollegeID = 1;
 
 function nextStep(next) {
   if (next > currentStep) {
-    if (currentStep === 1) {
-      gameDetails.CompetitionName = document.getElementById('gameName').value;
-    } else if (currentStep === 2) {
-      formatDateTime();
-      gameDetails.CollegeID = CollegeID;
-    } else if (currentStep === 3) {
+    gameDetails.CompetitionName = document.getElementById('gameName').value;
+    gameDetails.CollegeID = CollegeID;
+    gameDetails.InitialCash = document.getElementById('initialBudget').value === '' ? 0 : Number(document.getElementById('initialBudget').value);
 
-      gameDetails.InitialCash = Number(document.getElementById('initialBudget').value);
-    }
+    formatDateTime(); // Assuming formatDateTime doesn't rely on previous steps
+
     currentStep = next;
     updateFormVisibility();
   }
 }
+
 
 function updateFormVisibility() {
   const formSteps = document.querySelectorAll('.form-step');
@@ -35,7 +33,6 @@ async function submitForm() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(gameDetails)
     });
-
     if (response.ok) {
       addGameToList();
       resetForm();
