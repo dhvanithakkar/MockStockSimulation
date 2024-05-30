@@ -2,12 +2,12 @@ body {
     font-family: 'Arial', 'Helvetica', sans-serif;
     margin: 0;
     padding: 0;
-    background-color:  #ddd;
-    color: #333;
-}
-
-header {
-    background-color: #333;
+    background-color: #333; /* Dark grey */
+    color: #ddd; /* Light grey text */
+  }
+  
+  header {
+    background-color: #222; /* Darker grey */
     color: #fff;
     padding: 10px;
     display: flex;
@@ -16,36 +16,36 @@ header {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     width: calc(100% - 20px);
     margin: 0 auto;
-}
-
-nav ul {
+  }
+  
+  nav ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
     display: flex;
-}
-
-nav ul li {
+  }
+  
+  nav ul li {
     margin-right: 20px;
-}
-
-nav ul li a {
+  }
+  
+  nav ul li a {
     color: #888;
     text-decoration: none;
     font-weight: normal;
     transition: color 0.3s ease;
-}
-
-nav ul li a:hover {
+  }
+  
+  nav ul li a:hover {
     color: #fff;
-}
-
-.logo img {
+  }
+  
+  .logo img {
     height: 40px;
     width: auto;
-}
-
-.user-profile {
+  }
+  
+  .user-profile {
     width: 40px;
     height: 40px;
     background-color: #fff;
@@ -55,13 +55,13 @@ nav ul li a:hover {
     align-items: center;
     cursor: pointer;
     transition: background-color 0.3s ease;
-}
-
-.user-profile:hover {
+  }
+  
+  .user-profile:hover {
     background-color: #ccc;
-}
-
-.user-details-panel {
+  }
+  
+  .user-details-panel {
     position: absolute;
     top: 50px;
     right: 10px;
@@ -70,68 +70,68 @@ nav ul li a:hover {
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     display: none;
-}
-
-.user-details-panel.show {
+  }
+  
+  .user-details-panel.show {
     display: block;
-}
-
-.stock-line {
+  }
+  
+  .stock-line {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-    background-color: #444;
+    background-color: #444; /* Dark grey */
     color: #fff;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
     margin-bottom: 10px;
-}
-
-.stock-line:hover {
-    background-color: #555;
-}
-
-.company-name {
+  }
+  
+  .stock-line:hover {
+    background-color: #555; /* Slightly darker grey on hover */
+  }
+  
+  .company-name {
     font-size: 1.2em;
     font-weight: bold;
-}
-
-.stock-summary {
+  }
+  
+  .stock-summary {
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-.stock-price, .stock-change {
+  }
+  
+  .stock-price, .stock-change {
     margin-left: 10px;
-}
-
-.stock-details-container {
+  }
+  
+  .stock-details-container {
     display: none;
     width: 100%;
-}
-
-.stock-details.open {
+  }
+  
+  .stock-details.open {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-}
-
-.details-wrapper {
+  }
+  
+  .details-wrapper {
     display: flex;
-}
-
-.chart-container {
+  }
+  
+  .chart-container {
     width: 75%;
     padding: 20px;
     background-color: #fff;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.details-container {
+  }
+  
+  .details-container {
     width: 25%;
     padding: 20px;
     background-color: #f9f9f9;
@@ -141,78 +141,79 @@ nav ul li a:hover {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-}
-
-.chart {
+  }
+  
+  .chart {
     width: 100%;
     height: 100%;
-}
-
-.stock-info {
+  }
+  
+  .stock-info {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    margin-bottom: 10px; /* Add space between elements */
-}
-
-.stock-price-detail, .stock-quantity {
     margin-bottom: 10px;
-}
-
-.total-amount {
+  }
+  
+  .stock-price-detail, .stock-quantity {
+    margin-bottom: 10px;
+  }
+  
+  .total-amount {
     margin-bottom: 10px;
     font-weight: bold;
-}
-
-.button-group {
+  }
+  
+  .button-group {
     width: 100%;
     display: flex;
     justify-content: space-between;
-}
-
-/* Add styles for the buttons */
-button {
-    width: 48%; /* Adjust button width as needed */
-    padding: 10px; /* Add padding */
-    border: none; /* Remove border */
-    border-radius: 5px; /* Add border radius */
-    cursor: pointer; /* Add pointer cursor */
-    transition: background-color 0.3s ease; /* Add transition effect */
-    background-color: #4CAF50; /* Green */
+  }
+  
+  /* Add styles for the buttons */
+  button {
+    width: 48%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    background-color: #626862; /* Green */
     color: white; /* White text */
-}
-
-button:hover {
+  }
+  
+  button:hover {
     background-color: #45a049; /* Darker green on hover */
-}
-
-
-input[type="number"] {
-    width: calc(100% - 20px); /* Adjust input width to leave space for buttons */
+  }
+  
+  input[type="number"] {
+    width: calc(100% - 20px);
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    margin-bottom: 10px; /* Add spacing between elements */
-}
-
-.timer {
+    margin-bottom: 10px;
+  }
+  
+  .timer {
     font-size: 18px;
     font-weight: bold;
     background-color: #444;
     padding: 10px 20px;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-header nav ul li:nth-child(3) a {
-color: #fff; /* Set the color of the "Sector" link to white */
-}
-.stock-actions {
+  }
+  
+  header nav ul li:nth-child(2) a {
+    color: #fff; /* Set the color of the "Sector" link to white */
+  }
+  
+  .stock-actions {
     display: flex;
-    gap: 10px; /* Space between buttons */
-    justify-content: flex-start; /* Align buttons to the left, you can change to center or right if needed */
-}
-
-.stock-actions button {
+    gap: 10px;
+    justify-content: flex-start;
+  }
+  
+  .stock-actions button {
     background-color: #6c757d; /* Grey color */
     color: white;
     border: none;
@@ -221,19 +222,81 @@ color: #fff; /* Set the color of the "Sector" link to white */
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.3s ease;
     border-radius: 5px; /* Rounded corners */
-}
-
-.stock-actions button:hover {
+  }
+  
+  .stock-actions button:hover {
     background-color: #5a6268; /* Darker grey on hover */
     transform: scale(1.05); /* Slightly larger on hover */
-}
-
-.stock-actions button:active {
+  }
+  
+  .stock-actions button:active {
     background-color: #545b62; /* Even darker grey on active click */
     transform: scale(1); /* Normal size on active click */
-}
-
-.stock-actions button:focus {
-    outline: none; /* Remove default focus outline */
+  }
+  
+  .stock-actions button:focus {
+    outline:none; /* Remove default focus outline */
     box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.5); /* Custom focus outline */
 }
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
+  
+  /* Modal content */
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    border-radius: 5px;
+  }
+  
+  /* Close button */
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  /* Form input styles */
+  .modal-content input[type="text"],
+  .modal-content input[type="number"],
+  .modal-content button {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  /* Button styles */
+  .modal-content button {
+    background-color: #4c4d4c;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .modal-content button:hover {
+    background-color: #4c4d4c;
+  }
