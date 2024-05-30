@@ -85,21 +85,7 @@ async function fetchTransactionHistory(competitionId, teamId) {
 }
 const competitionSelect = document.getElementById('competitionSelect');
 const teamSelect = document.getElementById('teamSelect');
-
-competitionSelect.addEventListener('change', async () => {
-  const selectedCompetitionId = competitionSelect.value;
-  const selectedTeamId = teamSelect.value;
-  fetchTransactionHistory(selectedCompetitionId, selectedTeamId);
-});
-
-teamSelect.addEventListener('change', async () => {
-  // If team selection can happen independently of competition selection
-  // you can repeat the logic to fetch history based on the current competition ID
-  const selectedCompetitionId = competitionSelect.value; // Assuming competition is already selected
-  const selectedTeamId = teamSelect.value;
-  fetchTransactionHistory(selectedCompetitionId, selectedTeamId);
-});
-
+fetchTransactionHistory(competitionSelect, teamSelect);
 
 document.addEventListener('DOMContentLoaded', async () => {
     const userList = document.getElementById('userList');
@@ -134,4 +120,3 @@ document.addEventListener('DOMContentLoaded', async () => {
     const CompetitionID = 1; // Example CompetitionID
     fetchTeams(CompetitionID);
 });
-
