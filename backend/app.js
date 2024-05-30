@@ -291,7 +291,7 @@ app.post('/sell/:competitionID', async (req, res) => {
 });
 
 //api to show transaction history. competiton id in url. if we want all transactions, write all in stockSymbol and teamId in body.
-//if we want stockwise history (history of one particular stock), write all in teamId and specific stock stockSymbol. same if we want teamwise transaction history
+//if we want stockwise history (history of one particular stock), write all in teamID and specific stock stockSymbol. same if we want teamwise transaction history
 app.get('/organisers/transactions/:CompetitionID', async (req, res) => {
   const CompetitionID = parseInt(req.params.CompetitionID, 10);
   const stockSymbol = req.query.stockSymbol; 
@@ -535,7 +535,7 @@ app.post('/organiser/createTeam', async (req, res) => {
     Email
   } = req.body;
   
-  console.log('Received data:', {
+  console.log('Create team API called. Received data:', {
     TeamID,
     TeamPassword,
     CompetitionID,
