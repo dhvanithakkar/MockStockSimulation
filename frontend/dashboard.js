@@ -196,26 +196,40 @@ async function fetchTransactionHistory(competitionId, teamId) {
 
 function renderTransactionHistory(transactionHistory) {
     const historyContainer = document.getElementById('history-list');
-    historyContainer.innerHTML = '<h2>Recent Transactions</h2>';
-    const maxTransactions = 5;
-    const transactionCount = Math.min(transactionHistory.length, maxTransactions);
+    historyContainer.innerHTML = '<h3>History</h3>';
     
-    for (let i = 0; i < transactionCount; i++) {
-        const transaction = transactionHistory[i];
-        const historyItem = document.createElement("div");
-        historyItem.className = "history-item";
+    // Create table element
+    const historyTable = document.createElement("table");
+    historyTable.className = "history-table";
     
-        // Display transaction details
-        historyItem.innerHTML = `
-            <span class="transaction-type">${transaction.TransactionType}</span>
-            <span class="stock-symbol">${transaction.StockSymbol}</span>
-            <span class="quantity">${transaction.Quantity}</span>
-            <span class="price">${transaction.Price}</span>
-            <span class="timestamp">${transaction.TransactionTime}</span>
+    // Create table header
+    const headerRow = document.createElement("tr");
+    headerRow.innerHTML = `
+        <th>Type</th>
+        <th>Stock Symbol</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Timestamp</th>
+    `;
+    historyTable.appendChild(headerRow);
+    
+    // Add transaction details as table rows
+    transactionHistory.slice(0, 5).forEach(transaction => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${transaction.TransactionType}</td>
+            <td>${transaction.StockSymbol}</td>
+            <td>${transaction.Quantity}</td>
+            <td>${transaction.Price}</td>
+            <td>${transaction.TransactionTime}</td>
         `;
-        historyContainer.appendChild(historyItem);
-    }
+        historyTable.appendChild(row);
+    });
+    
+    // Append table to history container
+    historyContainer.appendChild(historyTable);
 }
+
 
 async function fetchAndProcessData() {
     const teamID = sessionStorage.getItem('TeamId');
