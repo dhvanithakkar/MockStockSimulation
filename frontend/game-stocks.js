@@ -47,7 +47,7 @@ function createStock() {
   })
   .then(data => {
     console.log(data.message); // Assuming the response contains a message field
-    addStockToList(stockName, stockPrice);
+    addStockToList(stockSymbol, stockName, stockPrice);
     closeModal("createStockModal");
   })
   .catch(error => {
@@ -181,11 +181,12 @@ function logout() {
   console.log("Logging out...");
 }
 
-function addStockToList(name, price) {
+function addStockToList(symbol, name, price) {
   var stocksList = document.getElementById("stocksList");
   var li = document.createElement("li");
-  li.textContent = name + " - $" + price;
-  li.dataset.symbol = name; // Assuming stock name is the symbol
+  li.textContent = symbol + ", " + name + " - $" + price;
+  li.dataset.symbol = symbol;
+  li.dataset.name = name; // Assuming stock name is the symbol
   li.dataset.competitionId = '1'; // Replace with actual competition ID
   li.onclick = function() {
     var selectedStock = document.querySelector(".stocks-list li.selected");
@@ -202,21 +203,7 @@ async function fetchStocks() {
     const response = await fetch('http://localhost:5500/organiser/displayStocks/1'); // Replace 1 with the actual CompetitionID
     if (response.ok) {
       const stocks = await response.json();
-      stocks.forEach(stock => addStockToList(stock.StockName, stock.CurrentPrice));
-
-      // Call API to get graph data for the selected stock (assuming a stock is selected)
-      const selectedStock = document.querySelector(".stocks-list li.selected");
-      if (selectedStock) {
-        const competitionId = '1'; // Replace with actual competition ID
-        const stockSymbol = selectedStock.dataset.symbol;
-        const graphDataResponse = await fetch(`/forgraph/${competitionId}/${stockSymbol}`);
-        if (graphDataResponse.ok) {
-          const graphData = await graphDataResponse.json();
-          // Use the graphData to create the chart (explained in step 2)
-        } else {
-          console.error('Error fetching graph data:', await graphDataResponse.text());
-        }
-      }
+      stocks.forEach(stock => addStockToList(stock.StockSymbol, stock.StockName, stock.CurrentPrice));
     } else {
       console.error('Error fetching stocks:', await response.text());
       // Handle API errors by displaying an error message to the user
@@ -226,36 +213,9 @@ async function fetchStocks() {
     // Handle other errors during the fetch request
   }
 }
-function createLineChart(graphData) {
-  const ctx = document.getElementById('portfolioGraph').getContext('2d');
-  const labels = graphData.map(point => point.timest);
-  const prices = graphData.map(point => point.price);
-  const chart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: 'Stock Price',
-        data: prices,
-        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-        borderColor: 'rgba(54, 162, 235, 1)',
-        borderWidth: 1
-      }]
-    },
-    options: {
-      scales: {
-        yAxes: [{
-          ticks: {
-            beginAtZero: true
-          }
-        }]
-      }
-    }
-  });
-}
-if (graphDataResponse.ok) {
-  const graphData = await graphDataResponse.json();
-  createLineChart(graphData);
-}
+window.onload = async function() {
+  await fetchStocks(); // Call fetchStocks on page load
+  // ... other initialization code
+};
 
 
