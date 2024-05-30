@@ -1,9 +1,11 @@
+const CompetitionID = 1;
 document.addEventListener('DOMContentLoaded', async () => {
-    var toggleUserFormButton = document.getElementById('toggleUserFormButton');
-    var userForm = document.getElementById('userForm');
-    var userList = document.getElementById('userList');
-    var transactionHistory = document.getElementById('transactionHistory');
-    var users = [];
+    const toggleUserFormButton = document.getElementById('toggleUserFormButton');
+    const userForm = document.getElementById('userForm');
+    const userList = document.getElementById('userList');
+    const transactionHistory = document.getElementById('transactionHistory');
+
+    let users = [];
 
     toggleUserFormButton.addEventListener('click', () => {
         if (userForm.classList.contains('hidden')) {
@@ -18,51 +20,35 @@ document.addEventListener('DOMContentLoaded', async () => {
         var email = document.getElementById('email').value;
         var password = document.getElementById('password').value;
 
-        var user = { id: users.length + 1, name, email, password, transactions: generateTransactions() };
-        users.push(user);
-        addUserToList(user);
-        userForm.reset();
-        userForm.classList.add('hidden');
+        const userData = {
+            TeamName: name,
+            Email: email,
+            TeamPassword: password, CompetitionID: CompetitionID
+        };
 
         try {
-            var teamData = { name, email }; // Adjust teamData as needed
-            var response = await fetch('http://localhost:5500/organiser/createTeam', {
+            const response = await fetch('http://localhost:5500/organiser/createTeam', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(teamData)
+                body: JSON.stringify(userData)
             });
 
             if (!response.ok) {
-                throw new Error('Failed to create team');
+                throw new Error('Failed to add user');
             }
 
             var result = await response.json();
             alert(result.message);
+            addUserToList(userData);
             userForm.reset();
             userForm.classList.add('hidden');
         } catch (error) {
             console.error('Error:', error);
-            alert('Error creating team');
+            alert('Error adding user');
         }
     });
-
-    // Fetch and display the user list
-    try {
-        var competitionID = 1; // Example CompetitionID
-        var response = await fetch(`http://localhost:5500/organiser/displayTeams/${competitionID}`);
-        if (!response.ok) {
-            throw new Error('Failed to fetch teams');
-        }
-        var teams = await response.json();
-        teams.forEach(team => {
-            addUserToList(team);
-        });
-    } catch (error) {
-        console.error('Error:', error);
-        alert('Error fetching teams');
-    }
 
     // Function to generate a random password
     function generatePassword() {
@@ -72,12 +58,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Function to add a user to the list
     function addUserToList(user) {
-        var userItem = document.createElement('li');
-        userItem.textContent = `${user.TeamName} (${user.TeamID}) - Cash: ${user.CurrentCash}`;
+        const userItem = document.createElement('li');
+        userItem.textContent = `${user.name} - ${user.email}`;
         userList.appendChild(userItem);
     }
 
-    // Update the function to fetch and display transaction history
+    // Function to fetch and display transaction history
     async function fetchTransactionHistory(CompetitionID, stockSymbol, teamId) {
         try {
             var response = await fetch(`http://localhost:5500/organisers/transactions/${CompetitionID}?stockSymbol=${stockSymbol}&teamId=${teamId}`);
@@ -106,9 +92,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Fetch initial transaction history example
-    var CompetitionID = 1; // Replace with actual competition ID
-    var stockSymbol = 'AAPL'; // Replace with actual stock symbol
-    var teamId = 1; // Replace with actual team ID
+    // Example usage:
+    const CompetitionID = 1; // Example CompetitionID
+    const stockSymbol = 'AAPL'; // Example stock symbol
+    const teamId = '12345'; // Example team ID
     fetchTransactionHistory(CompetitionID, stockSymbol, teamId);
 });
