@@ -271,5 +271,39 @@ header nav ul li:nth-child(1) a {
 .history-table tr:hover {
     background-color: #ddd;
 }
+/* New CSS for Leaderboard */
+.leaderboard {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.leaderboard h3 {
+    margin-bottom: 15px;
+    color: #343a40;
+}
+
+.leaderboard-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.leaderboard-item .position {
+    flex: 0 0 30px;
+}
+
+.leaderboard-item .team-name {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.leaderboard-item .total-net-worth {
+    flex: 0 0 100px;
+}
+
 
 
