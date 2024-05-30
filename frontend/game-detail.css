@@ -77,12 +77,12 @@ button:hover {
     margin-top: 20px;
 }
 
-ul {
+.user-list-container ul {
     list-style-type: none;
     padding: 0;
 }
 
-li {
+.user-list-container li {
     padding: 10px;
     background-color: #444; /* List item background */
     border: 1px solid #555;
@@ -91,10 +91,26 @@ li {
     cursor: pointer;
 }
 
-li:hover {
+.user-list-container li:hover {
     background-color: #555;
 }
+.transaction-history-container ul {
+    list-style-type: none;
+    padding: 0;
+}
 
+.transaction-history-container li {
+    padding: 10px;
+    background-color: #444; /* List item background */
+    border: 1px solid #555;
+    margin-top: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.transaction-history-container li:hover {
+    background-color: #555;
+}
 .hidden {
     display: none;
 }
