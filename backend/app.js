@@ -13,7 +13,7 @@ app.use(express.json());
 
 
 app.get('/companies', async (req, res) => {
-  const CompetitionID = req.params.CompetitionID;
+  const CompetitionID = req.query.CompetitionID;
   try {
       const pool = await connectToDatabase();
       const [rows] = await pool.query(`
@@ -303,10 +303,10 @@ app.get('/organisers/transactions/:CompetitionID', async (req, res) => {
     SELECT *
     FROM Transactions
     INNER JOIN Stocks S ON Transactions.StockSymbol = S.StockSymbol
-    WHERE S.CompetitionID = ?
+    WHERE S.CompetitionID = ? and Transactions.CompetitionID = ?
     `;
      
-    const params = [CompetitionID];
+    const params = [CompetitionID, CompetitionID];
 
     if (stockSymbol) {
       query += ` AND Transactions.StockSymbol = ?`;

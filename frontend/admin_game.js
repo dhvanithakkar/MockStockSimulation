@@ -79,9 +79,12 @@ function displayGames(games) {
 
   games.forEach(game => {
     const listItem = document.createElement('li');
-    listItem.innerHTML = `<a href="game-detail.html?gameId=${game.GameID}">
+    listItem.addEventListener('click', ()=>{sessionStorage.setItem('CompetitionID', game.CompetitionID);
+    console.log("Item set to", sessionStorage.getItem('CompetitionID'));
+    window.location.replace("game-detail.html");
+     });
+    listItem.innerHTML = `
                             <strong>${game.CompetitionName}</strong>
-                          </a>
                           <p>Start: ${game.StartDate}</p>
                           <p>End: ${game.EndDate}</p>
                           <p>Initial Budget: ${game.InitialCash}</p>

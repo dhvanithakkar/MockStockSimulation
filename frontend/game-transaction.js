@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-  const competitionId = 1; //sessionStorage.getItem('CompetitionID');
+  const competitionId = sessionStorage.getItem('CompetitionID');
 
   fetchTransactionHistory(competitionId);
 

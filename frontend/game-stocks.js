@@ -1,7 +1,7 @@
 function logout() {
     window.location.href = 'index.html';
 }
-const CompetitionID = 1;
+const CompetitionID = sessionStorage.getItem('CompetitionID');
 
 function createChart(chartId, data, timestamps, detailsId) {
     var ctx = document.getElementById(chartId).getContext('2d');
@@ -244,7 +244,9 @@ function deleteStock(stockSymbol, competitionId) {
 
 
   function FetchList() {
-    fetch('http://localhost:5500/companies')
+    const bodyData = { CompetitionID: CompetitionID };
+    fetch('http://localhost:5500/companies?CompetitionID=${CompetitionID}'
+    )
       .then(response => response.json())
       .then(data => {
         console.log(data);
