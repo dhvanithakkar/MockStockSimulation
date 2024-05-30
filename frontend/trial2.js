@@ -97,3 +97,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     const teamId = '12345'; // Example team ID
     fetchTransactionHistory(CompetitionID, stockSymbol, teamId);
 });
+document.addEventListener('DOMContentLoaded', async () => {
+    const userList = document.getElementById('userList');
+
+    async function fetchTeams(CompetitionID) {
+        try {
+            const response = await fetch(`http://localhost:5500/organiser/displayTeams/${CompetitionID}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch teams');
+            }
+            const teams = await response.json();
+            displayTeams(teams);
+        } catch (error) {
+            console.error('Error:', error);
+            // Handle error appropriately
+        }
+    }
+
+    function displayTeams(teams) {
+        // Clear previous user list
+        userList.innerHTML = '';
+
+        // Display each team
+        teams.forEach(team => {
+            const teamItem = document.createElement('li');
+            teamItem.textContent = `Team: ${team.TeamName}, ID: ${team.TeamID}, Cash: ${team.CurrentCash}`;
+            userList.appendChild(teamItem);
+        });
+    }
+
+    // Example usage:
+    const CompetitionID = 1; // Example CompetitionID
+    fetchTeams(CompetitionID);
+});
+
