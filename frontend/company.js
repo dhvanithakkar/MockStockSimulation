@@ -79,6 +79,7 @@ function buyStock(company, price) {
         if (response.ok) {
             // Handle success, maybe show a confirmation message
             alert('Purchase successful!');
+            FetchList();
         } else {
             // Handle error response
             return response.text().then(errorMessage => {
@@ -116,6 +117,7 @@ function sellStock(company, price) {
         if (response.ok) {
             // Handle success, maybe show a confirmation message
             alert('Sale successful!');
+            FetchList();
         } else {
             // Handle error response
             return response.text().then(errorMessage => {
@@ -177,18 +179,23 @@ function generateStockHTML(stock) {
     </div>`;
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+function FetchList() {
     fetch('http://localhost:5500/companies')
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            const stocksContainer = document.getElementById('stocks-container');
-            data.forEach(stock => {
-                stocksContainer.innerHTML += generateStockHTML(stock);
-            });
-        })
-        .catch(error => console.error('Error fetching companies:', error));
-
-    setInterval(updateTimer, 1000);
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        const stocksContainer = document.getElementById('stocks-container');
+        stocksContainer.innerHTML = ''; // Clear the container before adding new data
+  
+        data.forEach(stock => {
+          stocksContainer.innerHTML += generateStockHTML(stock);
+        });
+      })
+      .catch(error => console.error('Error fetching companies:', error));
+  
+    // Call the updateTimer function initially as well
     updateTimer();
-});
+    setInterval(updateTimer, 1000);
+  }
+  
+  document.addEventListener('DOMContentLoaded', FetchList);
