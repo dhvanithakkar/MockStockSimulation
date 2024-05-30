@@ -63,34 +63,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Function to fetch and display transaction history
-    async function fetchTransactionHistory(CompetitionID, stockSymbol, teamId) {
+    async function fetchTransactionHistory(competitionId, teamId) {
         try {
-            const response = await fetch(`http://localhost:5500/organisers/transactions/${CompetitionID}?stockSymbol=${stockSymbol}&teamId=${teamId}`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch transaction history');
-            }
+            const response = await fetch(`http://localhost:5500/organisers/transactions/${competitionId}?teamId=${teamId}`);
             const transactions = await response.json();
-            displayTransactionHistory(transactions);
+    
+            const transactionHistory = document.getElementById('transaction-history');
+            transactionHistory.innerHTML = '';
+    
+            transactions.forEach(transaction => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `Date: ${transaction.TransactionTime}, Stock: ${transaction.StockSymbol}, 
+                                        Quantity: ${transaction.Quantity}, Price: $${transaction.Price}`;
+                transactionHistory.appendChild(listItem);
+            });
         } catch (error) {
-            console.error('Error:', error);
-            // Handle error appropriately, e.g., show an error message to the user
+            console.error('Error fetching transaction history:', error);
         }
     }
-
-    // Function to display transaction history
-    function displayTransactionHistory(transactions) {
-        // Clear previous transaction history
-        transactionHistory.innerHTML = '';
-
-        // Display each transaction
-        transactions.forEach(transaction => {
-            const transactionItem = document.createElement('li');
-            // Customize the display based on your transaction data structure
-            transactionItem.textContent = `${transaction.TransactionID}: ${transaction.TransactionType} ${transaction.Quantity} shares of ${transaction.StockSymbol} at ${transaction.Price}`;
-            transactionHistory.appendChild(transactionItem);
-        });
-    }
-
     // Example usage:
     const CompetitionID = 1; // Example CompetitionID
     const stockSymbol = 'AAPL'; // Example stock symbol
