@@ -62,101 +62,18 @@ function handleCheckboxClick(event) {
 // Attach event listener to a parent element containing all the checkboxes
 document.querySelector('.stock-list').addEventListener('click', handleCheckboxClick);
 
-
-// Function to fetch graph data
-async function fetchGraphData(competitionID, stockSymbol) {
-    try {
-        const response = await fetch(`http://localhost:5500/forgraph/${competitionID}/${stockSymbol}`);
-        const data = await response.json();
-        return data.map(item => ({
-            price: item.price,
-            timestamp: new Date(item.timest).toLocaleString()
-        }));
-    } catch (error) {
-        console.error('Error fetching graph data:', error);
-        return [];
-    }
-}
-
-
-function createChart(chartId, data, timestamps, detailsId) {
-    const ctx = document.getElementById(chartId).getContext('2d');
-    const detailsContainer = document.getElementById(detailsId);
-    const chartContainer = detailsContainer.querySelector('#chartContainer');
-
-    chartContainer.style.width = '75%';
-    chartContainer.style.height = '100%';
-
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: timestamps,
-            datasets: [{
-                label: chartId.split('-')[0] + ' Stock Price',
-                data: data,
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 2,
-                fill: false
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: false
-                }
-            }
-        }
-    });
-}
-
-
-
-// Function to display selected charts
-async function displaySelectedCharts() {
-    const chartContainer = document.getElementById('chartContainer');
-    chartContainer.innerHTML = ''; // Clear existing charts
-
-    const checkboxes = document.querySelectorAll('.stock-checkbox');
-    for (let checkbox of checkboxes) {
-        if (checkbox.checked) {
-            const companyName = checkbox.parentElement.querySelector('.stock-name').textContent;
-            const stockSymbol = companyName; // Assuming stock symbol is the company name
-            const graphData = await fetchGraphData(1, stockSymbol); // Replace 1 with the actual CompetitionID
-
-            if (graphData.length) {
-                const data = graphData.map(item => item.price);
-                const timestamps = graphData.map(item => item.timestamp);
-                const chartId = `chart-${stockSymbol}`;
-                const detailsId = `details-${stockSymbol}`;
-
-                // Create the canvas element for the chart
-                const canvas = document.createElement('canvas');
-                canvas.id = chartId;
-                chartContainer.appendChild(canvas);
-
-                createChart(chartId, data, timestamps, detailsId);
-            }
-        }
-    }
-}
-
-
 // Function to update the timer
-// Function to fetch end time from API
 async function fetchEndTime(competitionID) {
     try {
         const response = await fetch(`http://localhost:5500/endTime/${competitionID}`);
         const data = await response.json();
-        return new Date(data[0].EndDate); // Assuming the end time is returned as a string
+        return new Date(data[0].EndDate);
     } catch (error) {
         console.error('Error fetching end time:', error);
         return null;
     }
 }
 
-// Function to update the stopwatch timer
 async function updateStopwatch() {
     const timerElement = document.getElementById('timer');
     const endTime = await fetchEndTime(1); // Replace 1 with the actual CompetitionID
@@ -181,9 +98,7 @@ async function updateStopwatch() {
     }, 1000);
 }
 
-// Call the updateStopwatch function to start the timer
 updateStopwatch();
-
 
 function renderPortfolio(stockData) {
     const totalInvestment = document.getElementById('totalInvestment');
@@ -267,6 +182,7 @@ async function fetchPortfolioData(competitionId, teamId) {
         console.error('Error fetching portfolio:', error);
     }
 }
+
 // Function to fetch transaction history data
 async function fetchTransactionHistory(competitionId, teamId) {
     try {
@@ -297,10 +213,8 @@ function renderTransactionHistory(transactionHistory) {
             <span class="price">${transaction.Price}</span>
             <span class="timestamp">${transaction.TransactionTime}</span>
         `;
-    
         historyContainer.appendChild(historyItem);
     }
-    
 }
 
 async function fetchAndProcessData() {
@@ -331,13 +245,112 @@ async function fetchAndProcessData() {
     }
 }
 
+// Function to fetch graph data for the selected stock and competition
+async function fetchGraphData(competitionID, stockSymbol) {
+    try {
+        const response = await fetch(`http://localhost:5500/forgraph/${competitionID}/${stockSymbol}`);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching graph data:', error);
+        return [];
+    }
+}
 
-//fetchAndProcessData();
+// Function to display the graph in the chart container
+async function displayGraph(competitionID, stockSymbol) {
+    const graphData = await fetchGraphData(competitionID, stockSymbol);
 
-const competitionID = 1;
-const teamID = 1; 
-displayWalletData(competitionID, teamID);
-displayLeaderboard(competitionID);
-fetchPortfolioData(competitionID, teamID);
-fetchTransactionHistory(competitionID, teamID);
+    if (graphData.length === 0) {
+        console.log('No graph data available');
+        return;
+    }
 
+    const labels = graphData.map(entry => entry.timest);
+    const prices = graphData.map(entry => entry.price);
+
+    const ctx = document.getElementById('chartContainer').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: `${stockSymbol} Price`,
+                data: prices,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                fill: false,
+                tension: 0.1
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day'
+                    }
+                },
+                y: {
+                    beginAtZero: false
+                }
+            },
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                intersect: false
+            }
+        }
+    });
+}
+
+// Function to display selected charts based on checked checkboxes
+async function displaySelectedCharts() {
+    const checkboxes = document.querySelectorAll('.stock-checkbox');
+    const selectedStocks = [];
+
+    checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            const stockItem = checkbox.parentElement;
+            const stockSymbol = stockItem.querySelector('.stock-name').textContent;
+            selectedStocks.push(stockSymbol);
+        }
+    });
+
+    const competitionID = sessionStorage.getItem('CompetitionID');
+
+    if (selectedStocks.length > 0) {
+        // Display the graph for the first selected stock (you can extend this to display multiple graphs if needed)
+        await displayGraph(competitionID, selectedStocks[0]);
+    }
+}
+
+// Function to initialize the dashboard
+async function initializeDashboard() {
+    const teamID = 1; // Replace with actual team ID
+    const competitionID = 1; // Replace with actual competition ID
+
+    await displayWalletData(competitionID, teamID);
+    await displayLeaderboard(competitionID);
+    await fetchPortfolioData(competitionID, teamID);
+    await fetchTransactionHistory(competitionID, teamID);
+
+    // Initialize chart container
+    const chartContainer = document.getElementById('chartContainer');
+    if (chartContainer) {
+        chartContainer.innerHTML = '<canvas id="chartCanvas"></canvas>';
+    }
+}
+
+// Call the initializeDashboard function to start the dashboard setup
+initializeDashboard();
