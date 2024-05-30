@@ -83,8 +83,9 @@ async function fetchTransactionHistory(competitionId, teamId) {
         console.error('Error fetching transaction history:', error);
     }
 }
-
-fetchTransactionHistory(1, 1);
+const competitionSelect = document.getElementById('competitionSelect');
+const teamSelect = document.getElementById('teamSelect');
+fetchTransactionHistory(competitionSelect, teamSelect);
 
 document.addEventListener('DOMContentLoaded', async () => {
     const userList = document.getElementById('userList');
