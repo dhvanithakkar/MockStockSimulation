@@ -80,6 +80,7 @@ function generateStockHTML(stock) {
                       <div class="stock-price-detail">Price: ${stock.CurrentPrice} </div>
                       <div class="stock-quantity">Available: ${stock.AvailableShares}</div>
                       <div class="stock-beta-value">Beta Value: ${stock.BetaValue}</div>
+                        <br>
                       <div class="button-group">
                           <button onclick="updateStock('${stock.StockSymbol}', ${CompetitionID}, )">Update</button>
                           <button onclick="deleteStock('${stock.StockSymbol}, ${CompetitionID}')">Delete</button>

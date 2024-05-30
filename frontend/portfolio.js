@@ -37,26 +37,12 @@ async function fetchTransactionHistory(competitionId, teamId) {
         const transactionHistory = document.getElementById('transaction-history');
         transactionHistory.innerHTML = '';
 
-        // Create table
-        const table = document.createElement('table');
-        const headerRow = table.insertRow();
-        const headers = ['Date', 'Stock', 'Quantity', 'Price', 'Type'];
-
-        headers.forEach(headerText => {
-            const header = document.createElement('th');
-            header.textContent = headerText;
-            headerRow.appendChild(header);
-        });
-
         transactions.forEach(transaction => {
-            const row = table.insertRow();
-            Object.values(transaction).forEach(value => {
-                const cell = row.insertCell();
-                cell.textContent = value;
-            });
+            const listItem = document.createElement('li');
+            listItem.textContent = `Date: ${transaction.TransactionTime}, Stock: ${transaction.StockSymbol}, 
+                                    Quantity: ${transaction.Quantity}, Price: $${transaction.Price}, Type: ${transaction.TransactionType}`;
+            transactionHistory.appendChild(listItem);
         });
-
-        transactionHistory.appendChild(table);
     } catch (error) {
         console.error('Error fetching transaction history:', error);
     }
@@ -186,5 +172,4 @@ async function updateStopwatch() {
 
 // Call the updateStopwatch function to start the timer
 updateStopwatch();
-
 
