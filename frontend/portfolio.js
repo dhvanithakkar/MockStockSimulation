@@ -39,10 +39,7 @@ async function fetchTransactionHistory(competitionId, teamId) {
 
         // Create table
         const table = document.createElement('table');
-        table.className = 'history-table'; // Adding class for styling
-
-        // Create table header
-        const headerRow = document.createElement('tr');
+        const headerRow = table.insertRow();
         const headers = ['Date', 'Stock', 'Quantity', 'Price', 'Type'];
 
         headers.forEach(headerText => {
@@ -51,33 +48,12 @@ async function fetchTransactionHistory(competitionId, teamId) {
             headerRow.appendChild(header);
         });
 
-        table.appendChild(headerRow);
-
-        transactions.slice(0, 5).forEach(transaction => {
-            const row = document.createElement('tr');
-
-            // Populate table cells with transaction data
-            const dateCell = document.createElement('td');
-            dateCell.textContent = transaction.TransactionTime;
-            row.appendChild(dateCell);
-
-            const stockCell = document.createElement('td');
-            stockCell.textContent = transaction.StockSymbol;
-            row.appendChild(stockCell);
-
-            const quantityCell = document.createElement('td');
-            quantityCell.textContent = transaction.Quantity;
-            row.appendChild(quantityCell);
-
-            const priceCell = document.createElement('td');
-            priceCell.textContent = transaction.Price;
-            row.appendChild(priceCell);
-
-            const typeCell = document.createElement('td');
-            typeCell.textContent = transaction.TransactionType;
-            row.appendChild(typeCell);
-
-            table.appendChild(row);
+        transactions.forEach(transaction => {
+            const row = table.insertRow();
+            Object.values(transaction).forEach(value => {
+                const cell = row.insertCell();
+                cell.textContent = value;
+            });
         });
 
         transactionHistory.appendChild(table);
@@ -85,7 +61,6 @@ async function fetchTransactionHistory(competitionId, teamId) {
         console.error('Error fetching transaction history:', error);
     }
 }
-
 
 
 
