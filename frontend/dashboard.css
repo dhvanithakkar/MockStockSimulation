@@ -130,7 +130,7 @@ nav ul li a:hover {
 .two-boxes {
     display: flex;
     justify-content: space-between;
-    margin: 20px;
+    margin: 0px;
 }
 
 .stock-list {
