@@ -245,8 +245,7 @@ function createStock() {
 
   function FetchList() {
     const bodyData = { CompetitionID: CompetitionID };
-    fetch('http://localhost:5500/companies?CompetitionID=${CompetitionID}'
-    )
+    fetch(`http://localhost:5500/companies/${CompetitionID}`)
       .then(response => response.json())
       .then(data => {
         console.log(data);
