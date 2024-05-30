@@ -203,6 +203,20 @@ async function fetchStocks() {
     if (response.ok) {
       const stocks = await response.json();
       stocks.forEach(stock => addStockToList(stock.StockName, stock.CurrentPrice));
+
+      // Call API to get graph data for the selected stock (assuming a stock is selected)
+      const selectedStock = document.querySelector(".stocks-list li.selected");
+      if (selectedStock) {
+        const competitionId = '1'; // Replace with actual competition ID
+        const stockSymbol = selectedStock.dataset.symbol;
+        const graphDataResponse = await fetch(`/forgraph/${competitionId}/${stockSymbol}`);
+        if (graphDataResponse.ok) {
+          const graphData = await graphDataResponse.json();
+          // Use the graphData to create the chart (explained in step 2)
+        } else {
+          console.error('Error fetching graph data:', await graphDataResponse.text());
+        }
+      }
     } else {
       console.error('Error fetching stocks:', await response.text());
       // Handle API errors by displaying an error message to the user
@@ -212,8 +226,36 @@ async function fetchStocks() {
     // Handle other errors during the fetch request
   }
 }
-window.onload = async function() {
-  await fetchStocks(); // Call fetchStocks on page load
-  // ... other initialization code
-};
+function createLineChart(graphData) {
+  const ctx = document.getElementById('portfolioGraph').getContext('2d');
+  const labels = graphData.map(point => point.timest);
+  const prices = graphData.map(point => point.price);
+  const chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Stock Price',
+        data: prices,
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+}
+if (graphDataResponse.ok) {
+  const graphData = await graphDataResponse.json();
+  createLineChart(graphData);
+}
+
 
