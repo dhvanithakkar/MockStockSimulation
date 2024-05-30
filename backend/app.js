@@ -17,7 +17,7 @@ app.get('/companies', async (req, res) => {
   try {
       const pool = await connectToDatabase();
       const [rows] = await pool.query(`
-          SELECT StockSymbol, CurrentPrice, CompetitionID, AvailableShares FROM Stocks WHERE CompetitionID = 1`);
+          SELECT StockSymbol, CurrentPrice, CompetitionID, AvailableShares, BetaValue FROM Stocks WHERE CompetitionID = 1`);
       res.json(rows);
   } catch (error) {
       console.error(error);
