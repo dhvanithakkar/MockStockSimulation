@@ -144,17 +144,46 @@ async function displaySelectedCharts() {
 
 
 // Function to update the timer
-function updateTimer() {
-    const timerElement = document.getElementById('timer');
-    const now = new Date();
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
-    timerElement.textContent = `${hours}:${minutes}:${seconds}`;
+// Function to fetch end time from API
+async function fetchEndTime(competitionID) {
+    try {
+        const response = await fetch(`http://localhost:5500/endTime/${competitionID}`);
+        const data = await response.json();
+        return new Date(data[0].EndDate); // Assuming the end time is returned as a string
+    } catch (error) {
+        console.error('Error fetching end time:', error);
+        return null;
+    }
 }
 
-setInterval(updateTimer, 1000); // Update the timer every second
-updateTimer(); // Initialize the timer immediately
+// Function to update the stopwatch timer
+async function updateStopwatch() {
+    const timerElement = document.getElementById('timer');
+    const endTime = await fetchEndTime(1); // Replace 1 with the actual CompetitionID
+
+    if (!endTime) {
+        timerElement.textContent = 'Error fetching end time';
+        return;
+    }
+
+    setInterval(() => {
+        const now = new Date();
+        const timeDifference = endTime - now;
+
+        if (timeDifference <= 0) {
+            timerElement.textContent = 'Competition Ended';
+        } else {
+            const hours = String(Math.floor(timeDifference / (1000 * 60 * 60))).padStart(2, '0');
+            const minutes = String(Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+            const seconds = String(Math.floor((timeDifference % (1000 * 60)) / 1000)).padStart(2, '0');
+            timerElement.textContent = `${hours}:${minutes}:${seconds}`;
+        }
+    }, 1000);
+}
+
+// Call the updateStopwatch function to start the timer
+updateStopwatch();
+
 
 function renderPortfolio(stockData) {
     const totalInvestment = document.getElementById('totalInvestment');
