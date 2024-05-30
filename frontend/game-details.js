@@ -62,7 +62,7 @@ async function addUser() {
   } else {
     alert('Please fill in all fields');
   }
-  
+}
   async function showUserDetails(name, email, teamNo) {
     document.getElementById('detailName').textContent = `Name: ${name}`;
     document.getElementById('detailEmail').textContent = `Email: ${email}`;
