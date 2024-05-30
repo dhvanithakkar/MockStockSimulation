@@ -63,31 +63,29 @@ document.addEventListener('DOMContentLoaded', async () => {
         userList.appendChild(userItem);
     }
 
-    // Function to fetch and display transaction history
-    async function fetchTransactionHistory(competitionId, teamId) {
-        try {
-            const response = await fetch(`http://localhost:5500/organisers/transactions/${competitionId}?teamId=${teamId}`);
-            const transactions = await response.json();
     
-            const transactionHistory = document.getElementById('transaction-history');
-            transactionHistory.innerHTML = '';
-    
-            transactions.forEach(transaction => {
-                const listItem = document.createElement('li');
-                listItem.textContent = `Date: ${transaction.TransactionTime}, Stock: ${transaction.StockSymbol}, 
-                                        Quantity: ${transaction.Quantity}, Price: $${transaction.Price}`;
-                transactionHistory.appendChild(listItem);
-            });
-        } catch (error) {
-            console.error('Error fetching transaction history:', error);
-        }
-    }
-    // Example usage:
-    const CompetitionID = 1; // Example CompetitionID
-    const stockSymbol = 'AAPL'; // Example stock symbol
-    const teamId = '12345'; // Example team ID
-    fetchTransactionHistory(CompetitionID, stockSymbol, teamId);
 });
+async function fetchTransactionHistory(competitionId, teamId) {
+    try {
+        const response = await fetch(`http://localhost:5500/organisers/transactions/${competitionId}?teamId=${teamId}`);
+        const transactions = await response.json();
+
+        const transactionHistory = document.getElementById('transactionHistory');
+        transactionHistory.innerHTML = '';
+
+        transactions.forEach(transaction => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `Date: ${transaction.TransactionTime}, Stock: ${transaction.StockSymbol}, 
+                                    Quantity: ${transaction.Quantity}, Price: $${transaction.Price}`;
+            transactionHistory.appendChild(listItem);
+        });
+    } catch (error) {
+        console.error('Error fetching transaction history:', error);
+    }
+}
+
+fetchTransactionHistory(1, 1);
+
 document.addEventListener('DOMContentLoaded', async () => {
     const userList = document.getElementById('userList');
 
