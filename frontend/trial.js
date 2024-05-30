@@ -86,7 +86,7 @@ function generateStockHTML(stock) {
                     <div class="stock-info">
                         <div class="stock-price-detail">Price: ${stock.CurrentPrice} </div>
                         <div class="stock-quantity">Available: ${stock.AvailableShares}</div>
-                        <div class="stock-beta-value">Available: ${stock.BetaValue}</div>
+                        <div class="stock-beta-value">Beta Value: ${stock.BetaValue}</div>
 
                     </div>
                 </div>
