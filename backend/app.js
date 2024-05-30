@@ -621,7 +621,7 @@ app.post('/news/create', async (req, res) => {
 app.post('/news/display', async (req, res) => {
   const { CompetitionID } = req.body;
 
-
+  console.log("News display API with", CompetitionID);
   try {
     const pool = await connectToDatabase();
 

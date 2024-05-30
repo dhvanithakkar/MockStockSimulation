@@ -209,7 +209,7 @@ function generateStockHTML(stock) {
 }
 
 function FetchList() {
-    fetch('http://localhost:5500/companies')
+    fetch(`http://localhost:5500/companies/${CompetitionID}`)
       .then(response => response.json())
       .then(data => {
         console.log(data);
