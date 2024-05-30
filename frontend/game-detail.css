@@ -162,3 +162,47 @@ nav ul li a:hover {
 header nav ul li:nth-child(1) a {
     color: #fff; /* Set the color of the "Sector" link to white */
   }
+  /* Styling for user list */
+.user-list-container {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.user-list-container h2 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.user-list-container ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.user-list-container li {
+    margin-bottom: 10px;
+}
+
+/* Styling for transaction history */
+.transaction-history-container {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+}
+
+.transaction-history-container h2 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.transaction-history-container ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.transaction-history-container li {
+    margin-bottom: 10px;
+}
