@@ -509,7 +509,8 @@ app.delete('/organiser/deleteStocks', async(req, res) =>{
     DELETE
   FROM StockGraphs
   WHERE CompetitionID = ? AND StockSymbol = ?;`, [CompetitionID, StockSymbol]);
-  const result = await pool.query(`DELETE FROM Stocks
+  const result = await pool.query(`
+  DELETE FROM Stocks
   WHERE CompetitionID = ? AND StockSymbol = ?;`, [CompetitionID, StockSymbol]);
   if (result.affectedRows === 0) {
     throw new Error('Failed to delete stock');
