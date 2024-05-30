@@ -12,18 +12,21 @@ app.use(cors({
 app.use(express.json());
 
 
-app.get('/companies', async (req, res) => {
-  const CompetitionID = req.query.CompetitionID;
+app.get('/companies/:CompetitionID', async (req, res) => {
+  const CompetitionID = req.params.CompetitionID;
   try {
-      const pool = await connectToDatabase();
-      const [rows] = await pool.query(`
-          SELECT StockSymbol, CurrentPrice, CompetitionID, AvailableShares, BetaValue FROM Stocks WHERE CompetitionID = 1`);
-      res.json(rows);
+    const pool = await connectToDatabase();
+    const [rows] = await pool.query(
+      `SELECT StockSymbol, CurrentPrice, CompetitionID, AvailableShares, BetaValue FROM Stocks WHERE CompetitionID = ?`,
+      [CompetitionID]
+    );
+    res.json(rows);
   } catch (error) {
-      console.error(error);
-      res.status(500).send('Error fetching companies');
+    console.error(error);
+    res.status(500).send('Error fetching companies');
   }
 });
+
 
 //to get current cash in my wallet
 app.get('/mywallet/:CompetitionID/:TeamID', async (req, res) => {
