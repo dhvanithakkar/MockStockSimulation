@@ -51,84 +51,6 @@ function toggleDetails(company, competitionID) {
     }
 }
 
-function updateTotalAmount(company, price) {
-    var quantity = document.getElementById(company + '-quantity').value;
-    var totalAmount = quantity * price;
-    document.getElementById(company + '-total').innerText = 'Total: ₹' + totalAmount.toFixed(2);
-}
-
-function buyStock(company, price) {
-    var quantity = document.getElementById(company + '-quantity').value;
-    var totalAmount = quantity * price;
-    var stockSymbol = company; // Assuming company is the stock symbol
-    var CompetitionID = 1; // Assuming a static CompetitionID for now
-    var teamId = 1; // Assuming a static teamId for now
-
-    fetch(`http://localhost:5500/buy/${CompetitionID}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            teamId: teamId,
-            stockSymbol: stockSymbol,
-            quantity: quantity
-        })
-    })
-    .then(response => {
-        if (response.ok) {
-            // Handle success, maybe show a confirmation message
-            alert('Purchase successful!');
-        } else {
-            // Handle error response
-            return response.text().then(errorMessage => {
-                throw new Error(errorMessage);
-            });
-        }
-    })
-    .catch(error => {
-        // Handle fetch error
-        console.error('Error buying stock:', error);
-        alert('Error buying stock: ' + error.message);
-    });
-}
-
-
-function sellStock(company, price) {
-    var quantity = document.getElementById(company + '-quantity').value;
-    var totalAmount = quantity * price;
-    var stockSymbol = company; // Assuming company is the stock symbol
-    var CompetitionID = 1; // Assuming a static CompetitionID for now
-    var teamId = 1; // Assuming a static teamId for now
-
-    fetch(`http://localhost:5500/sell/${CompetitionID}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            teamId: teamId,
-            stockSymbol: stockSymbol,
-            quantity: quantity
-        })
-    })
-    .then(response => {
-        if (response.ok) {
-            // Handle success, maybe show a confirmation message
-            alert('Sale successful!');
-        } else {
-            // Handle error response
-            return response.text().then(errorMessage => {
-                throw new Error(errorMessage);
-            });
-        }
-    })
-    .catch(error => {
-        // Handle fetch error
-        console.error('Error selling stock:', error);
-        alert('Error selling stock: ' + error.message);
-    });
-}
 
 
 function updateTimer() {
@@ -164,12 +86,8 @@ function generateStockHTML(stock) {
                     <div class="stock-info">
                         <div class="stock-price-detail">Price: ${stock.CurrentPrice} </div>
                         <div class="stock-quantity">Available: ${stock.AvailableShares}</div>
-                        <input type="number" id="${stock.StockSymbol}-quantity" placeholder="Quantity to buy" oninput="updateTotalAmount('${stock.StockSymbol}', ${stock.CurrentPrice})">
-                        <div class="total-amount" id="${stock.StockSymbol}-total">Total: </div>
-                        <div class="button-group">
-                            <button onclick="buyStock('${stock.StockSymbol}', ${stock.CurrentPrice})">Buy</button>
-                            <button onclick="sellStock('${stock.StockSymbol}', ${stock.CurrentPrice})">Sell</button>
-                        </div>
+                        <div class="stock-beta-value">Available: ${stock.BetaValue}</div>
+
                     </div>
                 </div>
             </div>
