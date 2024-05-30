@@ -79,15 +79,17 @@ function displayGames(games) {
 
   games.forEach(game => {
     const listItem = document.createElement('li');
-    listItem.innerHTML = `<strong>${game.CompetitionName}</strong>
+    listItem.innerHTML = `<a href="admin_detail.html?gameId=${game.GameID}">
+                            <strong>${game.CompetitionName}</strong>
+                          </a>
                           <p>Start: ${game.StartDate}</p>
                           <p>End: ${game.EndDate}</p>
                           <p>Initial Budget: ${game.InitialCash}</p>
                           <p>${game.Description}</p>`;
-    // Add event listener for details page similar to addGameToList function
     gameList.appendChild(listItem);
   });
 }
+
 function formatDateTime() {
   var startDate = document.getElementById('startDate').value;
   var startTime = document.getElementById('startTime').value;

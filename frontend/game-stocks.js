@@ -56,7 +56,7 @@ function createStock() {
   });
 }
 
-function updateStock() {
+async function updateStock() {
   var selectedStock = document.querySelector(".stocks-list li.selected");
   if (!selectedStock) {
     console.error('No stock selected');
@@ -71,12 +71,16 @@ function updateStock() {
   var newPrice = prompt("Enter the new price for the stock:");
   var newBeta = prompt("Enter the new beta value for the stock:");
 
+  if (!newPrice || isNaN(newPrice) || !newBeta || isNaN(newBeta)) {
+    console.error('Invalid input for price or beta value');
+    return;
+  }
+
   // Prepare the data to send in the request body
   var data1 = {
     CompetitionID: competitionId,
     stockSymbol: stockSymbol,
-    newPrice: parseFloat(newPrice), // Convert to float
-
+    newPrice: parseFloat(newPrice) // Convert to float
   };
   var data2 = {
     CompetitionID: competitionId,
@@ -84,52 +88,47 @@ function updateStock() {
     newBeta: parseFloat(newBeta) // Convert to float
   };
 
-  // Send an HTTP PUT request to the API endpoint for updating price
-  fetch('http://localhost:5500/organisers/changePrice', {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data1)
-  })
-  .then(response => {
+  try {
+    // Send an HTTP PUT request to the API endpoint for updating price
+    let response = await fetch('http://localhost:5500/organisers/changePrice', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data1)
+    });
+
     if (!response.ok) {
       throw new Error('Failed to update stock price');
     }
-    return response.json();
-  })
-  .then(data => {
-    console.log(data.message); // Assuming the response contains a message field
-    // Optionally update the UI to reflect the new price
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    // Handle error, e.g., display an error message to the user
-  });
 
-  // Send an HTTP PUT request to the API endpoint for updating beta value
-  fetch('http://localhost:5500/organisers/changeBeta', {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data2)
-  })
-  .then(response => {
+    let result = await response.json();
+    console.log(result.message); // Assuming the response contains a message field
+    // Optionally update the UI to reflect the new price
+
+    // Send an HTTP PUT request to the API endpoint for updating beta value
+    response = await fetch('http://localhost:5500/organisers/changeBeta', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data2)
+    });
+
     if (!response.ok) {
       throw new Error('Failed to update stock beta value');
     }
-    return response.json();
-  })
-  .then(data => {
-    console.log(data.message); // Assuming the response contains a message field
+
+    result = await response.json();
+    console.log(result.message); // Assuming the response contains a message field
     // Optionally update the UI to reflect the new beta value
-  })
-  .catch(error => {
+
+  } catch (error) {
     console.error('Error:', error);
     // Handle error, e.g., display an error message to the user
-  });
+  }
 }
+
 
 
 function deleteStock() {
