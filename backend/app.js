@@ -163,6 +163,7 @@ app.get('/admincredentials', async (req, res) => {
 //change price of stock, all arguments in request body
 app.put('/organisers/changePrice', async (req, res) => {
   const { CompetitionID, stockSymbol, newPrice } = req.body;
+  console.log("Recieved data", CompetitionID, stockSymbol, newPrice);
   try {
     const pool = await connectToDatabase();
     const sql = `

@@ -9,7 +9,7 @@ function toggleUserDetailsPanel() {
 
 async function fetchNews() {
     try {
-        const response = await fetch('/news/display', {
+        const response = await fetch('http://localhost:5500/news/display', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -31,12 +31,12 @@ async function fetchNews() {
 function displayNews(news) {
     var newsContainer = document.getElementById('news-container');
     newsContainer.innerHTML = '';
-    news.forEach(function(item) {
+    news[0].forEach(function(item) {
         var newsItem = document.createElement('div');
         newsItem.classList.add('news-item');
-        newsItem.innerHTML = `<strong>${item.headline}</strong> <span>(${item.impact})</span>`;
+        newsItem.innerHTML = `<strong>${item.Title}</strong> <span>(${item.Content})</span>`;
         newsItem.addEventListener('click', function() {
-            showNotification(item.headline);
+            showNotification(item.Title);
         });
         newsContainer.appendChild(newsItem);
     });

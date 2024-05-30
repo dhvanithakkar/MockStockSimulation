@@ -216,3 +216,4 @@ window.onload = async function() {
   await fetchStocks(); // Call fetchStocks on page load
   // ... other initialization code
 };
+
