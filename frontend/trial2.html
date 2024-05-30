@@ -12,9 +12,9 @@
         <nav>
           <ul>
             <li><a href="trial2.html">User Management</a></li>
-                    <li><a href="trial.html">Stocks</a></li>
-                    <li><a href="game-transaction.html">Transaction</a></li>
-                    <li><a href="game_news.html">News</a></li>
+            <li><a href="trial.html">Stocks</a></li>
+            <li><a href="game-transaction.html">Transaction</a></li>
+            <li><a href="game_news.html">News</a></li>
           </ul>
         </nav>
         <div class="user-profile" onclick="toggleUserDetailsPanel()">U</div>
@@ -23,10 +23,10 @@
           <p>Email: user@example.com</p>
           <button onclick="logout()">Logout</button>
         </div>
-      </header>
+    </header>
     <div class="container">
-        
-        <button id="toggleFormButton">Add User</button>
+        <button id="toggleUserFormButton">Add User</button>
+        <button id="toggleTeamFormButton">Create Team</button>
         <div class="content">
             <aside class="form-container">
                 <form id="userForm" class="hidden">
@@ -38,6 +38,16 @@
                     <label for="password">Password:</label>
                     <input type="text" id="password" readonly>
                     <button type="submit">Submit</button>
+                </form>
+                <form id="teamForm" class="hidden">
+                    <h2>Create Team</h2>
+                    <label for="teamName">Team Name:</label>
+                    <input type="text" id="teamName" required>
+                    <label for="teamEmail">Email:</label>
+                    <input type="email" id="teamEmail" required>
+                    <label for="competitionID">Competition ID:</label>
+                    <input type="text" id="competitionID" required>
+                    <button type="submit">Create Team</button>
                 </form>
             </aside>
             <section class="user-list-container">
@@ -52,7 +62,7 @@
     </div>
     <footer>
         <a href="admin_game.html" class="back-button">Back</a>
-      </footer>
+    </footer>
     <script src="trial2.js"></script>
 </body>
 </html>
