@@ -17,11 +17,6 @@
                 <li><a href="news.html">News</a></li>
             </ul>
         </nav>
-        <div class="stock-actions">
-            <button onclick="showCreateForm()">Create Stock</button>
-            <button onclick="updateStock()">Update Stock</button>
-            <button onclick="deleteStock()">Delete Stock</button>
-          </div>
         <div class="timer" id="timer">00:00:00</div>
         <div class="user-profile" onclick="toggleUserDetailsPanel()">U</div>
         <div class="user-details-panel" id="userDetailsPanel">
@@ -31,6 +26,13 @@
         </div>
     </header>
     <br>
+    <div class="stock-actions">
+        <button onclick="showCreateForm()">Create Stock</button>
+        <button onclick="updateStock()">Update Stock</button>
+        <button onclick="deleteStock()">Delete Stock</button>
+      </div>
+      <br>
+
     <div id="stocks-container"></div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="trial.js"></script>
