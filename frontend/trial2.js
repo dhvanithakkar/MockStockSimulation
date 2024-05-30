@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         teams.forEach(team => {
             const teamItem = document.createElement('li');
             teamItem.textContent = `Team: ${team.TeamName}, ID: ${team.TeamID}, Cash: ${team.CurrentCash}`;
+            teamItem.addEventListener('click', () => {
+                fetchTransactionHistory(CompetitionID, team.TeamID);
+              });
             userList.appendChild(teamItem);
         });
     }
