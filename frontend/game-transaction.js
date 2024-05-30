@@ -1,27 +1,16 @@
 document.addEventListener('DOMContentLoaded', function() {
-  const competitionId = 1; // Example competition ID, replace with actual value
-  const teamId = 1; // Example team ID, replace with actual value
+  const competitionId = 1; //sessionStorage.getItem('CompetitionID');
 
-  fetchPortfolioData(competitionId, teamId);
-  fetchTransactionHistory(competitionId, teamId);
+  fetchTransactionHistory(competitionId);
 
 
 });
 
 
-async function fetchPortfolioData(competitionId, teamId) {
-  try {
-      const response = await fetch(`http://localhost:5500/portfolio/${competitionId}/${teamId}`);
-      const portfolio = await response.json();
-      renderPortfolio(portfolio);
-  } catch (error) {
-      console.error('Error fetching portfolio:', error);
-  }
-}
 
-async function fetchTransactionHistory(competitionId, teamId) {
+async function fetchTransactionHistory(competitionId) {
   try {
-      const response = await fetch(`http://localhost:5500/organisers/transactions/${competitionId}?teamId=${teamId}`);
+      const response = await fetch(`http://localhost:5500/organisers/transactions/${competitionId}`);
       const transactions = await response.json();
 
       const transactionHistory = document.getElementById('transaction-history');
@@ -29,8 +18,8 @@ async function fetchTransactionHistory(competitionId, teamId) {
 
       transactions.forEach(transaction => {
           const listItem = document.createElement('li');
-          listItem.textContent = `Date: ${transaction.TransactionTime}, Stock: ${transaction.StockSymbol}, 
-                                  Quantity: ${transaction.Quantity}, Price: $${transaction.Price}`;
+          listItem.textContent = `TeamID: ${transaction.TeamID}, Date: ${transaction.TransactionTime}, Stock: ${transaction.StockSymbol}, 
+                                  Quantity: ${transaction.Quantity}, Price: $${transaction.Price}, Type: ${transaction.TransactionType}`;
           transactionHistory.appendChild(listItem);
       });
   } catch (error) {
@@ -40,32 +29,6 @@ async function fetchTransactionHistory(competitionId, teamId) {
 
 
 
-function renderPortfolio(portfolio) {
-  const portfolioSection = document.getElementById('portfolio');
-  portfolioSection.innerHTML = ''; // Clear any existing content
-
-  portfolio.forEach(stock => {
-      const profitLoss = ((stock.CurrentPrice - (stock.TotalAmountInvested / stock.CurrentHoldings)) * stock.CurrentHoldings).toFixed(4);
-      const profitLossClass = profitLoss >= 0 ? 'green' : 'red';
-      const stockItem = document.createElement('div');
-      stockItem.classList.add('stock-item');
-      stockItem.innerHTML = `
-          <span>${stock.StockSymbol} - ${stock.CurrentHoldings} units</span>
-          <span>Total Invested: $${stock.TotalAmountInvested}</span>
-          <span>Current Price: $${stock.CurrentPrice}</span>
-          <span>Total Market Value: $${stock.TotalMarketValue}</span>
-          <span class="${profitLossClass} profit-loss">Profit/Loss: $${profitLoss}</span>
-      `;
-      stockItem.addEventListener('click', function() {
-          if (!openedGraphs[stock.StockSymbol]) {
-              renderGraph(stock, stockItem);
-              openedGraphs[stock.StockSymbol] = true;
-          }
-      });
-      portfolioSection.appendChild(stockItem);
-
-  });
-}
 
 function logout() {
   window.location.href = 'index.html';

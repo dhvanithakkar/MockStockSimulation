@@ -1,4 +1,4 @@
-const CompetitionID = 1;
+const CompetitionID = 1; //sessionStorage.getItem('CompetitionID');
 document.addEventListener('DOMContentLoaded', async () => {
     const toggleUserFormButton = document.getElementById('toggleUserFormButton');
     const userForm = document.getElementById('userForm');

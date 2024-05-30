@@ -1,7 +1,8 @@
 function logout() {
     window.location.href = 'index.html';
 }
-
+const teamId = 1; //sessionStorage.getItem('TeamID')
+const CompetitionID = 1; //sessionStorage.getItem('CompetitionID')
 function createChart(chartId, data, timestamps, detailsId) {
     var ctx = document.getElementById(chartId).getContext('2d');
     var detailsContainer = document.getElementById(detailsId);
@@ -61,8 +62,6 @@ function buyStock(company, price) {
     var quantity = document.getElementById(company + '-quantity').value;
     var totalAmount = quantity * price;
     var stockSymbol = company; // Assuming company is the stock symbol
-    var CompetitionID = 1; // Assuming a static CompetitionID for now
-    var teamId = 1; // Assuming a static teamId for now
 
     fetch(`http://localhost:5500/buy/${CompetitionID}`, {
         method: 'POST',
@@ -99,8 +98,7 @@ function sellStock(company, price) {
     var quantity = document.getElementById(company + '-quantity').value;
     var totalAmount = quantity * price;
     var stockSymbol = company; // Assuming company is the stock symbol
-    var CompetitionID = 1; // Assuming a static CompetitionID for now
-    var teamId = 1; // Assuming a static teamId for now
+
 
     fetch(`http://localhost:5500/sell/${CompetitionID}`, {
         method: 'POST',

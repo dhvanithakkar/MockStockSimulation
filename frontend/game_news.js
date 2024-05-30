@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
   const newsForm = document.getElementById("newsForm");
   const newsList = document.getElementById("newsList");
-  const competitionID = 1;  // Fixed value for CompetitionID
+  const competitionID = 1;  //sessionStorage.getItem('CompetitionID');
 
   // Function to fetch and display news
   async function fetchAndDisplayNews() {

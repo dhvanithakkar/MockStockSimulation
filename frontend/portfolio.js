@@ -40,7 +40,7 @@ async function fetchTransactionHistory(competitionId, teamId) {
         transactions.forEach(transaction => {
             const listItem = document.createElement('li');
             listItem.textContent = `Date: ${transaction.TransactionTime}, Stock: ${transaction.StockSymbol}, 
-                                    Quantity: ${transaction.Quantity}, Price: $${transaction.Price}`;
+                                    Quantity: ${transaction.Quantity}, Price: $${transaction.Price}, Type: ${transaction.TransactionType}`;
             transactionHistory.appendChild(listItem);
         });
     } catch (error) {
