@@ -79,7 +79,7 @@ function displayGames(games) {
 
   games.forEach(game => {
     const listItem = document.createElement('li');
-    listItem.innerHTML = `<a href="admin_detail.html?gameId=${game.GameID}">
+    listItem.innerHTML = `<a href="game-detail.html?gameId=${game.GameID}">
                             <strong>${game.CompetitionName}</strong>
                           </a>
                           <p>Start: ${game.StartDate}</p>

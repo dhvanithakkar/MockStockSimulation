@@ -1,57 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Stocks</title>
-  <link rel="stylesheet" href="game-stocks.css">
-  <style>
-    /* Styles for the modal */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.4);
-    }
-
-    .modal-content {
-      background-color: #fefefe;
-      margin: 15% auto;
-      padding: 20px;
-      border: 1px solid #888;
-      width: 80%;
-    }
-
-    .close {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-    }
-
-    .close:hover,
-    .close:focus {
-      color: black;
-      text-decoration: none;
-      cursor: pointer;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Line</title>
+    <link rel="stylesheet" href="game-stocks.css">
 </head>
 <body>
     <header>
         <div class="logo"><img src="logo.png" alt="Mock Stock Server"></div>
         <nav>
-            <ul>
-                <li><a href="game-details.html">User Management</a></li>
-                <li><a href="game-stocks.html">Stocks</a></li>
-                <li><a href="game-transaction.html">Transaction</a></li>
-                <li><a href="game_news.html">News</a></li>
-            </ul>
+          <ul>
+            <li><a href="game-detail.html">User Management</a></li>
+                    <li><a href="game-stocks.html">Stocks</a></li>
+                    <li><a href="game-transaction.html">Transaction</a></li>
+                    <li><a href="game_news.html">News</a></li>
+          </ul>
         </nav>
         <div class="user-profile" onclick="toggleUserDetailsPanel()">U</div>
         <div class="user-details-panel" id="userDetailsPanel">
@@ -60,45 +24,29 @@
             <button onclick="logout()">Logout</button>
         </div>
     </header>
-  <div class="container">
-    <div class="stocks-container">
-      <h2>Stocks</h2>
-      <div class="stock-actions">
+    <br>
+    <div class="stock-actions">
         <button onclick="showCreateForm()">Create Stock</button>
-        <button onclick="updateStock()">Update Stock</button>
-        <button onclick="deleteStock()">Delete Stock</button>
       </div>
-      <ul class="stocks-list" id="stocksList">
-        <!-- Stocks will be dynamically added here -->
-      </ul>
-    </div>
-    <div class="stock-details" id="stockDetails">
-      <!-- Stock details and graph will be displayed here -->
-      <canvas id="portfolioGraph"></canvas>
-    </div>
-  </div>
+      <br>
+      <div id="createStockModal" class="modal">
+        <div class="modal-content">
+          <span class="close" onclick="closeModal('createStockModal')">&times;</span>
+          <h2>Create Stock</h2>
+          <input type="text" id="stockName" placeholder="Stock Name">
+          <input type="number" id="stockPrice" placeholder="Stock Price">
+          <input type="number" id="betaPrice" placeholder="Beta value">
+          <input type="number" id="TotalShares" placeholder="Total Shares">
+          <input type="text" id="stockSymbol" placeholder="Stock Symbol">
+          <button onclick="createStock()">Create</button>
+        </div>
+      </div>
 
-  <!-- Modals for creating and updating stocks -->
-  <div id="createStockModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal('createStockModal')">&times;</span>
-      <h2>Create Stock</h2>
-      <input type="text" id="stockName" placeholder="Stock Name">
-      <input type="number" id="stockPrice" placeholder="Stock Price">
-      <input type="number" id="betaPrice" placeholder="Beta value">
-      <input type="number" id="TotalShares" placeholder="Total Shares">
-      <input type="text" id="stockSymbol" placeholder="Stock Symbol">
-      <button onclick="createStock()">Create</button>
-    </div>
-  </div>
-  <footer>
-    <a href="admin_game.html" class="back-button">Back</a>
+    <div id="stocks-container"></div>
+    <footer>
+      <a href="admin_game.html" class="back-button">Back</a>
   </footer>
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="game-stocks.js"></script>
-  <script>
-    
-  </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="game-stocks.js"></script>
 </body>
 </html>

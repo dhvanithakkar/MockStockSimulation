@@ -1,98 +1,13 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #222;
-    color: #ddd;
+    font-family: 'Arial', 'Helvetica', sans-serif;
     margin: 0;
     padding: 0;
+    background-color: #222; /* Dark grey */
+    color: #ddd; /* Light grey text */
   }
   
-  .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    height: 100vh;
-    padding: 20px;
-  }
-  
-  .stocks-container {
-    width: 60%;
-    background-color: #333;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-  }
-  
-  .stocks-container h2 {
-    margin-bottom: 20px;
-    color: #ddd;
-  }
-  
-  .stock-actions {
-    margin-bottom: 20px;
-  }
-  
-  .stock-actions button {
-    margin-right: 10px;
-    padding: 8px 16px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .stock-actions button:hover {
-    background-color: #0056b3;
-  }
-  
-  .stocks-list {
-    padding: 0;
-    list-style: none;
-  }
-  
-  .stocks-list li {
-    background-color: #1c1010;
-    border-radius: 5px;
-    padding: 15px;
-    margin-bottom: 15px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .stocks-list li:hover {
-    background-color: #3e3a3a;
-  }
-  
-  .stocks-list li strong {
-    font-size: 18px;
-    margin-bottom: 5px;
-    color: #ddd;
-  }
-  
-  .stocks-list li p {
-    margin: 0;
-    color: #bbb;
-  }
-  
-  .stock-details {
-    width: 35%;
-    background-color: #333;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-  }
-  
-  .stock-details h2 {
-    margin-bottom: 20px;
-    color: #ddd;
-  }
-  
-  .stock-details p {
-    color: #bbb;
-  }
   header {
-    background-color: #222;
+    background-color: #333; /* Darker grey */
     color: #fff;
     padding: 10px;
     display: flex;
@@ -115,7 +30,7 @@ body {
   }
   
   nav ul li a {
-    color: #aaa;
+    color: #888;
     text-decoration: none;
     font-weight: normal;
     transition: color 0.3s ease;
@@ -160,51 +75,241 @@ body {
   .user-details-panel.show {
     display: block;
   }
-  button {
-    padding: 10px 20px;
-    background-color: #666;
+  
+  .stock-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #444; /* Dark grey */
     color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 10px;
+  }
+  
+  .stock-line:hover {
+    background-color: #555; /* Slightly darker grey on hover */
+  }
+  
+  .company-name {
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+  
+  .stock-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .stock-price, .stock-change {
+    margin-left: 10px;
+  }
+  
+  .stock-details-container {
+    display: none;
+    width: 100%;
+  }
+  
+  .stock-details.open {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  
+  .details-wrapper {
+    display: flex;
+  }
+  
+  .chart-container {
+    width: 75%;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .details-container {
+    width: 25%;
+    padding: 20px;
+    background-color: #0f0e0e;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .chart {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .stock-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  
+  .stock-price-detail, .stock-quantity {
+    margin-bottom: 10px;
+  }
+  
+  .total-amount {
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  
+  .button-group {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  /* Add styles for the buttons */
+  button {
+    width: 48%;
+    padding: 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+    background-color: #626862; /* Green */
+    color: white; /* White text */
   }
   
   button:hover {
-    background-color: #555;
+    background-color: #45a049; /* Darker green on hover */
   }
-  .stocks-container {
-    flex: 1;
+  
+  input[type="number"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .timer {
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #444;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  header nav ul li:nth-child(2) a {
+    color: #fff; /* Set the color of the "Sector" link to white */
   }
   
   .stock-actions {
     display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
+    justify-content: center;
+    margin-top: 20px; /* Adjust margin as needed */
+}
+
+  
+  .stock-actions button {
+    background-color: #6c757d; /* Grey color */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    border-radius: 5px; /* Rounded corners */
   }
   
-  .stocks-list {
-    list-style: none;
+  .stock-actions button:hover {
+    background-color: #5a6268; /* Darker grey on hover */
+    transform: scale(1.05); /* Slightly larger on hover */
   }
   
-  .stock-details {
-    flex: 2;
+  .stock-actions button:active {
+    background-color: #545b62; /* Even darker grey on active click */
+    transform: scale(1); /* Normal size on active click */
   }
   
-  .stock-details canvas {
-    margin-top: 20px;
+  .stock-actions button:focus {
+    outline:none; /* Remove default focus outline */
+    box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.5); /* Custom focus outline */
+}
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
   }
-  header nav ul li:nth-child(2) a {
-    color: #fff; /* Set the color of the "Sector" link to white */
-    }
-    .back-button {
-      background-color: #ddd; /* Light grey */
-      color: black;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-      position: absolute; /* Position at bottom left */
-      bottom: 10px;
-      left: 10px;
-    }
+  
+  /* Modal content */
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    border-radius: 5px;
+  }
+  
+  /* Close button */
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  /* Form input styles */
+  .modal-content input[type="text"],
+  .modal-content input[type="number"],
+  .modal-content button {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  /* Button styles */
+  .modal-content button {
+    background-color: #4c4d4c;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .modal-content button:hover {
+    background-color: #4c4d4c;
+  }
+  .back-button {
+    background-color: #ddd; /* Light grey */
+    color: black;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    position: absolute; /* Position at bottom left */
+    bottom: 10px;
+    left: 10px;
+}
