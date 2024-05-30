@@ -30,32 +30,25 @@
         <div class="invisible-box" id="walletBox">
             <div class="box-content">
                 <div class="box-title">My Wallet</div>
-                <div class="box-value" id = "walletValue"></div>
+                <div class="box-value" id="walletValue"></div>
             </div>
         </div>        
         <div class="invisible-box">
             <div class="box-content">
                 <div class="box-title">Total Investment</div>
-                <div class="box-value" id = "totalInvestment"></div>
+                <div class="box-value" id="totalInvestment"></div>
             </div>
         </div>
         <div class="invisible-box">
             <div class="box-content">
                 <div class="box-title">Return of Investment</div>
-                <div class="box-value" id = "percent"></div>
+                <div class="box-value" id="percent"></div>
             </div>
         </div>
     </div>
     <div class="two-boxes">
-        <div class="rectangle-box" id="chartContainer">
-            <canvas id="chartCanvas"></canvas>
-        </div>
-        
-        </div>
-
         <div class="rectangle-box" id="stockListBox">
             <h3><button class="toggle-button" onclick="toggleCheckboxes()"></button> Stocks Bought</h3>
-            
             <ul class="stock-list">
                 <li class="stock-item">
                     <input type="checkbox" class="stock-checkbox">
@@ -69,7 +62,6 @@
                     <span class="stock-value">67.89</span>
                     <span class="arrow arrow-down">↓</span>
                 </li>
-                
                 <li class="stock-item">
                     <input type="checkbox" class="stock-checkbox">
                     <span class="stock-name">Company X</span>
@@ -89,18 +81,15 @@
                     <span class="arrow arrow-up">↑</span>
                 </li>
             </ul>
-            
+        </div>
+        <div class="rectangle-box" id="history-list">
+            <h3>History</h3>
+            <!-- History items will be inserted here by JavaScript -->
         </div>
     </div>
-
-    <div class="two-boxes">
-        <div class="rectangle-box" id ="history-list">
-            History
-        </div>
-        <div class="rectangle-box leaderboard">
-            <h2>Leaderboard</h2>
-            <!-- Leaderboard items will be inserted here by JavaScript -->
-        </div>
+    <div class="rectangle-box leaderboard">
+        <h3>Leaderboard</h3>
+        <!-- Leaderboard items will be inserted here by JavaScript -->
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

@@ -123,23 +123,14 @@ nav ul li a:hover {
     padding: 20px;
     box-sizing: border-box;
     overflow: hidden;
-    max-height: 400px; 
+    max-height: 400px;
     overflow-y: auto;
 }
-
 
 .two-boxes {
     display: flex;
     justify-content: space-between;
     margin: 20px;
-}
-
-.two-boxes .rectangle-box {
-    width: 70%;
-}
-
-.two-boxes .rectangle-box:nth-child(2) {
-    width: 30%;
 }
 
 .stock-list {
@@ -184,6 +175,7 @@ nav ul li a:hover {
     border: 2px solid red;
     box-shadow: 0 0 10px red;
 }
+
 .stock-checkbox {
     display: none;
 }
@@ -193,17 +185,18 @@ nav ul li a:hover {
     background-color: #4CAF50; /* Green background */
     color: white; /* White text (not used) */
     padding: 5px; /* Small padding */
-    border: none; /* No border */
+    border: none;
     border-radius: 3px; /* Smaller rounded corners */
     cursor: pointer; /* Cursor style */
     font-size: 16px; /* Font size for icon (adjust based on icon library) */
     text-align: center; /* Center the icon */
 }
 
-.toggle-button:before { /* Style the icon using pseudo-element */
-content: "\f0c9"; /* Font Awesome code for "bars" icon */
-font-family: FontAwesome; /* Font family for icon library */
+.toggle-button:before {
+    content: "\f0c9"; /* Font Awesome code for "bars" icon */
+    font-family: FontAwesome; /* Font family for icon library */
 }
+
 .timer {
     font-size: 18px;
     font-weight: bold;
@@ -212,6 +205,47 @@ font-family: FontAwesome; /* Font family for icon library */
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
+
 header nav ul li:nth-child(1) a {
-color: #fff; /* Set the color of the "Sector" link to white */
+    color: #fff; /* Set the color of the "Sector" link to white */
 }
+
+.leaderboard {
+    margin: 20px;
+}
+
+/* Ensure .leaderboard box styles are consistent with other .rectangle-box elements */
+.leaderboard .rectangle-box {
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .black-block {
+        flex-direction: column;
+    }
+
+    .invisible-box {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .two-boxes {
+        flex-direction: column;
+    }
+
+    .two-boxes .rectangle-box {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+@media (min-width: 769px) {
+    .two-boxes .rectangle-box:nth-child(1) {
+        width: 70%;
+    }
+
+    .two-boxes .rectangle-box:nth-child(2) {
+        width: 30%;
+    }
+}
+
