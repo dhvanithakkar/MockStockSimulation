@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const competitionId = 1; // Example competition ID, replace with actual value
-    const teamId = 1; // Example team ID, replace with actual value
+    const competitionId = 1; // sessionStorage.getItem('CompetitionID')
+    const teamId = 1; // sessionStorage.getItem('TeamID')
 
     fetchPortfolioData(competitionId, teamId);
     fetchTransactionHistory(competitionId, teamId);

@@ -274,11 +274,39 @@ function renderTransactionHistory(transactionHistory) {
     
 }
 
+async function fetchAndProcessData() {
+    const teamID = sessionStorage.getItem('TeamId');
+
+    try {
+        const response = await fetch(`http://localhost:5500/getGameID/${teamID}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        const data = await response.json();
+
+        if (data.length > 0) {
+            const competitionID = data[0].CompetitionID;
+            sessionStorage.setItem('CompetitionID', competitionID);
+        
+            const storedCompetitionID = sessionStorage.getItem('CompetitionID');
+            
+            displayWalletData(storedCompetitionID, teamID);
+            displayLeaderboard(storedCompetitionID);
+            fetchPortfolioData(storedCompetitionID, teamID);
+            fetchTransactionHistory(storedCompetitionID, teamID);
+        } else {
+            console.log('No CompetitionID found for this TeamID');
+        }
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+    }
+}
 
 
-// Initial function calls
+//fetchAndProcessData();
+
 const competitionID = 1;
-const teamID = 1; //sessionStorage.getItem('teamId');
+const teamID = 1; 
 displayWalletData(competitionID, teamID);
 displayLeaderboard(competitionID);
 fetchPortfolioData(competitionID, teamID);

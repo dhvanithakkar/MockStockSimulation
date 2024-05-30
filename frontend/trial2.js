@@ -71,7 +71,7 @@ async function fetchTransactionHistory(competitionId, teamId) {
         const transactions = await response.json();
 
         const transactionHistory = document.getElementById('transactionHistory');
-        transactionHistory.innerHTML = '';
+        transactionHistory.innerHTML = '<h2>Transaction History</h2>';
 
         transactions.forEach(transaction => {
             const listItem = document.createElement('li');
@@ -120,6 +120,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Example usage:
-    const CompetitionID = 1; // Example CompetitionID
     fetchTeams(CompetitionID);
 });

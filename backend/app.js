@@ -327,6 +327,24 @@ app.get('/organisers/transactions/:CompetitionID', async (req, res) => {
   }
 });
 
+//get competitionID from teamID
+app.get('/getGameID/:teamID', async(req, res) => {
+  const TeamID = parseInt(req.params.teamID, 10);
+  try{
+    const pool = await connectToDatabase();
+    let query = `
+    SELECT CompetitionID
+FROM Teams 
+
+WHERE TeamID = ?
+`;
+  const [rows] = await pool.query(query, [TeamID]);
+  res.json(rows);
+} catch (error) {
+  console.error(error);
+}
+});
+
 //for making leaderboard
 app.get('/organiser/leaderboard/:competitionID', async(req, res) => {
   const CompetitionID = parseInt(req.params.competitionID, 10);

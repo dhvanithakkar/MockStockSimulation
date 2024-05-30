@@ -1,7 +1,7 @@
 function logout() {
     window.location.href = 'index.html';
 }
-
+const CompetitionID = 1;//sessionStorage.getItem('CompetitionID');
 function toggleUserDetailsPanel() {
     var panel = document.getElementById("userDetailsPanel");
     panel.classList.toggle("show");
@@ -14,7 +14,7 @@ async function fetchNews() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ CompetitionID: 1 }) // Replace with actual CompetitionID
+            body: JSON.stringify({ CompetitionID: CompetitionID }) 
         });
         
         if (!response.ok) {
