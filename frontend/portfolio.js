@@ -34,32 +34,33 @@ async function fetchTransactionHistory(competitionId, teamId) {
         const response = await fetch(`http://localhost:5500/organisers/transactions/${competitionId}?teamId=${teamId}`);
         const transactions = await response.json();
 
-        const transactionHistoryTable = document.getElementById('transaction-history');
+        const transactionHistory = document.getElementById('transaction-history');
+        transactionHistory.innerHTML = '';
 
-        // Clear existing rows except the header row
-        while (transactionHistoryTable.rows.length > 1) {
-            transactionHistoryTable.deleteRow(1);
-        }
+        // Create table
+        const table = document.createElement('table');
+        const headerRow = table.insertRow();
+        const headers = ['Date', 'Stock', 'Quantity', 'Price', 'Type'];
+
+        headers.forEach(headerText => {
+            const header = document.createElement('th');
+            header.textContent = headerText;
+            headerRow.appendChild(header);
+        });
 
         transactions.forEach(transaction => {
-            const row = transactionHistoryTable.insertRow(-1);
-            const dateCell = row.insertCell(0);
-            const stockCell = row.insertCell(1);
-            const quantityCell = row.insertCell(2);
-            const priceCell = row.insertCell(3);
-            const typeCell = row.insertCell(4);
-
-            dateCell.textContent = transaction.TransactionTime;
-            stockCell.textContent = transaction.StockSymbol;
-            quantityCell.textContent = transaction.Quantity;
-            priceCell.textContent = `$${transaction.Price}`;
-            typeCell.textContent = transaction.TransactionType;
+            const row = table.insertRow();
+            Object.values(transaction).forEach(value => {
+                const cell = row.insertCell();
+                cell.textContent = value;
+            });
         });
+
+        transactionHistory.appendChild(table);
     } catch (error) {
         console.error('Error fetching transaction history:', error);
     }
 }
-
 
 
 
