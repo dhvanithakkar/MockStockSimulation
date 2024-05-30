@@ -34,19 +34,32 @@ async function fetchTransactionHistory(competitionId, teamId) {
         const response = await fetch(`http://localhost:5500/organisers/transactions/${competitionId}?teamId=${teamId}`);
         const transactions = await response.json();
 
-        const transactionHistory = document.getElementById('transaction-history');
-        transactionHistory.innerHTML = '';
+        const transactionHistoryTable = document.getElementById('transaction-history');
+
+        // Clear existing rows except the header row
+        while (transactionHistoryTable.rows.length > 1) {
+            transactionHistoryTable.deleteRow(1);
+        }
 
         transactions.forEach(transaction => {
-            const listItem = document.createElement('li');
-            listItem.textContent = `Date: ${transaction.TransactionTime}, Stock: ${transaction.StockSymbol}, 
-                                    Quantity: ${transaction.Quantity}, Price: $${transaction.Price}, Type: ${transaction.TransactionType}`;
-            transactionHistory.appendChild(listItem);
+            const row = transactionHistoryTable.insertRow(-1);
+            const dateCell = row.insertCell(0);
+            const stockCell = row.insertCell(1);
+            const quantityCell = row.insertCell(2);
+            const priceCell = row.insertCell(3);
+            const typeCell = row.insertCell(4);
+
+            dateCell.textContent = transaction.TransactionTime;
+            stockCell.textContent = transaction.StockSymbol;
+            quantityCell.textContent = transaction.Quantity;
+            priceCell.textContent = `$${transaction.Price}`;
+            typeCell.textContent = transaction.TransactionType;
         });
     } catch (error) {
         console.error('Error fetching transaction history:', error);
     }
 }
+
 
 
 
