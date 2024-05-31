@@ -8,24 +8,49 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-async function fetchTransactionHistory(competitionId) {
+async function fetchTransactionHistory(competitionId, teamId) {
   try {
-      const response = await fetch(`http://localhost:5500/organisers/transactions/${competitionId}`);
+      const response = await fetch(`http://localhost:5500/organisers/transactions/${competitionId}?teamId=${teamId}`);
       const transactions = await response.json();
 
-      const transactionHistory = document.getElementById('transaction-history');
-      transactionHistory.innerHTML = '';
+      const transactionHistoryContainer = document.getElementById('transaction-history-container');
+      transactionHistoryContainer.innerHTML = '';
 
+      // Create table element
+      const historyTable = document.createElement('table');
+      historyTable.className = 'history-table';
+
+      // Create table header
+      const headerRow = document.createElement('tr');
+      headerRow.innerHTML = `
+          <th>Date</th>
+          <th>Stock Symbol</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Type</th>
+      `;
+      historyTable.appendChild(headerRow);
+
+      // Add transaction details as table rows
       transactions.forEach(transaction => {
-          const listItem = document.createElement('li');
-          listItem.textContent = `TeamID: ${transaction.TeamID}, Date: ${transaction.TransactionTime}, Stock: ${transaction.StockSymbol}, 
-                                  Quantity: ${transaction.Quantity}, Price: $${transaction.Price}, Type: ${transaction.TransactionType}`;
-          transactionHistory.appendChild(listItem);
+          const row = document.createElement('tr');
+          row.innerHTML = `
+              <td>${transaction.TransactionTime}</td>
+              <td>${transaction.StockSymbol}</td>
+              <td>${transaction.Quantity}</td>
+              <td>${transaction.Price}</td>
+              <td>${transaction.TransactionType}</td>
+          `;
+          historyTable.appendChild(row);
       });
+
+      // Append table to transaction history container
+      transactionHistoryContainer.appendChild(historyTable);
   } catch (error) {
       console.error('Error fetching transaction history:', error);
   }
 }
+
 
 
 
