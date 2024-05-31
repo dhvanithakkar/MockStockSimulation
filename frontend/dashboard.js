@@ -196,7 +196,7 @@ async function fetchTransactionHistory(competitionId, teamId) {
 
 function renderTransactionHistory(transactionHistory) {
     const historyContainer = document.getElementById('history-list');
-    historyContainer.innerHTML = '<h3>History</h3>';
+    historyContainer.innerHTML = '<h3>Transaction History</h3>';
     
     // Create table element
     const historyTable = document.createElement("table");
