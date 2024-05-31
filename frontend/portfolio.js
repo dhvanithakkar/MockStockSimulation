@@ -12,7 +12,7 @@ async function fetchWalletData(competitionId, teamId) {
         const response = await fetch(`http://localhost:5500/mywallet/${competitionId}/${teamId}`);
         const walletData = await response.json();
         const walletValue = document.getElementById('wallet-value');
-        walletValue.textContent = `$ ${walletData.CurrentCash}`;
+        walletValue.textContent = `INR ${walletData.CurrentCash}`;
     } catch (error) {
         console.error('Error fetching wallet data:', error);
     }
@@ -92,10 +92,10 @@ function renderPortfolio(portfolio) {
         stockItem.classList.add('stock-item');
         stockItem.innerHTML = `
             <span>${stock.StockSymbol} - ${stock.CurrentHoldings} units</span>
-            <span>Total Invested: $${stock.TotalAmountInvested}</span>
-            <span>Current Price: $${stock.CurrentPrice}</span>
-            <span>Total Market Value: $${stock.TotalMarketValue}</span>
-            <span class="${profitLossClass} profit-loss">Profit/Loss: $${profitLoss}</span>
+            <span>Total Invested: INR${stock.TotalAmountInvested}</span>
+            <span>Current Price: INR${stock.CurrentPrice}</span>
+            <span>Total Market Value: INR${stock.TotalMarketValue}</span>
+            <span class="${profitLossClass} profit-loss">Profit/Loss: INR${profitLoss}</span>
         `;
         stockItem.addEventListener('click', function() {
             if (!openedGraphs[stock.StockSymbol]) {
@@ -107,7 +107,7 @@ function renderPortfolio(portfolio) {
         sum1 = sum1 + Number(stock.TotalAmountInvested);
         sum2 = sum2 + Number(stock.TotalMarketValue);
 }});
-    totalInvestment.innerHTML = "$ " + sum1;
+    totalInvestment.innerHTML = "INR " + sum1;
     const roi = ((sum2 - sum1)/sum1 * 100).toFixed(4);
     console.log(roi);
     returnofinvestment.innerHTML = roi + "%";

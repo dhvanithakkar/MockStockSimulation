@@ -24,7 +24,7 @@ async function displayLeaderboard(competitionID) {
         leaderboardItem.innerHTML = `
             <span class="position">${index + 1}</span>
             <span class="team-name">${team.TeamName}</span>
-            <span class="total-net-worth">$${team.TotalNetWorth}</span>
+            <span class="total-net-worth">INR${team.TotalNetWorth}</span>
         `;
         leaderboardContainer.appendChild(leaderboardItem);
     });
@@ -148,7 +148,7 @@ function renderPortfolio(stockData) {
         sum2 = sum2 + Number(stockData[i].TotalMarketValue);
     }
 
-    totalInvestment.innerHTML = "$ " + sum1;
+    totalInvestment.innerHTML = "INR " + sum1;
     const roi = ((sum2 - sum1) / sum1 * 100).toFixed(4);
     returnofinvestment.innerHTML = roi + "%";
 }
@@ -169,7 +169,7 @@ async function fetchWalletData(competitionID, teamID) {
 async function displayWalletData(competitionID, teamID) {
     const walletValue = await fetchWalletData(competitionID, teamID);
     const walletValueElement = document.getElementById('walletValue');
-    walletValueElement.textContent = `$${walletValue}`;
+    walletValueElement.textContent = `INR ${walletValue}`;
 }
 
 // Function to fetch portfolio data

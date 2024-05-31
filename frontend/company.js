@@ -193,7 +193,7 @@ function generateStockHTML(stock) {
                 </div>
                 <div class="details-container">
                     <div class="stock-info">
-                        <div class="stock-price-detail">Price: ${stock.CurrentPrice} </div>
+                        <div class="stock-price-detail">Price: INR ${stock.CurrentPrice} </div>
                         <div class="stock-quantity">Available: ${stock.AvailableShares}</div>
                         <input type="number" id="${stock.StockSymbol}-quantity" placeholder="Quantity to buy" oninput="updateTotalAmount('${stock.StockSymbol}', ${stock.CurrentPrice})">
                         <div class="total-amount" id="${stock.StockSymbol}-total">Total: </div>

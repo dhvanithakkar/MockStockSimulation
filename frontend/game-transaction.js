@@ -40,7 +40,7 @@ async function fetchTransactionHistory(competitionId) {
               <td>${transaction.TransactionTime}</td>
               <td>${transaction.StockSymbol}</td>
               <td>${transaction.Quantity}</td>
-              <td>${transaction.Price}</td>
+              <td>INR ${transaction.Price}</td>
               <td>${transaction.TransactionType}</td>
           `;
           historyTable.appendChild(row);
