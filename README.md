@@ -21,10 +21,10 @@ Welcome to the Mock Stock Server! This server allows colleges to organize their 
 ### Installation
 
 1. Clone the repository:
-   \```bash
+   ```console
    git clone https://github.com/yourusername/mock-stock-server.git
    cd mock-stock-server
-   \```
+   ```
 
 2. Create the database:
    - Set up a MySQL database by following the instructions in `backend/queries-for-setup.txt`.
@@ -33,13 +33,13 @@ Welcome to the Mock Stock Server! This server allows colleges to organize their 
    - Update `backend/database.js` to connect to your own MySQL server. Modify the connection settings (host, user, password, database) to match your MySQL configuration.
 
 4. Install dependencies:
-   \```bash
+   ```console
    npm install
-   \```
+   ```
 
 5. Start the server:
-   \```bash
+   ```console
    npm start
-   \```
+   ```
 
 The server will start on `http://localhost:5500`.
