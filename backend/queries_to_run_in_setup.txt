@@ -1,4 +1,4 @@
-ScheduledTimedrop database mockstock;
+drop database mockstock;
 create database mockstock;
 use mockstock;
 
@@ -79,7 +79,7 @@ CREATE TABLE News (
   NewsID INT PRIMARY KEY AUTO_INCREMENT,  -- Auto-incrementing primary key
   Title VARCHAR(255) NOT NULL,
   Content TEXT NOT NULL,
-  ScheduledTime DATETIME,
+  ScheduledTime DATETIME NOT NULL,
   CompetitionID INT NOT NULL,
   FOREIGN KEY (CompetitionID) REFERENCES Competitions(CompetitionID)
 );
@@ -161,62 +161,117 @@ BEGIN
   
 END //
 DELIMITER ;
-INSERT INTO Colleges (CollegeName, CollegePassword) VALUES 
-  ('NM College', 'password123'),
-  ('DJSCE', 'password456');
 
-INSERT INTO Competitions (CollegeID, CompetitionName, StartDate, EndDate, InitialCash, NumberOfParticipants) VALUES
-  (1, 'Mock Stock Tester', '2024-05-23 00:00:00', '2024-05-23 15:00:00', 10000.00, 10),
-  (2, 'Trading Competition', '2024-07-24 00:00:00', '2024-07-24 11:00:00', 5000.00, 5);
 
-INSERT INTO Teams (CompetitionID, TeamPassword, TeamName, Email) VALUES
-  (1, 'team123', 'The Investment Club', 'invest@nm.edu'),
-  (1, 'team456', 'The Wolf of Wall Street', 'wallstreet@nm.edu'),
-  (2, 'team789', 'The Market Movers', 'movers@djsce.edu');
+INSERT INTO Colleges (CollegeName, CollegePassword)
+VALUES
+('Shri Ram College of Commerce', 'srccpassword'),
+('Lady Shri Ram College for Women', 'lsrcpassword'),
+('Narsee Monjee Institute of Management Studies', 'nmimscommercepassword'),
+('Symbiosis School of Economics & Finance', 'ssefpassword'),
+('Shaheed Sukhdev College of Business Studies', 'sscbscommercepassword'),
+('Hindu College', 'hinducommercepassword'),
+('Loyola College', 'loyolacommercepassword'),
+('St. Xaviers College', 'stxaviercommercepassword'),
+('Hansraj College', 'hansrajcommercepassword'),
+('Sri Venkateswara College', 'svccommercepassword');
 
-INSERT INTO Sectors (SectorName) VALUES
-  ('Technology'),
-  ('Healthcare'),
-  ('Consumer Staples');
 
-INSERT INTO Stocks (CompetitionID, StockSymbol, StockName, InitialPrice, CurrentPrice, TotalShares, BetaValue, SectorID) VALUES
-  (1, 'AAPL', 'Apple Inc.', 150.00, 150.00, 10000, 1.00, 1),
-  (1, 'AMZN', 'Amazon.com Inc.', 120.00, 120.00, 8000, 1.20, 2),
-  (1, 'TSLA', 'Tesla Inc.', 200.00, 200.00, 5000, 1.50, 1),
-  (2, 'AAPL', 'Apple Inc.', 150.00, 150.00, 10000, 1.00, 1),
-  (2, 'AMZN', 'Amazon.com Inc.', 120.00, 120.00, 8000, 1.20, 2),
-  (2, 'TSLA', 'Tesla Inc.', 200.00, 200.00, 5000, 1.50, 1),
-  (2, 'JNJ', 'Johnson & Johnson', 130.00, 130.00, 7000, 0.80, 3),
-  (1, 'JNJ', 'Johnson & Johnson2', 130.00, 130.00, 7000, 0.80, 3);
-  
-INSERT INTO Transactions (TeamID, CompetitionID, StockSymbol, TransactionTime, TransactionType, Price, Quantity)
-VALUES (1, 1, 'AAPL','2024-05-24 00:00:00', 'BUY',  150.25, 10),
-	   (1, 1, 'AMZN','2024-05-24 00:00:00',  'BUY', 120.00, 5),
-       (1, 1, 'TSLA','2024-05-24 00:10:00',  'BUY', 200.50, 20),
-       (1, 1, 'JNJ' ,'2024-05-24 00:10:00',  'BUY', 130.50, 12),
-       (1, 1, 'AAPL','2024-05-24 11:20:00',  'SELL',  150.25, 2),
-	   (1, 1, 'AMZN','2024-05-24 11:20:00',  'SELL', 120.00, 3),
-       (1, 1, 'TSLA','2024-05-24 11:20:00',  'SELL', 200.50, 12),
-       (1, 1, 'JNJ' ,'2024-05-24 11:20:00',  'SELL', 130.50, 5),
+INSERT INTO Competitions (CollegeID, CompetitionName, Description, StartDate, EndDate, InitialCash, NumberOfParticipants)
+VALUES
+(1, 'SRCC Stock Market Simulation', 'A virtual stock market competition', '2024-11-01', '2024-11-30', 100000, 50),
+(2, 'LSR Business Plan Competition', 'Develop and pitch a business plan', '2024-10-15', '2024-11-15', 20000, 25),
+(3, 'NMIMS Case Study Challenge', 'Analyze and present solutions to real-world business cases', '2024-09-20', '2024-10-20', 15000, 30),
+(4, 'SSEF Marketing Quiz', 'Test your knowledge of marketing concepts', '2024-12-05', '2024-12-07', 5000, 100),
+(5, 'Hansraj Entrepreneurship Hackathon', 'Develop a prototype for a new business idea', '2024-10-25', '2024-10-27', 10000, 15);
 
-       (2, 1, 'AAPL','2024-05-23 02:00:00',  'BUY',  155.25, 12),
-	   (2, 1, 'AMZN','2024-05-23 02:00:00',  'BUY', 124.00, 10),
-       (2, 1, 'TSLA','2024-05-23 02:00:00',  'BUY', 212.50, 21),
-       (2, 1, 'JNJ' ,'2024-05-23 02:00:00',  'BUY', 135.50, 14),
-       (2, 1, 'AAPL','2024-05-23 10:00:00',  'SELL',  150.25, 5),
-	   (2, 1, 'AMZN','2024-05-23 10:00:00',  'SELL', 120.00, 8),
-       (2, 1, 'TSLA','2024-05-23 10:00:00',  'SELL', 200.50, 12),
-       (2, 1, 'JNJ' ,'2024-05-23 10:00:00',  'SELL', 135.50, 3),
+INSERT INTO Teams (TeamPassword, CompetitionID, TeamName, Email)
+VALUES 
+    ('J3$4e!dO^r7zW8#', 1, 'Market Mavericks', 'marketmavericks@gmail.com'),
+    ('m@Q9*T6^bP2&lXk!', 2, 'Bullish Brigade', 'bullishbrigade@yahoo.com'),
+    ('5$Gh9&Q2#pB4@Wz!', 1, 'Trade Titans', 'tradetitans@hotmail.com'),
+    ('D^k8$@3sT7&jP1xM', 2, 'Stock Sharks', 'stocksharks@gmail.com'),
+    ('pQ6^2*Lk!9#G@8zO', 1, 'Equity Eagles', 'equityeagles@outlook.com'),
+    ('jR2&^L1*o9$V6@bW', 2, 'Capital Crusaders', 'capitalcrusaders@gmail.com'),
+    ('X@7#2Kj5!^9$&DpL', 1, 'Profit Prophets', 'profitprophets@yahoo.com'),
+    ('q3*P^T1&z@5L7#Xo', 2, 'Wall Street Warriors', 'wallstreetwarriors@gmail.com'),
+    ('R@8#3L^1z*6&Kp9!', 1, 'Bear Market Busters', 'bearmarketbusters@hotmail.com'),
+    ('d6@P9*^3$X5&jT2', 2, 'Investment Innovators', 'investmentinnovators@outlook.com'),
+    ('K@9$7rP2^*8L&3#o', 1, 'Bull Run Squad', 'bullrunsquad@gmail.com'),
+    ('Z@2#3X^1*6&k9!pT', 2, 'Trade Trailblazers', 'tradetrailblazers@yahoo.com'),
+    ('8$&jP1^L5@2o3*#R', 1, 'Dividend Dynamos', 'dividenddynamos@gmail.com'),
+    ('rQ2^&7L1*@9#6pXo', 2, 'Risk Raiders', 'riskraiders@hotmail.com'),
+    ('j@8#3L*2^&X9!k5P', 1, 'Penny Stock Pioneers', 'pennystockpioneers@gmail.com'),
+    ('5#2$^K*1&L7@8p9o', 2, 'Capital Gains Gurus', 'capitalgainsgurus@outlook.com'),
+    ('X@1*6^&3p#9L2!kP', 1, 'Investment Insiders', 'investmentinsiders@yahoo.com'),
+    ('7$&9L^2*3@P8#o1r', 2, 'Wall Street Wizards', 'wallstreetwizards@gmail.com'),
+    ('kQ2^@8*L5#1&p3!X', 1, 'Profit Pilots', 'profitpilots@hotmail.com'),
+    ('9@8#6^2&*P1oL5!r', 2, 'Stock Strategists', 'stockstrategists@outlook.com');
 
-       (3, 2, 'AAPL','2024-05-23 00:00:00',  'BUY',  155.25, 12),
-	   (3, 2, 'AMZN','2024-05-23 00:00:00',  'BUY', 124.00, 11),
-       (3, 2, 'TSLA','2024-05-23 00:00:00',  'BUY', 212.50, 16),
-       (3, 2, 'JNJ' ,'2024-05-23 00:00:00',  'BUY', 135.50, 4),
-       (3, 2, 'AAPL','2024-05-23 02:00:00',  'SELL',  150.25, 11),
-	   (3, 2, 'AMZN','2024-05-23 02:00:00',  'SELL', 120.00, 2),
-       (3, 2, 'TSLA','2024-05-23 02:00:00',  'SELL', 200.50, 11),
-       (3, 2, 'JNJ' ,'2024-05-23 02:00:00',  'SELL', 135.50, 1);
-       
+
+INSERT INTO Sectors (SectorID, SectorName) 
+VALUES 
+    (1, 'Energy'),
+    (2, 'Information Technology'),
+    (3, 'Banking'),
+    (4, 'Telecommunication'),
+    (5, 'Oil & Gas'),
+    (6, 'Consumer Goods');
+
+
+INSERT INTO Stocks (CompetitionID, StockSymbol, StockName, InitialPrice, CurrentPrice, TotalShares, BetaValue, SectorID) 
+VALUES 
+    (1, 'RELIANCE', 'Reliance Industries Ltd', 2000, 2200, 1000000, 1.2, 1),
+    (1, 'TCS', 'Tata Consultancy Services Ltd', 3000, 3200, 800000, 0.9, 2),
+    (1, 'HDFCBANK', 'HDFC Bank Ltd', 1500, 1600, 1200000, 1.1, 3),
+    (1, 'INFY', 'Infosys Ltd', 1200, 1300, 900000, 0.8, 2),
+    (1, 'SBIN', 'State Bank of India', 250, 280, 2000000, 1.5, 3),
+    (1, 'AXISBANK', 'Axis Bank Ltd', 800, 850, 1500000, 1.3, 3),
+    (1, 'ICICIBANK', 'ICICI Bank Ltd', 600, 650, 1800000, 1.4, 3),
+    (1, 'BHARTIARTL', 'Bharti Airtel Ltd', 500, 480, 1500000, 0.7, 4),
+    (1, 'IOC', 'Indian Oil Corporation Ltd', 100, 110, 3000000, 1.6, 5),
+    (1, 'HINDUNILVR', 'Hindustan Unilever Ltd', 1800, 1900, 700000, 0.6, 6);
+
+-- Competition 2
+INSERT INTO Stocks (CompetitionID, StockSymbol, StockName, InitialPrice, CurrentPrice, TotalShares, BetaValue, SectorID) 
+VALUES 
+    (2, 'RELIANCE', 'Reliance Industries Ltd', 2200, 2300, 1000000, 1.2, 1),
+    (2, 'TCS', 'Tata Consultancy Services Ltd', 3200, 3300, 800000, 0.9, 2),
+    (2, 'HDFCBANK', 'HDFC Bank Ltd', 1600, 1700, 1200000, 1.1, 3),
+    (2, 'INFY', 'Infosys Ltd', 1300, 1400, 900000, 0.8, 2),
+    (2, 'SBIN', 'State Bank of India', 280, 300, 2000000, 1.5, 3),
+    (2, 'AXISBANK', 'Axis Bank Ltd', 850, 870, 1500000, 1.3, 3),
+    (2, 'ICICIBANK', 'ICICI Bank Ltd', 650, 670, 1800000, 1.4, 3),
+    (2, 'BHARTIARTL', 'Bharti Airtel Ltd', 480, 500, 1500000, 0.7, 4),
+    (2, 'IOC', 'Indian Oil Corporation Ltd', 110, 115, 3000000, 1.6, 5),
+    (2, 'HINDUNILVR', 'Hindustan Unilever Ltd', 1900, 2000, 700000, 0.6, 6);
+
+-- Competition 3
+INSERT INTO Stocks (CompetitionID, StockSymbol, StockName, InitialPrice, CurrentPrice, TotalShares, BetaValue, SectorID) 
+VALUES 
+    (3, 'RELIANCE', 'Reliance Industries Ltd', 2300, 2400, 1000000, 1.2, 1),
+    (3, 'TCS', 'Tata Consultancy Services Ltd', 3300, 3400, 800000, 0.9, 2),
+    (3, 'HDFCBANK', 'HDFC Bank Ltd', 1700, 1800, 1200000, 1.1, 3),
+    (3, 'INFY', 'Infosys Ltd', 1400, 1500, 900000, 0.8, 2),
+    (3, 'SBIN', 'State Bank of India', 300, 320, 2000000, 1.5, 3),
+    (3, 'AXISBANK', 'Axis Bank Ltd', 870, 890, 1500000, 1.3, 3),
+    (3, 'ICICIBANK', 'ICICI Bank Ltd', 670, 690, 1800000, 1.4, 3),
+    (3, 'BHARTIARTL', 'Bharti Airtel Ltd', 500, 520, 1500000, 0.7, 4),
+    (3, 'IOC', 'Indian Oil Corporation Ltd', 115, 120, 3000000, 1.6, 5),
+    (3, 'HINDUNILVR', 'Hindustan Unilever Ltd', 2000, 2100, 700000, 0.6, 6);
+
+-- Competition 4
+INSERT INTO Stocks (CompetitionID, StockSymbol, StockName, InitialPrice, CurrentPrice, TotalShares, BetaValue, SectorID) 
+VALUES 
+    (4, 'RELIANCE', 'Reliance Industries Ltd', 2400, 2500, 1000000, 1.2, 1),
+    (4, 'TCS', 'Tata Consultancy Services Ltd', 3400, 3500, 800000, 0.9, 2),
+    (4, 'HDFCBANK', 'HDFC Bank Ltd', 1800, 1900, 1200000, 1.1, 3),
+    (4, 'INFY', 'Infosys Ltd', 1500, 1600, 900000, 0.8, 2),
+    (4, 'SBIN', 'State Bank of India', 320, 330, 2000000, 1.5, 3),
+    (4, 'AXISBANK', 'Axis Bank Ltd', 890, 910, 1500000, 1.3, 3),
+    (4, 'ICICIBANK', 'ICICI Bank Ltd', 690, 710, 1800000, 1.4, 3),
+    (4, 'BHARTIARTL', 'Bharti Airtel Ltd', 520, 540, 1500000, 0.7, 4);
+    
 INSERT INTO News (Title, Content, ScheduledTime, CompetitionID) VALUES
   ('Stock Market Soars!', 'The major stock indices all closed up significantly today...', '2024-06-03 10:00:00', 1),
   ('Tech Giant Announces New Product', 'A leading tech company unveiled its latest innovation...', '2024-06-05 14:00:00', 1),
