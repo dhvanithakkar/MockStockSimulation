@@ -177,7 +177,7 @@ VALUES
 ('Sri Venkateswara College', 'svccommercepassword');
 
 
-INSERT INTO competitions (CollegeID, CompetitionName, Description, StartDate, EndDate, InitialCash, NumberOfParticipants)
+INSERT INTO Competitions (CollegeID, CompetitionName, Description, StartDate, EndDate, InitialCash, NumberOfParticipants)
 VALUES
 (1, 'SRCC Stock Market Simulation', 'A virtual stock market competition', '2024-11-01', '2024-11-30', 100000, 50),
 (2, 'LSR Business Plan Competition', 'Develop and pitch a business plan', '2024-10-15', '2024-11-15', 20000, 25),
@@ -185,6 +185,28 @@ VALUES
 (4, 'SSEF Marketing Quiz', 'Test your knowledge of marketing concepts', '2024-12-05', '2024-12-07', 5000, 100),
 (5, 'Hansraj Entrepreneurship Hackathon', 'Develop a prototype for a new business idea', '2024-10-25', '2024-10-27', 10000, 15);
 
+INSERT INTO Teams (TeamPassword, CompetitionID, TeamName, Email)
+VALUES 
+    ('J3$4e!dO^r7zW8#', 1, 'Market Mavericks', 'marketmavericks@gmail.com'),
+    ('m@Q9*T6^bP2&lXk!', 2, 'Bullish Brigade', 'bullishbrigade@yahoo.com'),
+    ('5$Gh9&Q2#pB4@Wz!', 1, 'Trade Titans', 'tradetitans@hotmail.com'),
+    ('D^k8$@3sT7&jP1xM', 2, 'Stock Sharks', 'stocksharks@gmail.com'),
+    ('pQ6^2*Lk!9#G@8zO', 1, 'Equity Eagles', 'equityeagles@outlook.com'),
+    ('jR2&^L1*o9$V6@bW', 2, 'Capital Crusaders', 'capitalcrusaders@gmail.com'),
+    ('X@7#2Kj5!^9$&DpL', 1, 'Profit Prophets', 'profitprophets@yahoo.com'),
+    ('q3*P^T1&z@5L7#Xo', 2, 'Wall Street Warriors', 'wallstreetwarriors@gmail.com'),
+    ('R@8#3L^1z*6&Kp9!', 1, 'Bear Market Busters', 'bearmarketbusters@hotmail.com'),
+    ('d6@P9*^3$X5&jT2', 2, 'Investment Innovators', 'investmentinnovators@outlook.com'),
+    ('K@9$7rP2^*8L&3#o', 1, 'Bull Run Squad', 'bullrunsquad@gmail.com'),
+    ('Z@2#3X^1*6&k9!pT', 2, 'Trade Trailblazers', 'tradetrailblazers@yahoo.com'),
+    ('8$&jP1^L5@2o3*#R', 1, 'Dividend Dynamos', 'dividenddynamos@gmail.com'),
+    ('rQ2^&7L1*@9#6pXo', 2, 'Risk Raiders', 'riskraiders@hotmail.com'),
+    ('j@8#3L*2^&X9!k5P', 1, 'Penny Stock Pioneers', 'pennystockpioneers@gmail.com'),
+    ('5#2$^K*1&L7@8p9o', 2, 'Capital Gains Gurus', 'capitalgainsgurus@outlook.com'),
+    ('X@1*6^&3p#9L2!kP', 1, 'Investment Insiders', 'investmentinsiders@yahoo.com'),
+    ('7$&9L^2*3@P8#o1r', 2, 'Wall Street Wizards', 'wallstreetwizards@gmail.com'),
+    ('kQ2^@8*L5#1&p3!X', 1, 'Profit Pilots', 'profitpilots@hotmail.com'),
+    ('9@8#6^2&*P1oL5!r', 2, 'Stock Strategists', 'stockstrategists@outlook.com');
 
 
 INSERT INTO Sectors (SectorID, SectorName) 
