@@ -278,3 +278,32 @@ INSERT INTO News (Title, Content, ScheduledTime, CompetitionID) VALUES
   ('Economic Data Shows Positive Signs', 'Recent economic indicators suggest a potential...', '2024-06-10 08:00:00', 1),
   ('Industry Leader Makes Acquisition', 'A major player in the [Industry] sector acquired...', '2024-06-12 16:00:00', 1),
   ('Market Correction Expected?', 'Analysts warn of a possible short-term market...', '2024-06-17 12:00:00', 1);
+
+-- Transactions for Team 1
+INSERT INTO Transactions (TeamID, CompetitionID, StockSymbol, TransactionTime, TransactionType, Price, Quantity)
+VALUES 
+    (1, 1, 'RELIANCE', '2024-06-01 08:00:00', 'BUY', 2100, 100),
+    (1, 1, 'TCS', '2024-06-01 08:30:00', 'BUY', 3100, 50),
+    (1, 1, 'HDFCBANK', '2024-06-01 09:00:00', 'BUY', 1550, 80),
+    (1, 1, 'INFY', '2024-06-01 09:30:00', 'BUY', 1250, 70),
+    (1, 1, 'SBIN', '2024-06-01 10:00:00', 'BUY', 260, 200),
+    (1, 1, 'HDFCBANK', '2024-06-01 10:30:00', 'SELL', 1600, 30),
+    (1, 1, 'ICICIBANK', '2024-06-01 11:00:00', 'BUY', 630, 120),
+    (1, 1, 'TCS', '2024-06-01 11:30:00', 'SELL', 4000, 40),
+    (1, 1, 'IOC', '2024-06-01 12:00:00', 'BUY', 105, 300),
+    (1, 1, 'HINDUNILVR', '2024-06-01 12:30:00', 'BUY', 1850, 50),
+    (1, 1, 'RELIANCE', '2024-06-01 13:00:00', 'SELL', 2250, 70),
+    (1, 1, 'TCS', '2024-06-01 13:00:00', 'BUY', 3250, 40);
+
+-- Transactions for Team 2
+INSERT INTO Transactions (TeamID, CompetitionID, StockSymbol, TransactionTime, TransactionType, Price, Quantity)
+VALUES 
+    (2, 1, 'RELIANCE', '2024-06-01 08:12:00', 'BUY', 2100, 100),
+    (2, 1, 'TCS', '2024-06-01 08:44:00', 'BUY', 3100, 50),
+    (2, 1, 'HDFCBANK', '2024-06-01 09:32:00', 'BUY', 1550, 80),
+    (2, 1, 'INFY', '2024-06-01 09:45:00', 'BUY', 1250, 70),
+    (2, 1, 'SBIN', '2024-06-01 10:11:00', 'BUY', 260, 200),
+    (2, 1, 'AXISBANK', '2024-06-01 10:56:00', 'BUY', 830, 100),
+    (2, 1, 'TCS', '2024-06-01 11:11:00', 'SELL', 3200, 40),
+    (2, 1, 'HDFCBANK', '2024-06-01 11:55:00', 'SELL', 1600, 75),
+    (2, 1, 'SBIN', '2024-06-01 12:10:00', 'BUY', 290, 150);
