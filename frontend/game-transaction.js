@@ -8,9 +8,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-async function fetchTransactionHistory(competitionId, teamId) {
+async function fetchTransactionHistory(competitionId) {
   try {
-      const response = await fetch(`http://localhost:5500/organisers/transactions/${competitionId}?teamId=${teamId}`);
+      const response = await fetch(`http://localhost:5500/organisers/transactions/${competitionId}`);
       const transactions = await response.json();
 
       const transactionHistoryContainer = document.getElementById('transaction-history-container');
@@ -23,6 +23,7 @@ async function fetchTransactionHistory(competitionId, teamId) {
       // Create table header
       const headerRow = document.createElement('tr');
       headerRow.innerHTML = `
+          <th>Team ID</th>
           <th>Date</th>
           <th>Stock Symbol</th>
           <th>Quantity</th>
@@ -35,6 +36,7 @@ async function fetchTransactionHistory(competitionId, teamId) {
       transactions.forEach(transaction => {
           const row = document.createElement('tr');
           row.innerHTML = `
+              <td>${transaction.TeamID}</td>
               <td>${transaction.TransactionTime}</td>
               <td>${transaction.StockSymbol}</td>
               <td>${transaction.Quantity}</td>
@@ -50,8 +52,6 @@ async function fetchTransactionHistory(competitionId, teamId) {
       console.error('Error fetching transaction history:', error);
   }
 }
-
-
 
 
 
