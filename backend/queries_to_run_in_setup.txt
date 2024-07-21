@@ -150,7 +150,7 @@ BEGIN
   FROM Stocks st
   WHERE st.StockSymbol = NEW.StockSymbol AND st.CompetitionID = NEW.CompetitionID;
 
-  SET new_price = initial_price + initial_price * ((buy_orders - sell_orders) / supply) * beta;
+  SET new_price = (initial_price + initial_price * (1 + ((buy_orders - sell_orders) / supply)) * beta;
 
   UPDATE Stocks
   SET CurrentPrice = new_price
