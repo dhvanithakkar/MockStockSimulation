@@ -45,12 +45,13 @@ CREATE TABLE Stocks (
   TotalShares INT NOT NULL,
   BuyOrders INT NOT NULL DEFAULT 0,
   SellOrders INT NOT NULL DEFAULT 0,
-  BetaValue DECIMAL(10,2),
+  BetaValue DECIMAL(10,2) DEFAULT 0.5,  -- Set default value to 0.5
   SectorID INT NOT NULL,
   PRIMARY KEY (StockSymbol, CompetitionID),
   FOREIGN KEY (CompetitionID) REFERENCES Competitions(CompetitionID),
   FOREIGN KEY (SectorID) REFERENCES Sectors(SectorID)
 );
+
 
 
 CREATE TABLE Transactions (
