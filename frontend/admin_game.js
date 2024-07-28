@@ -1,6 +1,6 @@
 let currentStep = 1;
 let gameDetails = {};
-const CollegeID = 1;
+const CollegeID = sessionStorage.getItem('CollegeID');
 fetchGames();
 
 function nextStep(next) {
@@ -8,9 +8,9 @@ function nextStep(next) {
     gameDetails.CompetitionName = document.getElementById('gameName').value;
     gameDetails.CollegeID = CollegeID;
     console.log("Initial cash is", document.getElementById('initialBudget').value);
-     // Moved outside
+     
     gameDetails.NumberOfParticipants = 100;
-    formatDateTime(); // Assuming formatDateTime doesn't rely on previous steps
+    formatDateTime(); 
 
     currentStep = next;
     updateFormVisibility();

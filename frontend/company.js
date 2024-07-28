@@ -1,8 +1,8 @@
 function logout() {
     window.location.href = 'index.html';
 }
-const teamId = 1; //sessionStorage.getItem('TeamID')
-const CompetitionID = 1; //sessionStorage.getItem('CompetitionID')
+const teamId = sessionStorage.getItem('TeamID');
+const CompetitionID = sessionStorage.getItem('CompetitionID');
 function createChart(chartId, data, timestamps, detailsId) {
     var ctx = document.getElementById(chartId).getContext('2d');
     var detailsContainer = document.getElementById(detailsId);

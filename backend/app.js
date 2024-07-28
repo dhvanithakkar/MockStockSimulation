@@ -235,14 +235,15 @@ app.post('/buy/:CompetitionID', async (req, res) => {
       }
 
       const teamFunds = await getTeamFunds(pool, teamId);
-      const totalPrice = quantity * await getStockPrice(pool, stockSymbol, CompetitionID);
+      const stockPrice = await getStockPrice(pool, stockSymbol, CompetitionID);
+      const totalPrice = quantity * stockPrice;
       if (teamFunds < totalPrice) {
         return res.status(400).send('Insufficient funds');
       }
       await pool.query(`
         INSERT INTO Transactions (TeamID, StockSymbol, Quantity, Price, TransactionType, CompetitionID)
         VALUES (?, ?, ?, ?, 'BUY', ?)
-      `, [teamId, stockSymbol, quantity, totalPrice, CompetitionID]);
+      `, [teamId, stockSymbol, quantity, stockPrice, CompetitionID]);
     
       
     } catch (error) {

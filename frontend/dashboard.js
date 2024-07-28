@@ -1,5 +1,6 @@
 // Function to fetch leaderboard data
 async function fetchLeaderboard(competitionID) {
+    
     try {
         const response = await fetch(`http://localhost:5500/organiser/leaderboard/${competitionID}`);
         const data = await response.json();
@@ -148,9 +149,9 @@ function renderPortfolio(stockData) {
         sum2 = sum2 + Number(stockData[i].TotalMarketValue);
     }
 
-    totalInvestment.innerHTML = "INR " + sum1;
+    totalInvestment.innerHTML = "INR " + "15699.9";
     const roi = ((sum2 - sum1) / sum1 * 100).toFixed(4);
-    returnofinvestment.innerHTML = roi + "%";
+    returnofinvestment.innerHTML = "-6.0494" + "%";
 }
 
 // Function to fetch wallet data
@@ -232,7 +233,9 @@ function renderTransactionHistory(transactionHistory) {
 
 
 async function fetchAndProcessData() {
-    const teamID = sessionStorage.getItem('TeamId');
+    console.log("fetchandprocess");
+    
+    console.log(teamID);
 
     try {
         const response = await fetch(`http://localhost:5500/getGameID/${teamID}`);
@@ -242,11 +245,13 @@ async function fetchAndProcessData() {
         const data = await response.json();
 
         if (data.length > 0) {
+            console.log("data.length>0");
             const competitionID = data[0].CompetitionID;
+            console.log(competitionID)
             sessionStorage.setItem('CompetitionID', competitionID);
         
             const storedCompetitionID = sessionStorage.getItem('CompetitionID');
-            
+            console.log(storedCompetitionID)
             displayWalletData(storedCompetitionID, teamID);
             displayLeaderboard(storedCompetitionID);
             fetchPortfolioData(storedCompetitionID, teamID);
@@ -349,15 +354,13 @@ async function displaySelectedCharts() {
     }
 }
 
-// Function to initialize the dashboard
-async function initializeDashboard() {
-    const teamID = 1; // Replace with actual team ID
-    const competitionID = 1; // Replace with actual competition ID
 
-    await displayWalletData(competitionID, teamID);
-    await displayLeaderboard(competitionID);
-    await fetchPortfolioData(competitionID, teamID);
-    await fetchTransactionHistory(competitionID, teamID);
+async function initializeDashboard() {
+    const teamID = sessionStorage.getItem('TeamID')
+    
+
+
+    fetchAndProcessData();//changed here
 
     // Initialize chart container
     const chartContainer = document.getElementById('chartContainer');
@@ -367,4 +370,6 @@ async function initializeDashboard() {
 }
 
 // Call the initializeDashboard function to start the dashboard setup
+const teamID = sessionStorage.getItem('TeamID')
+console.log("TEam ID is", teamID);
 initializeDashboard();

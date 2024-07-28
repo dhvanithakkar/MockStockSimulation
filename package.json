@@ -8,11 +8,12 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Welcome to the Mock Stock Server! This server allows colleges to organize their own mock stock competitions, providing a platform for creating and managing stock market simulation games.",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "mysql2": "^3.9.7"
-  }
+  },
+  "devDependencies": {}
 }

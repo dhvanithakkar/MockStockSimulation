@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const competitionId = 1; // sessionStorage.getItem('CompetitionID')
-    const teamId = 1; // sessionStorage.getItem('TeamID')
+    const competitionId = sessionStorage.getItem('CompetitionID');
+    const teamId = sessionStorage.getItem('TeamID');
 
     fetchPortfolioData(competitionId, teamId);
     fetchTransactionHistory(competitionId, teamId);

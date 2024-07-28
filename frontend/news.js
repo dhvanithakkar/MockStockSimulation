@@ -14,7 +14,7 @@ async function fetchNews() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ CompetitionID: 1 }) // Replace with actual CompetitionID
+            body: JSON.stringify({ CompetitionID: sessionStorage.getItem('CompetitionID') }) 
         });
         
         if (!response.ok) {
