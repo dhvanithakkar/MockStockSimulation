@@ -149,9 +149,9 @@ function renderPortfolio(stockData) {
         sum2 = sum2 + Number(stockData[i].TotalMarketValue);
     }
 
-    totalInvestment.innerHTML = "INR " + "15699.9";
+    totalInvestment.innerHTML = "INR " + sum2;
     const roi = ((sum2 - sum1) / sum1 * 100).toFixed(4);
-    returnofinvestment.innerHTML = "-6.0494" + "%";
+    returnofinvestment.innerHTML = roi + "%";
 }
 
 // Function to fetch wallet data

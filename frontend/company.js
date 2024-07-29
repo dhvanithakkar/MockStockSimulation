@@ -76,7 +76,6 @@ function buyStock(company, price) {
     })
     .then(response => {
         if (response.ok) {
-            // Handle success, maybe show a confirmation message
             alert('Purchase successful!');
             FetchList();
         } else {
