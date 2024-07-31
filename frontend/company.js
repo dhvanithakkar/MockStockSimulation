@@ -112,7 +112,7 @@ function sellStock(company, price) {
     })
     .then(response => {
         if (response.ok) {
-            // Handle success, maybe show a confirmation message
+
             alert('Sale successful!');
             FetchList();
         } else {
