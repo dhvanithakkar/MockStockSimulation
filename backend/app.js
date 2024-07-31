@@ -1,16 +1,27 @@
 const express = require('express');
-const connectToDatabase = require('./database'); 
+const path = require('path');
 const cors = require('cors');
+const connectToDatabase = require('./database'); 
+
 const app = express();
 const PORT = process.env.PORT || 3000;
-const allowedOrigin = 'http://127.0.0.1:5501';
+
+
+const allowedOrigin = process.env.ALLOWED_ORIGIN || 'http://127.0.0.1:5501';
 app.use(cors({
   origin: allowedOrigin,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type']
 }));
 
+
 app.use(express.json());
+
+app.use(express.static(path.join(__dirname, '../frontend')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/index.html'));
+});
 
 
 
@@ -722,5 +733,5 @@ async function getStockPrice(pool, stockSymbol, CompetitionID) {
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
-});
+}); 
 
