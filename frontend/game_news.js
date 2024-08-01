@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", function() {
   const newsForm = document.getElementById("newsForm");
   const newsList = document.getElementById("newsList");
@@ -6,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function() {
   // Function to fetch and display news
   async function fetchAndDisplayNews() {
     try {
-      const response = await fetch('http://localhost:5500/news/display', {
+      const response = await fetch(`${config.apiBaseUrl}/news/display`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -60,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function() {
     };
 
     try {
-      const response = await fetch('http://localhost:5500/news/create', {
+      const response = await fetch(`${config.apiBaseUrl}/news/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

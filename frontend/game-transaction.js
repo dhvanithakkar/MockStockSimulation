@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function fetchTransactionHistory(competitionId) {
   try {
-      const response = await fetch(`http://localhost:5500/organisers/transactions/${competitionId}`);
+      const response = await fetch(`${config.apiBaseUrl}/organisers/transactions/${competitionId}`);
       const transactions = await response.json();
 
       const transactionHistoryContainer = document.getElementById('transaction-history-container');

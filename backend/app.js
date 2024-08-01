@@ -1,10 +1,10 @@
 const express = require('express');
-const path = require('path');
+
 const cors = require('cors');
 const connectToDatabase = require('./database'); 
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5500;
 
 
 const allowedOrigin = process.env.ALLOWED_ORIGIN || 'http://127.0.0.1:5501';
@@ -17,18 +17,20 @@ app.use(cors({
 
 app.use(express.json());
 
-app.use(express.static(path.join(__dirname, '../frontend')));
+//app.use(express.static(path.join(__dirname, '../frontend')));
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/index.html'));
-});
+//app.get('*', (req, res) => {
+  //res.sendFile(path.join(__dirname, '../frontend/index.html'));
+//});
 
 
-
+(async () => {
+  try {
+    const pool = await connectToDatabase();
 app.get('/companies/:CompetitionID', async (req, res) => {
   const CompetitionID = req.params.CompetitionID;
   try {
-    const pool = await connectToDatabase();
+    
     const [rows] = await pool.query(
       `SELECT StockSymbol, CurrentPrice, CompetitionID, AvailableShares, BetaValue FROM Stocks WHERE CompetitionID = ?`,
       [CompetitionID]
@@ -46,7 +48,6 @@ app.get('/mywallet/:CompetitionID/:TeamID', async (req, res) => {
   const CompetitionID = req.params.CompetitionID;
   const TeamID = req.params.TeamID;
   try {
-    const pool = await connectToDatabase();
     const [rows] = await pool.query(`
       SELECT t.CurrentCash 
       FROM teams t
@@ -68,7 +69,7 @@ app.get('/forgraph/:CompetitionID/:StockSymbol', async (req, res) => {
     const StockSymbol = req.params.StockSymbol;
     console.log(CompetitionID, StockSymbol);
     try{
-      const pool = await connectToDatabase();
+      
     const [rows] = await pool.query(`
     SELECT price, timest from StockGraphs where StockSymbol = ? AND CompetitionID = ?`, [StockSymbol, CompetitionID]);
     console.log(rows);
@@ -84,7 +85,7 @@ app.get('/forgraph/:CompetitionID/:StockSymbol', async (req, res) => {
 app.get('/listsectors/:CompetitionID', async (req, res) => {
   const CompetitionID = req.params.CompetitionID;
   try{
-    const pool = await connectToDatabase();
+   
     const [rows] = await pool.query(`SELECT SectorName, SectorID
     FROM Sectors 
     WHERE SectorID IN
@@ -105,7 +106,7 @@ app.get('/listsectors/:CompetitionID', async (req, res) => {
 app.get('/getsectorwise/:SectorName', async (req, res) => {
   const SectorName = req.params.SectorName;
   try{
-    const pool = await connectToDatabase();
+    
     const [rows] = await pool.query(`
     SELECT s.CurrentPrice, s.StockSymbol FROM Stocks s and Sectors sec where s.sectorId = sec.sectorId and sec.SectorName = ?`,
   [SectorName]);
@@ -122,7 +123,7 @@ app.get('/portfolio/:CompetitionID/:teamId', async (req, res) => {
   const teamId = req.params.teamId;
   const CompetitionID = req.params.CompetitionID;
   try {
-    const pool = await connectToDatabase();
+    
     const [rows] = await pool.query(`
     SELECT 
     s.StockSymbol, 
@@ -145,7 +146,7 @@ app.get('/portfolio/:CompetitionID/:teamId', async (req, res) => {
 //get teamId and teamPassword
 app.get('/logincredentials', async (req, res) => {
   try {
-    const pool = await connectToDatabase();
+    
     const [rows] = await pool.query(`
       SELECT 
         TeamID, TeamPassword 
@@ -161,7 +162,7 @@ app.get('/logincredentials', async (req, res) => {
 //get admin credentials
 app.get('/admincredentials', async (req, res) => {
   try {
-    const pool = await connectToDatabase();
+    
     const [rows] = await pool.query(`
       SELECT 
       CollegeID  , CollegePassword 
@@ -181,7 +182,7 @@ app.put('/organisers/changePrice', async (req, res) => {
   const { CompetitionID, stockSymbol, newPrice } = req.body;
   console.log("Recieved data", CompetitionID, stockSymbol, newPrice);
   try {
-    const pool = await connectToDatabase();
+    
     const sql = `
       UPDATE Stocks
       SET CurrentPrice = ?
@@ -205,7 +206,7 @@ app.put('/organisers/changePrice', async (req, res) => {
 app.put('/organisers/changeBeta', async (req, res) => {
   const { CompetitionID, stockSymbol, newBeta } = req.body;
   try {
-    const pool = await connectToDatabase();
+    
     const sql = `
       UPDATE Stocks
       SET BetaValue = ?
@@ -235,13 +236,10 @@ app.post('/buy/:CompetitionID', async (req, res) => {
   const stockSymbol = req.body.stockSymbol;
   const quantity = req.body.quantity;
 
-
-
   try {
-    const pool = await connectToDatabase();
+    
 
     try {
-      console.log(stockSymbol, CompetitionID);
       const availableShares = await checkStockAvailability(pool, stockSymbol, CompetitionID);
       if (availableShares < quantity) {
         return res.status(400).send('Insufficient stock available');
@@ -253,12 +251,51 @@ app.post('/buy/:CompetitionID', async (req, res) => {
       if (teamFunds < totalPrice) {
         return res.status(400).send('Insufficient funds');
       }
+
+      // Insert transaction
       await pool.query(`
         INSERT INTO Transactions (TeamID, StockSymbol, Quantity, Price, TransactionType, CompetitionID)
         VALUES (?, ?, ?, ?, 'BUY', ?)
       `, [teamId, stockSymbol, quantity, stockPrice, CompetitionID]);
-    
-      
+
+      // Update CurrentCash
+      await pool.query(`
+        UPDATE Teams
+        SET CurrentCash = CurrentCash - ?
+        WHERE TeamID = ?
+      `, [totalPrice, teamId]);
+
+      // Update Stock Details
+      await pool.query(`
+        UPDATE Stocks
+        SET AvailableShares = AvailableShares - ?, BuyOrders = BuyOrders + ?
+        WHERE StockSymbol = ? AND CompetitionID = ?
+      `, [quantity, quantity, stockSymbol, CompetitionID]);
+
+      // Recalculate stock price
+      const [stock] = await pool.query(`
+        SELECT BuyOrders, SellOrders, TotalShares, BetaValue, InitialPrice
+        FROM Stocks
+        WHERE StockSymbol = ? AND CompetitionID = ?
+      `, [stockSymbol, CompetitionID]);
+
+      const { BuyOrders, SellOrders, TotalShares, BetaValue, InitialPrice } = stock[0];
+      const newPrice = InitialPrice + (InitialPrice * (1 + ((BuyOrders - SellOrders) / TotalShares)) * BetaValue);
+
+      // Update the new price
+      await pool.query(`
+        UPDATE Stocks
+        SET CurrentPrice = ?
+        WHERE StockSymbol = ? AND CompetitionID = ?
+      `, [newPrice, stockSymbol, CompetitionID]);
+
+      // Insert into StockGraphs
+      await pool.query(`
+        INSERT INTO StockGraphs (stockSymbol, competitionID, timest, price)
+        VALUES (?, ?, NOW(), ?)
+      `, [stockSymbol, CompetitionID, newPrice]);
+
+      res.status(200).send('Stock purchased successfully!');
     } catch (error) {
       console.error('Error buying stock:', error);
       res.status(500).send('Error during purchase');
@@ -271,6 +308,7 @@ app.post('/buy/:CompetitionID', async (req, res) => {
 
 
 
+
 //api for selling. competition id in url, everything else in request body
 app.post('/sell/:competitionID', async (req, res) => {
   const CompetitionID = parseInt(req.params.competitionID, 10);
@@ -279,22 +317,58 @@ app.post('/sell/:competitionID', async (req, res) => {
   const quantity = req.body.quantity;
 
   try {
-    const pool = await connectToDatabase();
+    
 
     try {
       const currentHoldings = await getTeamHoldings(pool, teamId, stockSymbol, CompetitionID);
-      console.log("Current holdings are", currentHoldings);
       if (currentHoldings < quantity) {
-        console.log("Current holdings are", currentHoldings);
         return res.status(400).send('Insufficient stock holdings');
       }
-      
+
       const currentPrice = await getStockPrice(pool, stockSymbol, CompetitionID);
-    
+
+      // Insert transaction
       await pool.query(`
-      INSERT INTO Transactions (TeamID, StockSymbol, Quantity, Price, TransactionType, CompetitionID)
-      VALUES (?, ?, ?, ?, 'SELL', ?)
-    `, [teamId, stockSymbol, quantity, currentPrice, CompetitionID]);
+        INSERT INTO Transactions (TeamID, StockSymbol, Quantity, Price, TransactionType, CompetitionID)
+        VALUES (?, ?, ?, ?, 'SELL', ?)
+      `, [teamId, stockSymbol, quantity, currentPrice, CompetitionID]);
+
+      // Update CurrentCash
+      await pool.query(`
+        UPDATE Teams
+        SET CurrentCash = CurrentCash + ?
+        WHERE TeamID = ?
+      `, [quantity * currentPrice, teamId]);
+
+      // Update Stock Details
+      await pool.query(`
+        UPDATE Stocks
+        SET AvailableShares = AvailableShares + ?, SellOrders = SellOrders + ?
+        WHERE StockSymbol = ? AND CompetitionID = ?
+      `, [quantity, quantity, stockSymbol, CompetitionID]);
+
+      // Recalculate stock price
+      const [stock] = await pool.query(`
+        SELECT BuyOrders, SellOrders, TotalShares, BetaValue, InitialPrice
+        FROM Stocks
+        WHERE StockSymbol = ? AND CompetitionID = ?
+      `, [stockSymbol, CompetitionID]);
+
+      const { BuyOrders, SellOrders, TotalShares, BetaValue, InitialPrice } = stock[0];
+      const newPrice = InitialPrice + (InitialPrice * (1 + ((BuyOrders - SellOrders) / TotalShares)) * BetaValue);
+
+      // Update the new price
+      await pool.query(`
+        UPDATE Stocks
+        SET CurrentPrice = ?
+        WHERE StockSymbol = ? AND CompetitionID = ?
+      `, [newPrice, stockSymbol, CompetitionID]);
+
+      // Insert into StockGraphs
+      await pool.query(`
+        INSERT INTO StockGraphs (stockSymbol, competitionID, timest, price)
+        VALUES (?, ?, NOW(), ?)
+      `, [stockSymbol, CompetitionID, newPrice]);
 
       res.status(200).send('Stock sold successfully!');
     } catch (error) {
@@ -307,6 +381,7 @@ app.post('/sell/:competitionID', async (req, res) => {
   }
 });
 
+
 //api to show transaction history. competiton id in url. if we want all transactions, write all in stockSymbol and teamId in body.
 //if we want stockwise history (history of one particular stock), write all in teamID and specific stock stockSymbol. same if we want teamwise transaction history
 app.get('/organisers/transactions/:CompetitionID', async (req, res) => {
@@ -315,7 +390,7 @@ app.get('/organisers/transactions/:CompetitionID', async (req, res) => {
   let teamId = req.query.teamId; 
 
   try {
-    const pool = await connectToDatabase();
+    
     let query = `
     SELECT *
     FROM Transactions
@@ -348,7 +423,7 @@ app.get('/organisers/transactions/:CompetitionID', async (req, res) => {
 app.get('/getGameID/:teamID', async(req, res) => {
   const TeamID = parseInt(req.params.teamID, 10);
   try{
-    const pool = await connectToDatabase();
+    
     let query = `
     SELECT CompetitionID
 FROM Teams 
@@ -366,7 +441,7 @@ WHERE TeamID = ?
 app.get('/organiser/leaderboard/:competitionID', async(req, res) => {
   const CompetitionID = parseInt(req.params.competitionID, 10);
   try{
-    const pool = await connectToDatabase();
+    
     let query = `
     SELECT 
   team.TeamName,
@@ -398,7 +473,7 @@ app.post('/organiser/makeGame', async (req, res) => {
     CompetitionID, CollegeID, CompetitionName, StartDate, EndDate  , InitialCash , NumberOfParticipants, Description} = req.body;
   
   try {
-    const pool = await connectToDatabase();
+    
 const preparedStatement = `INSERT INTO Competitions (CompetitionID, CollegeID, CompetitionName, StartDate, EndDate  , InitialCash , NumberOfParticipants, Description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
 const result = await pool.query(preparedStatement, [
   CompetitionID, CollegeID, CompetitionName, StartDate, EndDate, InitialCash , NumberOfParticipants, Description
@@ -429,7 +504,7 @@ app.post('/organiser/makeStocks', async (req, res) => {
     });
     
   try {
-    const pool = await connectToDatabase();
+    
     
 
 const preparedStatement = `INSERT INTO Stocks (CompetitionID, StockSymbol, StockName, InitialPrice, TotalShares, BetaValue, SectorID, CurrentPrice) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
@@ -457,7 +532,7 @@ if (result.affectedRows === 0) {
 app.get('/organiser/displayGames', async(req, res) => {
   const CompetitionID = parseInt(req.params.CompetitionID, 10);
   try{
-    const pool = await connectToDatabase();
+    
     const [rows] = await pool.query(`
     SELECT CompetitionID, CompetitionName, StartDate, EndDate, InitialCash, Description FROM Competitions`);
     console.log(rows);
@@ -473,7 +548,7 @@ app.get('/organiser/displayGames', async(req, res) => {
 app.get('/organiser/displayStocks/:CompetitionID', async(req, res) => {
   const CompetitionID = parseInt(req.params.CompetitionID, 10);
   try{
-    const pool = await connectToDatabase();
+    
     const [rows] = await pool.query(`
     SELECT StockSymbol, StockName, CurrentPrice, BetaValue, AvailableShares 
     FROM stocks
@@ -492,7 +567,7 @@ app.get('/organiser/displayTeams/:CompetitionID', async (req, res) => {
   const CompetitionID = parseInt(req.params.CompetitionID, 10);
   
   try {
-    const pool = await connectToDatabase();
+    
     
     const [rows] = await pool.query(`
       SELECT TeamName, TeamID, CurrentCash
@@ -513,7 +588,7 @@ app.get('/endTime/:CompetitionID', async (req, res) => {
   const CompetitionID = parseInt(req.params.CompetitionID, 10);
   
   try {
-    const pool = await connectToDatabase();
+    
     
     const [rows] = await pool.query(`
       SELECT EndDate
@@ -535,7 +610,7 @@ app.get('/endTime/:CompetitionID', async (req, res) => {
 app.delete('/organiser/deleteStocks', async(req, res) =>{
   const {StockSymbol, CompetitionID} = req.body;
   try{
-    const pool = await connectToDatabase();
+    
     await pool.query(`
     DELETE
   FROM Transactions
@@ -579,7 +654,7 @@ app.post('/organiser/createTeam', async (req, res) => {
   });
 
   try {
-    const pool = await connectToDatabase();
+    
 
     const preparedStatement = `
       INSERT INTO Teams (TeamID, TeamPassword, CompetitionID, TeamName, Email)
@@ -612,7 +687,7 @@ app.post('/news/create', async (req, res) => {
   console.log('Received data:', { title, content, CompetitionID });
 
   try {
-    const pool = await connectToDatabase();
+    
 
     const preparedStatement = `
       INSERT INTO News (Title, Content, CompetitionID)
@@ -637,7 +712,7 @@ app.post('/news/display', async (req, res) => {
 
   console.log("News display API with", CompetitionID);
   try {
-    const pool = await connectToDatabase();
+    
 
     const preparedStatement = `
       SELECT * FROM NEWS WHERE CompetitionID = ?
@@ -661,7 +736,7 @@ app.post('/news/display', async (req, res) => {
 app.post('/organiser/deleteTeam', async(req, res) =>{
   const {TeamID, CompetitionID} = req.body;
   try{
-    const pool = await connectToDatabase();
+    
     const result1 = await pool.query(`
     DELETE FROM Transactions
 WHERE CompetitionID = ? AND TeamID = ?;`, [CompetitionID, TeamID]);
@@ -735,3 +810,25 @@ app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 }); 
 
+function shutdown() {
+  console.log('Shutting down...');
+  server.close(async (err) => {
+    if (err) {
+      console.error('Error closing the server:', err);
+    }
+    console.log('Server closed');
+    try {
+      await pool.end(); // Close the pool
+      console.log('Database pool closed');
+    } catch (err) {
+      console.error('Error closing the pool:', err);
+    }
+    process.exit(0);
+  });
+}
+
+process.on('SIGTERM', shutdown);
+process.on('SIGINT', shutdown);} catch (error) {
+  console.error('Error initializing app:', error);
+}
+})();

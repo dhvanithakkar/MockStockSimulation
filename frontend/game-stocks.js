@@ -40,7 +40,7 @@ function toggleDetails(company, competitionID) {
   if (details.style.display === 'block') {
       details.style.display = 'none';
   } else {
-      fetch(`http://localhost:5500/forgraph/${competitionID}/${company}`)
+      fetch(`${config.apiBaseUrl}/forgraph/${competitionID}/${company}`)
           .then(response => response.json())
           .then(data => {
               const prices = data.map(item => item.price);
@@ -98,7 +98,7 @@ function deleteStock(stockSymbol, competitionId) {
     stockSymbol: stockSymbol}
 
   // Send an HTTP DELETE request to the API endpoint
-  fetch(`http://localhost:5500/organiser/deleteStocks`, {
+  fetch(`${config.apiBaseUrl}/organiser/deleteStocks`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json'
@@ -145,7 +145,7 @@ async function updateStock(stockSymbol, competitionId) {
 
   try {
     // Send an HTTP PUT request to the API endpoint for updating price
-    let response = await fetch('http://localhost:5500/organisers/changePrice', {
+    let response = await fetch(`${config.apiBaseUrl}/organisers/changePrice`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -162,7 +162,7 @@ async function updateStock(stockSymbol, competitionId) {
     // Optionally update the UI to reflect the new price
 
     // Send an HTTP PUT request to the API endpoint for updating beta value
-    response = await fetch('http://localhost:5500/organisers/changeBeta', {
+    response = await fetch(`${config.apiBaseUrl}/organisers/changeBeta`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -219,7 +219,7 @@ function createStock() {
   };
 
   // Send an HTTP POST request to the API endpoint
-  fetch('http://localhost:5500/organiser/makeStocks', {
+  fetch(`${config.apiBaseUrl}/organiser/makeStocks`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -246,7 +246,7 @@ function createStock() {
 
   function FetchList() {
     const bodyData = { CompetitionID: CompetitionID };
-    fetch(`http://localhost:5500/companies/${CompetitionID}`)
+    fetch(`${config.apiBaseUrl}/companies/${CompetitionID}`)
       .then(response => response.json())
       .then(data => {
         console.log(data);

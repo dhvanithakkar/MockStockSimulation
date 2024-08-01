@@ -3,6 +3,7 @@ function logout() {
 }
 const teamId = sessionStorage.getItem('TeamID');
 const CompetitionID = sessionStorage.getItem('CompetitionID');
+
 function createChart(chartId, data, timestamps, detailsId) {
     var ctx = document.getElementById(chartId).getContext('2d');
     var detailsContainer = document.getElementById(detailsId);
@@ -40,7 +41,7 @@ function toggleDetails(company, competitionID) {
     if (details.style.display === 'block') {
         details.style.display = 'none';
     } else {
-        fetch(`http://localhost:5500/forgraph/${competitionID}/${company}`)
+        fetch(`${config.apiBaseUrl}/forgraph/${competitionID}/${company}`)
             .then(response => response.json())
             .then(data => {
                 const prices = data.map(item => item.price);
@@ -63,7 +64,7 @@ function buyStock(company, price) {
     var totalAmount = quantity * price;
     var stockSymbol = company; // Assuming company is the stock symbol
 
-    fetch(`http://localhost:5500/buy/${CompetitionID}`, {
+    fetch(`${config.apiBaseUrl}/buy/${CompetitionID}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -99,7 +100,7 @@ function sellStock(company, price) {
     var stockSymbol = company; // Assuming company is the stock symbol
 
 
-    fetch(`http://localhost:5500/sell/${CompetitionID}`, {
+    fetch(`${config.apiBaseUrl}/sell/${CompetitionID}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -132,7 +133,7 @@ function sellStock(company, price) {
 
 async function fetchEndTime(competitionID) {
     try {
-        const response = await fetch(`http://localhost:5500/endTime/${competitionID}`);
+        const response = await fetch(`${config.apiBaseUrl}/endTime/${competitionID}`);
         const data = await response.json();
         return new Date(data[0].EndDate); // Assuming the end time is returned as a string
     } catch (error) {
@@ -208,7 +209,7 @@ function generateStockHTML(stock) {
 }
 
 function FetchList() {
-    fetch(`http://localhost:5500/companies/${CompetitionID}`)
+    fetch(`${config.apiBaseUrl}/companies/${CompetitionID}`)
       .then(response => response.json())
       .then(data => {
         console.log(data);

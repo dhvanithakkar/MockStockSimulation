@@ -1,8 +1,8 @@
-// Function to fetch leaderboard data
+
 async function fetchLeaderboard(competitionID) {
     
     try {
-        const response = await fetch(`http://localhost:5500/organiser/leaderboard/${competitionID}`);
+        const response = await fetch(`${config.apiBaseUrl}/organiser/leaderboard/${competitionID}`);
         const data = await response.json();
         return data;
     } catch (error) {
@@ -66,7 +66,7 @@ document.querySelector('.stock-list').addEventListener('click', handleCheckboxCl
 // Function to update the timer
 async function fetchEndTime(competitionID) {
     try {
-        const response = await fetch(`http://localhost:5500/endTime/${competitionID}`);
+        const response = await fetch(`${config.apiBaseUrl}/endTime/${competitionID}`);
         const data = await response.json();
         return new Date(data[0].EndDate);
     } catch (error) {
@@ -157,7 +157,7 @@ function renderPortfolio(stockData) {
 // Function to fetch wallet data
 async function fetchWalletData(competitionID, teamID) {
     try {
-        const response = await fetch(`http://localhost:5500/mywallet/${competitionID}/${teamID}`);
+        const response = await fetch(`${config.apiBaseUrl}/mywallet/${competitionID}/${teamID}`);
         const data = await response.json();
         return data.CurrentCash;
     } catch (error) {
@@ -176,7 +176,7 @@ async function displayWalletData(competitionID, teamID) {
 // Function to fetch portfolio data
 async function fetchPortfolioData(competitionId, teamId) {
     try {
-        const response = await fetch(`http://localhost:5500/portfolio/${competitionId}/${teamId}`);
+        const response = await fetch(`${config.apiBaseUrl}/portfolio/${competitionId}/${teamId}`);
         const portfolio = await response.json();
         renderPortfolio(portfolio);
     } catch (error) {
@@ -187,7 +187,7 @@ async function fetchPortfolioData(competitionId, teamId) {
 // Function to fetch transaction history data
 async function fetchTransactionHistory(competitionId, teamId) {
     try {
-        const response = await fetch(`http://localhost:5500/organisers/transactions/${competitionId}?teamId=${teamId}`);
+        const response = await fetch(`${config.apiBaseUrl}/organisers/transactions/${competitionId}?teamId=${teamId}`);
         const transactionHistory = await response.json();
         renderTransactionHistory(transactionHistory);
     } catch (error) {
@@ -238,7 +238,7 @@ async function fetchAndProcessData() {
     console.log(teamID);
 
     try {
-        const response = await fetch(`http://localhost:5500/getGameID/${teamID}`);
+        const response = await fetch(`${config.apiBaseUrl}/getGameID/${teamID}`);
         if (!response.ok) {
             throw new Error('Network response was not ok ' + response.statusText);
         }
@@ -267,7 +267,7 @@ async function fetchAndProcessData() {
 // Function to fetch graph data for the selected stock and competition
 async function fetchGraphData(competitionID, stockSymbol) {
     try {
-        const response = await fetch(`http://localhost:5500/forgraph/${competitionID}/${stockSymbol}`);
+        const response = await fetch(`${config.apiBaseUrl}/forgraph/${competitionID}/${stockSymbol}`);
         const data = await response.json();
         return data;
     } catch (error) {

@@ -1,4 +1,5 @@
 const CompetitionID = sessionStorage.getItem('CompetitionID');
+
 console.log("Competition ID is", CompetitionID);
 document.addEventListener('DOMContentLoaded', async () => {
     const toggleUserFormButton = document.getElementById('toggleUserFormButton');
@@ -28,7 +29,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
 
         try {
-            const response = await fetch('http://localhost:5500/organiser/createTeam', {
+            const response = await fetch(`${config.apiBaseUrl}/organiser/createTeam`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -68,7 +69,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 async function fetchTransactionHistory(competitionId, teamId) {
     try {
-        const response = await fetch(`http://localhost:5500/organisers/transactions/${competitionId}?teamId=${teamId}`);
+        const response = await fetch(`${config.apiBaseUrl}/organisers/transactions/${competitionId}?teamId=${teamId}`);
         const transactions = await response.json();
 
         const transactionHistory = document.getElementById('transactionHistory');
@@ -93,7 +94,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function fetchTeams(CompetitionID) {
         try {
-            const response = await fetch(`http://localhost:5500/organiser/displayTeams/${CompetitionID}`);
+            const response = await fetch(`${config.apiBaseUrl}/organiser/displayTeams/${CompetitionID}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch teams');
             }

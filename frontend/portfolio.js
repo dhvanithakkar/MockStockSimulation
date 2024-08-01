@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function fetchWalletData(competitionId, teamId) {
     try {
-        const response = await fetch(`http://localhost:5500/mywallet/${competitionId}/${teamId}`);
+        const response = await fetch(`${config.apiBaseUrl}/mywallet/${competitionId}/${teamId}`);
         const walletData = await response.json();
         const walletValue = document.getElementById('wallet-value');
         walletValue.textContent = `INR ${walletData.CurrentCash}`;
@@ -21,7 +21,7 @@ async function fetchWalletData(competitionId, teamId) {
 
 async function fetchPortfolioData(competitionId, teamId) {
     try {
-        const response = await fetch(`http://localhost:5500/portfolio/${competitionId}/${teamId}`);
+        const response = await fetch(`${config.apiBaseUrl}/portfolio/${competitionId}/${teamId}`);
         const portfolio = await response.json();
         renderPortfolio(portfolio);
     } catch (error) {
@@ -32,7 +32,7 @@ async function fetchPortfolioData(competitionId, teamId) {
 
 async function fetchTransactionHistory(competitionId, teamId) {
     try {
-        const response = await fetch(`http://localhost:5500/organisers/transactions/${competitionId}?teamId=${teamId}`);
+        const response = await fetch(`${config.apiBaseUrl}/organisers/transactions/${competitionId}?teamId=${teamId}`);
         const transactions = await response.json();
 
         const transactionHistoryContainer = document.getElementById('transaction-history-container');
@@ -161,7 +161,7 @@ function renderGraph(stock, stockItem) {
 
 async function fetchEndTime(competitionID) {
     try {
-        const response = await fetch(`http://localhost:5500/endTime/${competitionID}`);
+        const response = await fetch(`${config.apiBaseUrl}/endTime/${competitionID}`);
         const data = await response.json();
         return new Date(data[0].EndDate); // Assuming the end time is returned as a string
     } catch (error) {

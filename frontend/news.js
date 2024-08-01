@@ -9,7 +9,7 @@ function toggleUserDetailsPanel() {
 
 async function fetchNews() {
     try {
-        const response = await fetch('http://localhost:5500/news/display', {
+        const response = await fetch(`${config.apiBaseUrl}/news/display`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

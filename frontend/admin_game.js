@@ -31,7 +31,7 @@ async function submitForm() {
   gameDetails.InitialCash = Number(document.getElementById('initialBudget').value);
 
   try {
-    const response = await fetch('http://localhost:5500/organiser/makeGame', {
+    const response = await fetch(`${config.apiBaseUrl}/organiser/makeGame`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(gameDetails)
@@ -59,7 +59,7 @@ function resetForm() {
 }
 async function fetchGames() {
   try {
-    const response = await fetch('http://localhost:5500/organiser/displayGames');
+    const response = await fetch(`${config.apiBaseUrl}/organiser/displayGames`);
     if (response.ok) {
       const games = await response.json();
       displayGames(games);

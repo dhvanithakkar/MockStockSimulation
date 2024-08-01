@@ -1,3 +1,6 @@
+
+console.log(`${config.apiBaseUrl}/logincredentials`);
+
 document.getElementById("loginForm").addEventListener("submit", async function(event) {
     event.preventDefault();
     
@@ -13,7 +16,8 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
 
     try {
         if (role == "user"){
-            let response = await fetch('http://localhost:5500/logincredentials');
+            //console.log("Doing api ", `${config.apiBaseUrl}/logincredentials`);
+            let response = await fetch(`${config.apiBaseUrl}/logincredentials`);
         
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -36,7 +40,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
                 loginFeedback.textContent = "Invalid username or password.";
             }
         } else if (role == "admin"){
-            let response = await fetch('http://localhost:5500/admincredentials');
+            let response = await fetch(`${config.apiBaseUrl}/admincredentials`);
         
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -62,3 +66,4 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
         loginFeedback.textContent = "Error logging in. Please try again later.";
     }
 });
+
