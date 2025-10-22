@@ -1,6 +1,6 @@
 # Mock Stock Server
 
-Welcome to the Mock Stock Server! This server allows colleges to organize their own mock stock competitions, providing a platform for creating and managing stock market simulation games.
+Welcome to the Mock Stock Server! This server allows universities to organize their own mock stock competitions, providing a platform for creating and managing thier own customised stock market simulation games.
 
 ## Features
 
